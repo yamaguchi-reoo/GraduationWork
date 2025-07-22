@@ -11,12 +11,12 @@ InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(
 
 InGameScene::~InGameScene()
 {
-	delete player; // プレイヤーオブジェクトのメモリ解放
 }
 
 void InGameScene::Initialize()
 {
 	camera_location = Vector2D(0.0f, 0.0f); // カメラの初期位置を設定
+	object_manager.Initialize(); // オブジェクト管理クラスの初期化
 
 	// 初期化処理
 	LoadStage();
@@ -25,8 +25,14 @@ void InGameScene::Initialize()
 eSceneType InGameScene::Update()
 {
 	// 更新処理
-	FindPlayer();   // 先にプレイヤー取得
-	UpdateCamera(); // それから追従
+	if (!player)
+	{
+		FindPlayer();
+	}
+
+	object_manager.Update();
+	UpdateCamera(); 
+
 	return __super::Update();
 }
 
@@ -34,6 +40,7 @@ void InGameScene::Draw()
 {
 	// 描画処理
 	__super::Draw();
+	object_manager.Draw(camera_location, 1.0);
 
 	DrawString(0, 0, "GameMain", GetColor(255, 255, 255));
 }
@@ -42,6 +49,7 @@ void InGameScene::Finalize()
 {
 	// 終了時処理
 	__super::Finalize();
+	object_manager.Finalize();
 }
 
 eSceneType InGameScene::GetNowSceneType() const
@@ -77,13 +85,5 @@ void InGameScene::UpdateCamera()
 
 void InGameScene::FindPlayer()
 {
-	//プレイヤーオブジェクトを探して取得
-	for (auto obj : objects)
-	{
-		if (obj->GetObjectType() == PLAYER)
-		{
-			player = obj;
-			break;
-		}
-	}
+	player = object_manager.FindObjectType(PLAYER);
 }

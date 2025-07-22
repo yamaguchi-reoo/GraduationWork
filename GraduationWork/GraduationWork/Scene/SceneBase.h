@@ -11,8 +11,8 @@ enum class eSceneType
 class SceneBase
 {
 protected:
-	std::vector<GameObject*>objects;
 	Vector2D camera_location;
+
 public:
 	//コンストラクタ
 	SceneBase();
@@ -26,13 +26,6 @@ public:
 
 	//現在のシーンタイプを取得する
 	virtual eSceneType GetNowSceneType()const = 0;
-
-	void DeleteObject(GameObject* obj);
-
-protected:
-	//ゲームオブジェクトを生成
-	template <class T>
-	T* CreateObject(const Vector2D& _location, const Vector2D& _box_size);
 };
 
 

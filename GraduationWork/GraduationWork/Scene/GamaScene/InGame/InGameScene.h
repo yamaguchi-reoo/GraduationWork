@@ -3,6 +3,7 @@
 #include "../../../common.h"
 
 #include "../../../Object/ObjectInfo.h"
+#include "../../../Object/ObjectManager.h"
 
 
 class InGameScene :
@@ -14,6 +15,7 @@ private:
 	int stage_data[STAGE_MAX_HEIGHT][STAGE_MAX_WIDTH];
 
 	GameObject* player;	//プレイヤーのポインタ
+	ObjectManager object_manager; //オブジェクト管理クラス
 public:
 	InGameScene();
 	~InGameScene();
