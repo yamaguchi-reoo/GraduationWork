@@ -5,7 +5,7 @@
 #include "../../../Object/ObjectInfo.h"
 
 
-class GameMainScene :
+class InGameScene :
     public SceneBase
 {
 private:
@@ -15,8 +15,8 @@ private:
 
 	GameObject* player;	//プレイヤーのポインタ
 public:
-	GameMainScene();
-	~GameMainScene();
+	InGameScene();
+	~InGameScene();
 
 	void Initialize() override;		//初期化処理
 	eSceneType Update() override;	//更新処理

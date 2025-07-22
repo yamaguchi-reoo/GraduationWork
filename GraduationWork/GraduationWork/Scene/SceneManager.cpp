@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "DxLib.h"
+#include "GamaScene/InGame/InGameScene.h"
 
 SceneManager::SceneManager() :current_scene(nullptr)
 {
@@ -20,6 +21,7 @@ void SceneManager::Update()
 	if (current_scene == nullptr) return;
 
 	eSceneType next_scene_type = current_scene->Update();
+	//current_scene->Draw();
 
 	if (next_scene_type != current_scene->GetNowSceneType())
 	{
@@ -72,7 +74,7 @@ SceneBase* SceneManager::CreateScene(eSceneType type)
 	case eSceneType::TITLE:
 		//return dynamic_cast<SceneBase*>(new TitleScene()); // タイトルシーンの生成
 	case eSceneType::GAME_MAIN:
-		//return new GameMainScene(); // ゲームメインシーンの生成
+		return new InGameScene(); // ゲームメインシーンの生成
 	default:
 		return nullptr; // 未知のシーンタイプの場合はnullptrを返す
 	}

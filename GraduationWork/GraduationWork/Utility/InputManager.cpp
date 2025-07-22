@@ -1,4 +1,4 @@
-﻿#include "InputMnager.h"
+﻿#include "InputManager.h"
 
 //静的メンバ変数定義
 InputManager* InputManager::instance = nullptr; //クラスのインスタンスのポインタ
