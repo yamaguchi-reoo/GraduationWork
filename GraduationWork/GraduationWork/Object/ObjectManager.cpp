@@ -1,6 +1,10 @@
 #include "ObjectManager.h"
 #include <algorithm>
+#include <DxLib.h>
+
+#include "ObjectInfo.h"
 #include "Character/Player/Player.h"
+#include "Stage/Block.h"
 
 #include <Windows.h>
 
@@ -14,8 +18,8 @@ ObjectManager::~ObjectManager()
 
 void ObjectManager::Initialize()
 {
-
-	CreateObject<Player>(Vector2D(640.0f, 360.0f), Vector2D(50.0f, 50.0f)); // プレイヤーオブジェクトを生成
+	CreateObject<Player>(Vector2D(640.0f, 300.0f), Vector2D(50.0f, 50.0f)); // プレイヤーオブジェクトを生成
+	CreateObject<Block>(Vector2D(640.0f, 360.0f), Vector2D(BLOCK_SIZE)); // プレイヤーオブジェクトを生成
 }
 
 void ObjectManager::Update()
@@ -25,7 +29,7 @@ void ObjectManager::Update()
         if (obj) obj->Update();
     }
 
-	/*GameObject* player = FindObjectType(eObjectType::PLAYER);
+	GameObject* player = FindObjectType(eObjectType::PLAYER);
 
     if (player)
     {
@@ -40,7 +44,7 @@ void ObjectManager::Update()
                 }
             }
         }
-    }*/
+    }
 }
 
 

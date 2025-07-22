@@ -27,11 +27,12 @@ void Player::Draw(Vector2D offset, double rate)
 {
 	__super::Draw(offset, rate);
 
-	DrawString(40, 40, "Player", GetColor(255, 255, 255));
-	DrawFormatString(40, 60, GetColor(255, 255, 255), "location :%3f %3f",location.x, location.y);
-	DrawFormatString(40, 70, GetColor(255, 255, 255), "box_size : %3f %3f",box_size.x, box_size.y);
 
-	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y +box_size.y, GetColor(255, 0, 0), TRUE);
+#ifdef _DEBUG
+	DrawFormatString(offset.x, offset.y, GetColor(255, 255, 255), "Player");
+#endif // DEBUG
+
+	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y +box_size.y, GetColor(255, 0, 0), TRUE);
 }
 
 void Player::Finalize()

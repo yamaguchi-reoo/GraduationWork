@@ -39,25 +39,19 @@ void GameObject::Draw(Vector2D offset, double rate)
 		// 画像を描画（中心座標指定）
 		DrawRotaGraphF(offset.x + (box_size.x / 2), offset.y + (box_size.y / 2), rate, 0.0, image, TRUE, flip_flg);
 
+	}
 
 #ifdef _DEBUG
-		// ヒットボックスの中心座標
-		Vector2D center = location + hit_box / 2.0f;
+	// ヒットボックスの中心座標
+	Vector2D center = location + hit_box / 2.0f;
 
-		// 左上と右下座標を計算
-		Vector2D top_left = center - hit_box / 2.0f;
-		Vector2D bottom_right = center + hit_box / 2.0f;
+	// 左上と右下座標を計算（オフセットは加えない）
+	Vector2D top_left = center - hit_box / 2.0f;
+	Vector2D bottom_right = center + hit_box / 2.0f;
 
-		// オフセットを加味して描画座標を計算
-		Vector2D draw_top_left = top_left + offset;
-		Vector2D draw_bottom_right = bottom_right + offset;
-
-		// 枠線だけ赤色で描画
-		DrawBoxAA(draw_top_left.x, draw_top_left.y, draw_bottom_right.x, draw_bottom_right.y, GetColor(255, 0, 0), FALSE);
+	// 枠線だけ赤色で描画
+	DrawBoxAA(top_left.x, top_left.y, bottom_right.x, bottom_right.y, GetColor(255, 0, 0), FALSE);
 #endif // _DEBUG
-
-		
-	}
 }
 
 void GameObject::Finalize()
