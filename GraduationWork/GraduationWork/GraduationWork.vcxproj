@@ -139,7 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Object\Character\CharacterBase.cpp" />
     <ClCompile Include="Object\ObjectManager.cpp" />
+    <ClCompile Include="Object\Character\Player\Player.cpp" />
     <ClCompile Include="Scene\GamaScene\InGame\InGameScene.cpp" />
     <ClCompile Include="Object\GameObject.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -150,9 +152,11 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Character\CharacterBase.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="Object\ObjectManager.h" />
     <ClInclude Include="Object\ObjectInfo.h" />
+    <ClInclude Include="Object\Character\Player\Player.h" />
     <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
     <ClInclude Include="Object\GameObject.h" />
     <ClInclude Include="Object\ObjectType.h" />

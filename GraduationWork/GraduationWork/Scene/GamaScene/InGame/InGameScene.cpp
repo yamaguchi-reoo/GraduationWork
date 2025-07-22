@@ -42,7 +42,10 @@ void InGameScene::Draw()
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
 
-	DrawString(0, 0, "GameMain", GetColor(255, 255, 255));
+	DrawString(200, 0, "GameMain", GetColor(255, 255, 255));
+
+	DrawFormatString(10, 90, GetColor(255,255,255), "Camera Location: (%3f, %3f)", camera_location.x, camera_location.y);
+	DrawFormatString(10, 100, GetColor(255,255,255), "Player Location: (%3f, %3f)", player->GetLocation().x, player->GetLocation().y);
 }
 
 void InGameScene::Finalize()
@@ -72,7 +75,7 @@ void InGameScene::UpdateCamera()
 	{
 		float screen_half_width = SCREEN_WIDTH / 2;				//画面の半分の幅
 		float stage_limit_left = 0.0f;							//ステージの左端
-		float stage_limit_right = static_cast<float>(stage_width_num) * BLOCK_SIZE - SCREEN_WIDTH; //ステージの右端 
+		float stage_limit_right = static_cast<float>(100) * BLOCK_SIZE - SCREEN_WIDTH; //ステージの右端 
 
 		//カメラ位置 ＝ プレイヤーの位置 - 画面の半分の幅 
 		camera_location.x = player->GetLocation().x - screen_half_width;

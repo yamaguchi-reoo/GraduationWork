@@ -1,5 +1,9 @@
 #include "ObjectManager.h"
 #include <algorithm>
+#include "Character/Player/Player.h"
+
+#include <Windows.h>
+
 
 ObjectManager::ObjectManager() {}
 
@@ -10,7 +14,8 @@ ObjectManager::~ObjectManager()
 
 void ObjectManager::Initialize()
 {
-    
+
+	CreateObject<Player>(Vector2D(640.0f, 360.0f), Vector2D(50.0f, 50.0f)); // プレイヤーオブジェクトを生成
 }
 
 void ObjectManager::Update()
@@ -20,7 +25,7 @@ void ObjectManager::Update()
         if (obj) obj->Update();
     }
 
-	GameObject* player = FindObjectType(eObjectType::PLAYER);
+	/*GameObject* player = FindObjectType(eObjectType::PLAYER);
 
     if (player)
     {
@@ -35,7 +40,7 @@ void ObjectManager::Update()
                 }
             }
         }
-    }
+    }*/
 }
 
 
@@ -43,7 +48,7 @@ void ObjectManager::Draw(Vector2D offset, double rate)
 {
     for (auto obj : objects)
     {
-        if (obj) obj->Draw(offset, rate);
+        if (obj) obj->Draw(obj->GetLocation() - offset, rate);
     }
 }
 

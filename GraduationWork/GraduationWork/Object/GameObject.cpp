@@ -35,7 +35,7 @@ void GameObject::Draw(Vector2D offset, double rate)
 	Vector2D screen_pos = location + offset;
 	if (screen_pos.x + box_size.x >= 0 && screen_pos.x < SCREEN_WIDTH)
 	{
-		if (image == NULL) return; // ‰æ‘œ‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Í•`‰æ‚µ‚È‚¢
+		//if (image == NULL) return; // ‰æ‘œ‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Í•`‰æ‚µ‚È‚¢
 		// ‰æ‘œ‚ð•`‰æi’†SÀ•WŽw’èj
 		DrawRotaGraphF(offset.x + (box_size.x / 2), offset.y + (box_size.y / 2), rate, 0.0, image, TRUE, flip_flg);
 
