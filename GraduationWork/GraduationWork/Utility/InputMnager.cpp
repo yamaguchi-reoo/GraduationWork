@@ -1,25 +1,25 @@
-#include "InputMnager.h"
+ï»¿#include "InputMnager.h"
 
-//Ã“Iƒƒ“ƒo•Ï”’è‹`
-InputManager* InputManager::instance = nullptr; //ƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚Ìƒ|ƒCƒ“ƒ^
+//é™çš„ãƒ¡ãƒ³ãƒå¤‰æ•°å®šç¾©
+InputManager* InputManager::instance = nullptr; //ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒã‚¤ãƒ³ã‚¿
 
-//“ü—Í§ŒäƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒXæ“¾‚·‚éˆ—
+//å…¥åŠ›åˆ¶å¾¡ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å–å¾—ã™ã‚‹å‡¦ç†
 InputManager* InputManager::GetInstance()
 {
-	//ƒCƒ“ƒXƒ^ƒ“ƒX‚ª–³‚¯‚ê‚ÎA¶¬‚·‚é
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒç„¡ã‘ã‚Œã°ã€ç”Ÿæˆã™ã‚‹
 	if (instance == nullptr)
 	{
 		instance = new InputManager();
 	}
 
-	//©•ª©g‚Åƒ|ƒCƒ“ƒ^‚ğ•Ô‹p‚·‚é
+	//è‡ªåˆ†è‡ªèº«ã§ãƒã‚¤ãƒ³ã‚¿ã‚’è¿”å´ã™ã‚‹
 	return instance;
 }
 
-//“ü—Í§ŒäƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒXíœ‚·‚éˆ—
+//å…¥åŠ›åˆ¶å¾¡ã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å‰Šé™¤ã™ã‚‹å‡¦ç†
 void InputManager::DeleteInstance()
 {
-	//ƒCƒ“ƒXƒ^ƒ“ƒX‚ª‘¶İ‚µ‚Ä‚¢‚ê‚ÎAíœ‚·‚é
+	//ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒå­˜åœ¨ã—ã¦ã„ã‚Œã°ã€å‰Šé™¤ã™ã‚‹
 	if (instance != nullptr)
 	{
 		delete instance;
@@ -29,16 +29,16 @@ void InputManager::DeleteInstance()
 
 void InputManager::Update()
 {
-	//‘O‰ñ‚ÌƒL[‚ÌXV
+	//å‰å›ã®ã‚­ãƒ¼ã®æ›´æ–°
 	memcpy(old_key, now_key, (sizeof(char) * D_KEYCODE_MAX));
 
-	//Œ»İ‚ÌƒL[ó‘Ô‚ÌXV
+	//ç¾åœ¨ã®ã‚­ãƒ¼çŠ¶æ…‹ã®æ›´æ–°
 	GetHitKeyStateAll(now_key);
 
-	//‘O‰ñ‚ÌƒL[‚ÌXV
+	//å‰å›ã®ã‚­ãƒ¼ã®æ›´æ–°
 	memcpy(old_mouse, now_mouse, (sizeof(char) * MOUSE_MAX));
 
-	//Œ»İ‚ÌƒL[ó‘Ô‚ÌXV
+	//ç¾åœ¨ã®ã‚­ãƒ¼çŠ¶æ…‹ã®æ›´æ–°
 	for (int i = 0; i < MOUSE_MAX; i++)
 	{
 		if (GetMouseInput() == i)
@@ -53,9 +53,9 @@ void InputManager::Update()
 	GetMousePoint(&cursor.x, &cursor.y);
 
 
-	//‘O‰ñ‚Ìƒ{ƒ^ƒ“‚ÌXV
+	//å‰å›ã®ãƒœã‚¿ãƒ³ã®æ›´æ–°
 	memcpy(old_button, now_button, (sizeof(char) * BUTTON_MAX));
-	//Œ»İ‚ÌƒRƒ“ƒgƒ[ƒ‰[‚Ìƒ{ƒ^ƒ“‚Ìó‘Ô‚ğæ“¾
+	//ç¾åœ¨ã®ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ã®ãƒœã‚¿ãƒ³ã®çŠ¶æ…‹ã‚’å–å¾—
 	if (GetJoypadXInputState(DX_INPUT_KEY_PAD1, &input) == 0)
 	{
 		for (int i = 0; i < BUTTON_MAX; i++)
@@ -67,75 +67,75 @@ void InputManager::Update()
 
 bool InputManager::GetKey(int key_code)const
 {
-	//ƒL[‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚ğŠm”F‚·‚éˆ—
+	//ã‚­ãƒ¼ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’ç¢ºèªã™ã‚‹å‡¦ç†
 	return CheckKeyCodeRange(key_code) && ((now_key[key_code] == TRUE) && (old_key[key_code] == TRUE));
 }
 
 bool InputManager::GetKeyDown(int key_code)const
 {
-	//ƒL[‚ª‰Ÿ‚³‚ê‚½uŠÔ‚©Šm”F‚·‚éˆ—
+	//ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸç¬é–“ã‹ç¢ºèªã™ã‚‹å‡¦ç†
 	return CheckKeyCodeRange(key_code) && ((now_key[key_code] == TRUE) && (old_key[key_code] == FALSE));
 }
 
 bool InputManager::GetKeyUp(int key_code)const
 {
-	//ƒL[‚ª—£‚³‚ê‚½uŠÔ‚©Šm”F‚·‚éˆ—
+	//ã‚­ãƒ¼ãŒé›¢ã•ã‚ŒãŸç¬é–“ã‹ç¢ºèªã™ã‚‹å‡¦ç†
 	return CheckKeyCodeRange(key_code) && ((now_key[key_code] == FALSE) && (old_key[key_code] == TRUE));
 }
 
 bool InputManager::GetMouse(int mouse)
 {
-	//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚ğŠm”F‚·‚éˆ—
+	//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’ç¢ºèªã™ã‚‹å‡¦ç†
 	return (now_mouse[mouse] == TRUE) && (old_mouse[mouse] == TRUE);
 }
 
 bool InputManager::GetMouseDown(int mouse)
 {
-	//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½uŠÔ‚©Šm”F‚·‚éˆ—
+	//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸç¬é–“ã‹ç¢ºèªã™ã‚‹å‡¦ç†
 	return (now_mouse[mouse] == TRUE) && (old_mouse[mouse] == FALSE);
 }
 
 bool InputManager::GetMouseUp(int mouse)
 {
-	//ƒ{ƒ^ƒ“‚ª—£‚³‚ê‚½uŠÔ‚©Šm”F‚·‚éˆ—
+	//ãƒœã‚¿ãƒ³ãŒé›¢ã•ã‚ŒãŸç¬é–“ã‹ç¢ºèªã™ã‚‹å‡¦ç†
 	return (now_mouse[mouse] == FALSE) && (old_mouse[mouse] == TRUE);
 }
 
 Cursor InputManager::GetMouseCursor()
 {
-	//ƒJ[ƒ\ƒ‹‚ğ•Ô‚·
+	//ã‚«ãƒ¼ã‚½ãƒ«ã‚’è¿”ã™
 	return cursor;
 }
 
 bool InputManager::GetButton(int button) const
 {
-	//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚Ä‚¢‚é‚©‚ğŠm”F‚·‚éˆ—
+	//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚Œã¦ã„ã‚‹ã‹ã‚’ç¢ºèªã™ã‚‹å‡¦ç†
 	return ((now_button[button] == TRUE) && (old_button[button] == TRUE));
 }
 
 bool InputManager::GetButtonDown(int button) const
 {
-	//ƒ{ƒ^ƒ“‚ª‰Ÿ‚³‚ê‚½uŠÔ‚©Šm”F‚·‚éˆ—
+	//ãƒœã‚¿ãƒ³ãŒæŠ¼ã•ã‚ŒãŸç¬é–“ã‹ç¢ºèªã™ã‚‹å‡¦ç†
 	return ((now_button[button] == TRUE) && (old_button[button] == FALSE));
 }
 
 bool InputManager::GetButtonUp(int button) const
 {
-	//ƒ{ƒ^ƒ“‚ª—£‚³‚ê‚½uŠÔ‚©Šm”F‚·‚éˆ—
+	//ãƒœã‚¿ãƒ³ãŒé›¢ã•ã‚ŒãŸç¬é–“ã‹ç¢ºèªã™ã‚‹å‡¦ç†
 	return ((now_button[button] == FALSE) && (old_button[button] == TRUE));
 }
 
 float InputManager::LeftStickTilt(short l_stick)
 {
-	// ¶ƒXƒeƒBƒbƒN‚ÌŒX‚«Š„‡‚ğ•Ô‚·
+	// å·¦ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å‚¾ãå‰²åˆã‚’è¿”ã™
 	if (l_stick == STICK_X)
 	{
-		//X²‚ÌŒX‚«‚ğæ“¾
+		//Xè»¸ã®å‚¾ãã‚’å–å¾—
 		return static_cast<float>(input.ThumbLX) / STICK_TILT_MAX;
 	}
 	else if (l_stick == STICK_Y)
 	{
-		//Y²‚ÌŒX‚«‚ğæ“¾
+		//Yè»¸ã®å‚¾ãã‚’å–å¾—
 		return static_cast<float>(input.ThumbLY) / STICK_TILT_MAX;
 	}
 	return 0.0f;
@@ -143,15 +143,15 @@ float InputManager::LeftStickTilt(short l_stick)
 
 float InputManager::RightStickTilt(short r_stick)
 {
-	// ‰EƒXƒeƒBƒbƒN‚ÌŒX‚«Š„‡‚ğ•Ô‚·
+	// å³ã‚¹ãƒ†ã‚£ãƒƒã‚¯ã®å‚¾ãå‰²åˆã‚’è¿”ã™
 	if (r_stick == STICK_X)
 	{
-		//X²‚ÌŒX‚«‚ğæ“¾
+		//Xè»¸ã®å‚¾ãã‚’å–å¾—
 		return static_cast<float>(input.ThumbRX) / STICK_TILT_MAX;
 	}
 	else if (r_stick == STICK_Y)
 	{
-		//Y²‚ÌŒX‚«‚ğæ“¾
+		//Yè»¸ã®å‚¾ãã‚’å–å¾—
 		return static_cast<float>(input.ThumbRY) / STICK_TILT_MAX;
 	}
 	return 0.0f;
@@ -159,6 +159,6 @@ float InputManager::RightStickTilt(short r_stick)
 
 bool InputManager::CheckKeyCodeRange(int key_code)
 {
-	//ƒL[ƒR[ƒh‚Ì”ÍˆÍ“à‚©Šm”F‚·‚éˆ—
+	//ã‚­ãƒ¼ã‚³ãƒ¼ãƒ‰ã®ç¯„å›²å†…ã‹ç¢ºèªã™ã‚‹å‡¦ç†
 	return (0 <= key_code && key_code < D_KEYCODE_MAX);
 }

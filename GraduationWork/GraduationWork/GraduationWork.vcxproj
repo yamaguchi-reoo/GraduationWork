@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\GamaScene\InGame\InGameScene.cpp" />
     <ClCompile Include="Object\GameObject.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
@@ -149,6 +150,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common.h" />
+    <ClInclude Include="Object\ObjectInfo.h" />
+    <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
     <ClInclude Include="Object\GameObject.h" />
     <ClInclude Include="Object\ObjectType.h" />
     <ClInclude Include="Scene\SceneManager.h" />

@@ -1,19 +1,19 @@
-#pragma once
+ï»¿#pragma once
 #include "../Utility/Vector2D.h"
 #include "ObjectType.h"
 
 class GameObject
 {
 protected:
-	Vector2D location;	//ƒIƒuƒWƒFƒNƒg‚ÌˆÊ’u
-	Vector2D box_size;	//ƒIƒuƒWƒFƒNƒg‚ÌƒTƒCƒY
-	Vector2D hit_box;	//“–‚½‚è”»’è‚ÌƒTƒCƒY
+	Vector2D location;	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ä½ç½®
+	Vector2D box_size;	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ã‚µã‚¤ã‚º
+	Vector2D hit_box;	//å½“ãŸã‚Šåˆ¤å®šã®ã‚µã‚¤ã‚º
 
 	Vector2D velocity = { 0.0f };
-	int image;			//•`‰æ‚·‚é‰æ‘œƒf[ƒ^
-	int flip_flg;		//•`‰æ‚·‚é”½“]ƒtƒ‰ƒO
+	int image;			//æç”»ã™ã‚‹ç”»åƒãƒ‡ãƒ¼ã‚¿
+	int flip_flg;		//æç”»ã™ã‚‹åè»¢ãƒ•ãƒ©ã‚°
 
-	eObjectType object_type;		//ƒIƒuƒWƒFƒNƒg‚Ìí—Ş
+	eObjectType object_type;		//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç¨®é¡
 
 	int hp = 0;
 	bool is_delete = false;
@@ -21,37 +21,37 @@ public:
 	GameObject();
 	~GameObject();
 
-	//‰Šú‰»ˆ—
+	//åˆæœŸåŒ–å‡¦ç†
 	virtual void Initialize(Vector2D _location, Vector2D _box_size);
-	//XVˆ—
+	//æ›´æ–°å‡¦ç†
 	virtual void Update();
-	//•`‰æˆ—
+	//æç”»å‡¦ç†
 	virtual void Draw(Vector2D offset, double rate);
-	//I—¹ˆ—
+	//çµ‚äº†æ™‚å‡¦ç†
 	virtual void Finalize();
 
 public:
-	//À•W‚ğİ’è
+	//åº§æ¨™ã‚’è¨­å®š
 	void SetLocation(Vector2D _location);
 
-	//À•W‚ğæ“¾
+	//åº§æ¨™ã‚’å–å¾—
 	Vector2D GetLocation()const;
 
-	//ƒ{ƒbƒNƒXƒTƒCƒY‚ğæ“¾
+	//ãƒœãƒƒã‚¯ã‚¹ã‚µã‚¤ã‚ºã‚’å–å¾—
 	Vector2D GetBoxSize()const;
 
-	//‘¬“xæ“¾
+	//é€Ÿåº¦å–å¾—
 	Vector2D GetVelocity()const;
 
-	//ƒIƒuƒWƒFƒNƒgƒ^ƒCƒvæ“¾	
+	//ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¿ã‚¤ãƒ—å–å¾—	
 	eObjectType GetObjectType();
 
 	virtual void OnHitCollision(GameObject* hit_object);
 
-	//“–‚½‚è”»’è
+	//å½“ãŸã‚Šåˆ¤å®š
 	bool CheckBoxCollision(GameObject* obj);
 
-	//íœƒtƒ‰ƒO‚ğæ“¾
+	//å‰Šé™¤ãƒ•ãƒ©ã‚°ã‚’å–å¾—
 	bool GetIsDelete() { return is_delete; }
 
 	void SetDelete() { is_delete = true; }
