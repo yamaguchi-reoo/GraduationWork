@@ -153,6 +153,7 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\ObjectList.h" />
     <ClInclude Include="Object\Stage\Block.h" />
     <ClInclude Include="Object\Character\CharacterBase.h" />
     <ClInclude Include="common.h" />

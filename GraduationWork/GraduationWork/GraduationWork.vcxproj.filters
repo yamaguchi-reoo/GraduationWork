@@ -101,5 +101,8 @@
     <ClInclude Include="Object\Stage\Block.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Object\ObjectList.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

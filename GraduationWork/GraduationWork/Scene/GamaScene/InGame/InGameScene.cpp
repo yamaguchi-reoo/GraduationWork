@@ -1,9 +1,13 @@
 #include "InGameScene.h"
 #include "DxLib.h"
 
+#include "../../../Object/ObjectList.h"
+
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <string>
+
 
 InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data()
 {
@@ -56,10 +60,86 @@ eSceneType InGameScene::GetNowSceneType() const
 
 void InGameScene::LoadStage()
 {
+	std::ifstream file("Resource/File/Stage.csv");
+	if (!file)
+	{
+		std::cerr << "ステージファイルを開けませんでした: " << std::endl;
+		return;
+	}
+
+	// 1行目を読み込んでステージ幅と高さを取得
+	std::string line;
+
+	//fileから1行読み込んで、line に格納。
+	if (std::getline(file, line)) {
+		//文字列を解析するためのストリームを作成。
+		std::stringstream ss(line);
+		std::string width, height;
+
+		// カンマで分割して幅と高さを取得
+		std::getline(ss, width, ',');
+		std::getline(ss, height, ',');
+
+		//文字列を整数に変換
+		stage_width_num = std::stoi(width);   // ステージ幅
+		stage_height_num = std::stoi(height); // ステージ高さ
+	}
+
+	stage_data.resize(stage_height_num);
+	for (int i = 0; i < stage_height_num; ++i) {
+		stage_data[i].resize(stage_width_num);
+	}
+
+	//ステージデータの読み込み（CSVの2行目以降）
+	for (int i = 0; i < stage_height_num; i++) {
+		//1行ずつ読み込む
+		if (std::getline(file, line)) {
+			std::stringstream ss(line);
+			for (int j = 0; j < stage_width_num; j++) {
+				//カンマ区切りでデータを取得
+				std::string value;
+				if (std::getline(ss, value, ',')) {
+					//文字列を整数に変換してステージデータに格納
+					stage_data[i][j] = std::stoi(value);
+				}
+			}
+		}
+	}
+
+	file.close();
+
+	SetStage();
+
 }
 
 void InGameScene::SetStage()
 {
+	//1ブロックの大きさ
+	const Vector2D block_size((float)BLOCK_SIZE);
+
+	for (int y = 0; y < stage_height_num; ++y)
+	{
+		for (int x = 0; x < stage_width_num; ++x)
+		{
+			int tile = stage_data[y][x];
+
+			// ワールド座標の計算（左下原点でY座標を反転している例）
+			Vector2D world_pos(x * BLOCK_SIZE, SCREEN_HEIGHT - ((stage_height_num - y) * BLOCK_SIZE));
+
+			switch (tile)
+			{
+			case NONE: 
+				break;
+			case BLOCK: 
+				object_manager.CreateObject<Block>(world_pos, block_size);
+				break;
+			case PLAYER: 
+				object_manager.CreateObject<Player>(world_pos, Vector2D(48.0f, 64.0f));
+				break;
+			}
+		}
+	}
+
 }
 
 void InGameScene::UpdateCamera()

@@ -1,4 +1,5 @@
 #pragma once
+
 enum eObjectType
 {
 	NONE = 0,
