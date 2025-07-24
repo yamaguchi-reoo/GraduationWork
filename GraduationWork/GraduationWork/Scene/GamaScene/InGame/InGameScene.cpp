@@ -5,7 +5,7 @@
 #include <sstream>
 #include <iostream>
 
-InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(), player(nullptr)
+InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data()
 {
 }
 
@@ -22,14 +22,8 @@ void InGameScene::Initialize()
 	LoadStage();
 }
 
-eSceneType InGameScene::Update()
+eSceneType InGameScene::Update( )
 {
-	// 更新処理
-	if (!player)
-	{
-		FindPlayer();
-	}
-
 	object_manager.Update();
 	UpdateCamera(); 
 
@@ -44,8 +38,8 @@ void InGameScene::Draw()
 
 	DrawString(200, 0, "GameMain", GetColor(255, 255, 255));
 
+
 	DrawFormatString(10, 90, GetColor(255,255,255), "Camera Location: (%3f, %3f)", camera_location.x, camera_location.y);
-	DrawFormatString(10, 100, GetColor(255,255,255), "Player Location: (%3f, %3f)", player->GetLocation().x, player->GetLocation().y);
 }
 
 void InGameScene::Finalize()
@@ -70,23 +64,16 @@ void InGameScene::SetStage()
 
 void InGameScene::UpdateCamera()
 {
-	//プレイヤーが存在するならカメラを追従させる
-	if (player)
-	{
-		float screen_half_width = SCREEN_WIDTH / 2;				//画面の半分の幅
-		float stage_limit_left = 0.0f;							//ステージの左端
-		float stage_limit_right = static_cast<float>(100) * BLOCK_SIZE - SCREEN_WIDTH; //ステージの右端 
+	GameObject* player = object_manager.FindObjectType(eObjectType::PLAYER);
+	if (!player) return;
 
-		//カメラ位置 ＝ プレイヤーの位置 - 画面の半分の幅 
-		camera_location.x = player->GetLocation().x - screen_half_width;
+	float screen_half_width = SCREEN_WIDTH / 2.0f;
+	float stage_limit_left = 0.0f;
+	float stage_limit_right = static_cast<float>(100) * BLOCK_SIZE - SCREEN_WIDTH;
 
-		//画面端ではスクロールしないよう制限
-		if (camera_location.x < stage_limit_left) camera_location.x = stage_limit_left;
-		if (camera_location.x > stage_limit_right) camera_location.x = stage_limit_right;
-	}
+	camera_location.x = player->GetLocation().x - screen_half_width;
+
+	if (camera_location.x < stage_limit_left) camera_location.x = stage_limit_left;
+	if (camera_location.x > stage_limit_right) camera_location.x = stage_limit_right;
 }
 
-void InGameScene::FindPlayer()
-{
-	player = object_manager.FindObjectType(PLAYER);
-}

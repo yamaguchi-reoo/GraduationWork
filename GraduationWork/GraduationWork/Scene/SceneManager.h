@@ -7,7 +7,7 @@ class SceneManager
 private:
     SceneBase* current_scene;   //現在シーン情報のポインタ
 
-	FpsControl fps_control;      //フレームレート制御クラス
+	FpsControl fps_control;     //フレームレート制御クラス
 
 public:
     SceneManager();

@@ -45,5 +45,7 @@ public:
 
 
 	GameObject* FindObjectType(eObjectType type);
+
+
 };
 

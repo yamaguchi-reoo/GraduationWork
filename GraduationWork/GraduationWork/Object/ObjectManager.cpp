@@ -29,18 +29,18 @@ void ObjectManager::Update()
         if (obj) obj->Update();
     }
 
-	GameObject* player = FindObjectType(eObjectType::PLAYER);
+	GameObject* player_f = FindObjectType(eObjectType::PLAYER);
 
-    if (player)
+    if (player_f)
     {
         for (auto obj : objects)
         {
-            if (obj && obj != player)
+            if (obj && obj != player_f)
             {
-                if (player->CheckBoxCollision(obj))
+                if (player_f->CheckBoxCollision(obj))
                 {
-                    player->OnHitCollision(obj);
-                    obj->OnHitCollision(player);
+                    player_f->OnHitCollision(obj);
+                    obj->OnHitCollision(player_f);
                 }
             }
         }

@@ -12,9 +12,9 @@ class InGameScene :
 private:
 	int stage_width_num;    //ステージの横のブロック数
 	int stage_height_num;   //ステージの縦のブロック数
-	int stage_data[STAGE_MAX_HEIGHT][STAGE_MAX_WIDTH];
 
-	GameObject* player;	//プレイヤーのポインタ
+	std::vector<std::vector<int>> stage_data; //ステージデータを格納する2次元ベクター
+
 	ObjectManager object_manager; //オブジェクト管理クラス
 public:
 	InGameScene();
@@ -35,8 +35,5 @@ public:
 
 	//カメラの位置を更新
 	void UpdateCamera();
-
-	//プレイヤーを探す
-	void FindPlayer();
 };
 

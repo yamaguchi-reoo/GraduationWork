@@ -30,6 +30,7 @@ void Player::Draw(Vector2D offset, double rate)
 
 #ifdef _DEBUG
 	DrawFormatString(offset.x, offset.y, GetColor(255, 255, 255), "Player");
+	//DrawFormatString(location.x, location.y, GetColor(255, 255, 255), "Player");
 #endif // DEBUG
 
 	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y +box_size.y, GetColor(255, 0, 0), TRUE);
