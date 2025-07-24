@@ -38,12 +38,15 @@ void SceneManager::Initialize()
 
 	//タイトル画面シーンから開始する
 	ChangeScene(eSceneType::GAME_MAIN);
+
+	fps_control.Initialize();
 }
 
 void SceneManager::Update()
 {
 	while (ProcessMessage() != -1)
 	{
+		fps_control.Update(); // フレームレート制御の更新
 
 		// 更新＆描画
 		eSceneType next_scene_type = current_scene->Update();
@@ -71,6 +74,8 @@ void SceneManager::Draw()
 
 	//シーンの描画処理
 	current_scene->Draw();
+
+	fps_control.Draw(); // フレームレート制御の描画
 
 	//裏画面の内容を表画面に反映する
 	ScreenFlip();
