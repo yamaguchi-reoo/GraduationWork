@@ -1,6 +1,11 @@
 #include "SceneManager.h"
 #include "DxLib.h"
+#include <windows.h>
+
 #include "GamaScene/InGame/InGameScene.h"
+
+#include "../common.h"
+#include "../Utility/UtilityList.h"
 
 SceneManager::SceneManager() :current_scene(nullptr)
 {
@@ -13,35 +18,62 @@ SceneManager::~SceneManager()
 
 void SceneManager::Initialize()
 {
+	//ウィンドウモードで起動
+	ChangeWindowMode(TRUE);
+
+	//画面サイズ設定
+	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32); // ウインドウのサイズ
+
+
+	SetWaitVSyncFlag(FALSE); // VSync待ちを無効化（フレームレート制御のため）
+
+	//DXライブラリの初期化
+	if (DxLib_Init() == -1)
+	{
+		throw("DXライブラリが初期化できませんでした\n");
+	}
+
+	//裏画面から描画を始める
+	SetDrawScreen(DX_SCREEN_BACK);
+
+	//タイトル画面シーンから開始する
 	ChangeScene(eSceneType::GAME_MAIN);
 }
 
 void SceneManager::Update()
 {
-	if (current_scene == nullptr) return;
-
-	eSceneType next_scene_type = current_scene->Update();
-	//current_scene->Draw();
-
-	if (next_scene_type != current_scene->GetNowSceneType())
+	while (ProcessMessage() != -1)
 	{
-		ChangeScene(next_scene_type);
+
+		// 更新＆描画
+		eSceneType next_scene_type = current_scene->Update();
+		this->Draw();
+
+		// シーン切り替え
+		if (next_scene_type != current_scene->GetNowSceneType())
+		{
+			ChangeScene(next_scene_type);
+		}
+
 	}
 }
 
 void SceneManager::Finalize()
 {
-	if (current_scene != nullptr)
-	{
-		current_scene->Finalize();
-		delete current_scene;
-		current_scene = nullptr;
-	}
+	//DXライブラリの終了処理
+	DxLib_End();
 }
 
 void SceneManager::Draw()
 {
-	if (current_scene) current_scene->Draw();
+	//画面の初期化
+	ClearDrawScreen();
+
+	//シーンの描画処理
+	current_scene->Draw();
+
+	//裏画面の内容を表画面に反映する
+	ScreenFlip();
 }
 
 void SceneManager::ChangeScene(eSceneType type)

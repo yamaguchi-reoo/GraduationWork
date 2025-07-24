@@ -1,72 +1,44 @@
 #include <DxLib.h>
 #include "Scene/SceneManager.h"
 
-#include "common.h"
-#include "Utility/UtilityList.h"
-#include <string>
-
-
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
-	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32); // ウインドウのサイズ
-	ChangeWindowMode(TRUE);
 
-	if (DxLib_Init() == -1)
+	//ローカル変数定義
+	SceneManager* scene_manager = nullptr;
+	int result = 0;
+
+	try
 	{
-		return -1;
+		//オブジェクトの生成
+		scene_manager = new SceneManager();
+
+		//初期化処理
+		scene_manager->Initialize();
+
+		//更新処理
+		scene_manager->Update();
+
+		//描画処理
+		//scene_manager->Draw();
+
+		//終了時処理
+		scene_manager->Finalize();
 	}
-	SetDrawScreen(DX_SCREEN_BACK);
-
-	SceneManager* manager = nullptr;
-
-	//fps制御
-	FpsControl* FPSC = new FpsControl(FRAMERATE, 800);
-
-	try {
-		manager = new SceneManager();
-
-		manager->Initialize();
-
-		InputManager* input = InputManager::GetInstance();
-
-		while (ProcessMessage() != -1)
-		{
-			//入力情報の更新
-			input->Update();
-
-			//画面の初期化
-			ClearDrawScreen();
-
-			//画面の更新
-			manager->Update();
-
-			//描画処理
-			manager->Draw();
-
-
-			FPSC->All();
-#ifdef _DEBUG
-			FPSC->Disp();
-#endif
-			ScreenFlip();
-		}
-
-	}
-	catch (std::string& error_text)
+	catch (const char* error_log)
 	{
-		OutputDebugString(error_text.c_str());
-
-		return -1;
+		//エラー情報を出力
+		OutputDebugString(error_log);
+		result = -1;
 	}
 
-	//インスタンスの削除
-	InputManager::DeleteInstance();
-	if (manager != nullptr)
+	//シーンマネージャーを生成していたら、削除する
+	if (scene_manager != nullptr)
 	{
-		manager->Finalize();
-		delete manager;
+		delete scene_manager;
+		scene_manager = nullptr;
 	}
 
-	DxLib_End(); // DXライブラリ使用の終了処理
-	return 0; // ソフトの終了
+	//終了処理を通知
+	return result;
 }

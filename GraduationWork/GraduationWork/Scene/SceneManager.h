@@ -22,6 +22,7 @@ private:
 
     //ƒV[ƒ“¶¬ˆ—
     SceneBase* CreateScene(eSceneType type);
+
 };
 
 

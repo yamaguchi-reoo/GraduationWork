@@ -47,7 +47,6 @@ void ObjectManager::Update()
     }
 }
 
-
 void ObjectManager::Draw(Vector2D offset, double rate)
 {
     for (auto obj : objects)
