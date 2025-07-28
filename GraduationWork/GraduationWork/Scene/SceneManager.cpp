@@ -7,12 +7,13 @@
 #include "../common.h"
 #include "../Utility/UtilityList.h"
 
-SceneManager::SceneManager() :current_scene(nullptr)
+SceneManager::SceneManager() :current_scene(nullptr), fps_control()
 {
 }
 
 SceneManager::~SceneManager()
 {
+
 	this->Finalize();
 }
 
@@ -39,14 +40,18 @@ void SceneManager::Initialize()
 	//タイトル画面シーンから開始する
 	ChangeScene(eSceneType::GAME_MAIN);
 
-	fps_control.Initialize();
+	fps_control.Initialize();;
 }
 
 void SceneManager::Update()
 {
+
 	while (ProcessMessage() != -1)
 	{
 		fps_control.Update(); // フレームレート制御の更新
+
+		//入力情報の更新
+		InputManager::GetInstance()->Update();
 
 		// 更新＆描画
 		eSceneType next_scene_type = current_scene->Update();
@@ -58,11 +63,18 @@ void SceneManager::Update()
 			ChangeScene(next_scene_type);
 		}
 
+		if (InputManager::GetInstance()->GetKeyUp(KEY_INPUT_ESCAPE))
+		{
+			break;
+		}
+
 	}
 }
 
 void SceneManager::Finalize()
 {
+	//入力機能のインスタンスを削除
+	InputManager::DeleteInstance();
 	//DXライブラリの終了処理
 	DxLib_End();
 }

@@ -20,5 +20,8 @@ public:
     //“–‚½‚Á‚½Žž‚Ì‹““®
     void OnHitCollision(GameObject* hit_object)override;
 
+    //“ü—Í
+    void HandleInput();
+
 };
 

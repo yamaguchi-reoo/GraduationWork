@@ -22,8 +22,7 @@ void CharacterBase::Update()
 
     // 位置の更新
     location.y += velocity.y;
-
-    // 必要に応じてX方向の移動や摩擦もここに追加
+	location.x += velocity.x; 
 
     __super::Update();
 }

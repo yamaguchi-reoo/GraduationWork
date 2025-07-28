@@ -1,6 +1,7 @@
 #pragma once
 #include "SceneBase.h"
 #include "../Utility/FpsControl.h"
+#include "../Utility/InputManager.h"
 
 class SceneManager
 {
