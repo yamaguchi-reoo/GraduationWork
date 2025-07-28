@@ -9,8 +9,10 @@
 #include <string>
 
 
-InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data()
+InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(),
+tile_set("Resource/Images/Tiles/mainlev_build.png", BLOCK_SIZE, BLOCK_SIZE)
 {
+	tile_set.AddTile(BLOCK, 0, 0, true);
 }
 
 InGameScene::~InGameScene()
@@ -36,14 +38,35 @@ eSceneType InGameScene::Update( )
 
 void InGameScene::Draw()
 {
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 0, 0), TRUE); // 背景を黒く塗りつぶす
 	// 描画処理
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
+
+
+	//// タイルセットでステージ全体を描画
+	//for (int y = 0; y < stage_height_num; ++y) {
+	//	for (int x = 0; x < stage_width_num; ++x) {
+	//		int tile_id = stage_data[y][x];
+	//		Vector2D draw_pos(x * BLOCK_SIZE, SCREEN_HEIGHT - ((stage_height_num - y) * BLOCK_SIZE));
+	//		tile_set.DrawTile(tile_id, (int)draw_pos.x, (int)draw_pos.y);
+	//	}
+	//}
+
+	// タイルのインデックスを全部描画してみるテストコード
+	for (int y = 0; y < 5; y++) {
+		for (int x = 0; x < 5; x++) {
+			tile_set.AddTile(y * 5 + x, x, y, true); // 一意なIDで登録
+			tile_set.DrawTile(y * 5 + x, x * BLOCK_SIZE, y * BLOCK_SIZE); // 画面に並べて描画
+		}
+	}
 
 	DrawString(200, 0, "GameMain", GetColor(255, 255, 255));
 
 
 	DrawFormatString(10, 90, GetColor(255,255,255), "Camera Location: (%3f, %3f)", camera_location.x, camera_location.y);
+
+	
 }
 
 void InGameScene::Finalize()
@@ -108,7 +131,7 @@ void InGameScene::LoadStage()
 
 	file.close();
 
-	SetStage();
+	//SetStage();
 
 }
 

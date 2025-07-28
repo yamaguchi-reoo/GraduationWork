@@ -5,6 +5,8 @@
 #include "../../../Object/ObjectInfo.h"
 #include "../../../Object/ObjectManager.h"
 
+#include "../../../Utility/TileSet.h" 
+
 
 class InGameScene :
     public SceneBase
@@ -16,6 +18,8 @@ private:
 	std::vector<std::vector<int>> stage_data; //ステージデータを格納する2次元ベクター
 
 	ObjectManager object_manager; //オブジェクト管理クラス
+
+	TileSet tile_set; //タイルセット
 public:
 	InGameScene();
 	~InGameScene();
