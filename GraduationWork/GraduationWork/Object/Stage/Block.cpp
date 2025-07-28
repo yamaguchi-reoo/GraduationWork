@@ -18,7 +18,7 @@ void Block::Draw(Vector2D offset, double rate)
 	__super::Draw(offset, rate);
 
 #ifdef _DEBUG
-	DrawFormatString(offset.x, offset.y, GetColor(255, 255, 255), "Block");
+	//DrawFormatString(offset.x, offset.y, GetColor(255, 255, 255), "Block");
 #endif // DEBUG
 
 }

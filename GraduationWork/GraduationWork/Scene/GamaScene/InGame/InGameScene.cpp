@@ -45,8 +45,8 @@ void InGameScene::Draw()
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
 
-	std::vector<int> favorite_tiles = { 0, 5, 12, 25, 31, 45, 62, 78, 89, 105 };
-	tile_set.DrawSelectedTiles(favorite_tiles, 10, 20, 5);
+	/*std::vector<int> favorite_tiles = { 0, 5, 12, 25, 31, 45, 62, 78, 89, 105 };
+	tile_set.DrawSelectedTiles(favorite_tiles, 10, 20, 5);*/
 
 
 	DrawString(200, 0, "GameMain", GetColor(255, 255, 255));
@@ -119,7 +119,7 @@ void InGameScene::LoadStage()
 
 	file.close();
 
-	//SetStage();
+	SetStage();
 
 }
 
