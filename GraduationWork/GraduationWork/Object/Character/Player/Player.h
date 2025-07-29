@@ -40,7 +40,16 @@ public:
 	// プレイヤーの状態の切り替え
     void SwitchState();
 
-
+	// 影状態の更新
 	void UpdateState();
+
+	// UIの描画
+	void DrawUI();
+
+	// 影化ゲージの描画
+    void DrawCircularShadowGauge();
+
+	// 実態のHPゲージを描画
+    void DrawRealHPGauge();
 };
 

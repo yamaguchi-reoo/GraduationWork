@@ -8,6 +8,8 @@ class CharacterBase :
 	public GameObject
 {
 protected:
+	int hp = 0;                // ヒットポイント（任意の値で調整可能）
+
 	bool on_ground = false;           //地面にいるかどうか
 
 	Vector2D velocity = { 0, 0 };     // 移動速度（x, y）
