@@ -50,7 +50,11 @@ void ObjectManager::Draw(Vector2D offset, double rate)
 {
     for (auto obj : objects)
     {
-        if (obj) obj->Draw(obj->GetLocation() - offset, rate);
+        if (obj)
+        {
+            Vector2D draw_location = obj->GetLocation() - offset;
+            obj->Draw(draw_location, rate);
+        }
     }
 }
 

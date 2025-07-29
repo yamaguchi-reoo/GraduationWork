@@ -52,7 +52,7 @@ void InGameScene::Draw()
 	DrawString(200, 0, "GameMain", GetColor(255, 255, 255));
 
 
-	//DrawFormatString(10, 90, GetColor(255,255,255), "Camera Location: (%3f, %3f)", camera_location.x, camera_location.y);
+	DrawFormatString(10, 90, GetColor(255,255,255), "Camera Location: (%3f, %3f)", camera_location.x, camera_location.y);
 
 	
 }
@@ -160,7 +160,7 @@ void InGameScene::UpdateCamera()
 
 	float screen_half_width = SCREEN_WIDTH / 2.0f;
 	float stage_limit_left = 0.0f;
-	float stage_limit_right = static_cast<float>(100) * BLOCK_SIZE - SCREEN_WIDTH;
+	float stage_limit_right = static_cast<float>(stage_width_num) * BLOCK_SIZE - SCREEN_WIDTH;
 
 	camera_location.x = player->GetLocation().x - screen_half_width;
 

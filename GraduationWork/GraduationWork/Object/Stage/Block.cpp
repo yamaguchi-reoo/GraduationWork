@@ -11,6 +11,8 @@ void Block::Initialize(Vector2D _location, Vector2D _box_size)
 
 void Block::Update()
 {
+	__super::Update();
+	// ブロックは特に更新処理はないが、必要ならここに追加
 }
 
 void Block::Draw(Vector2D offset, double rate)

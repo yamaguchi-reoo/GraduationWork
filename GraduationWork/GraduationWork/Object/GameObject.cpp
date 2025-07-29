@@ -42,15 +42,7 @@ void GameObject::Draw(Vector2D offset, double rate)
 	}
 
 #ifdef _DEBUG
-	// ヒットボックスの中心座標
-	Vector2D center = location + hit_box / 2.0f;
-
-	// 左上と右下座標を計算（オフセットは加えない）
-	Vector2D top_left = center - hit_box / 2.0f;
-	Vector2D bottom_right = center + hit_box / 2.0f;
-
-	// 枠線だけ赤色で描画
-	DrawBoxAA(top_left.x, top_left.y, bottom_right.x, bottom_right.y, GetColor(255, 0, 0), FALSE);
+	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
 #endif // _DEBUG
 }
 
