@@ -3,7 +3,7 @@
 #include "../../../Utility/UtilityList.h"
 
 
-Player::Player()
+Player::Player() : state(PlayerState::Real), shadow_gauge(1200.0f), shadow_gauge_max(1200.0f), shadow_consumption(10.0f)
 {
 }
 
@@ -21,6 +21,8 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 void Player::Update()
 {
 	HandleInput();
+	UpdateState(); // 影状態の更新
+
 	__super::Update();
 }
 
@@ -31,10 +33,9 @@ void Player::Draw(Vector2D offset, double rate)
 
 #ifdef _DEBUG
 	DrawFormatString(offset.x, offset.y, GetColor(255, 255, 255), "Player");
-	//DrawFormatString(location.x, location.y, GetColor(255, 255, 255), "Player");
+	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
+	DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 #endif // DEBUG
-
-	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y +box_size.y, GetColor(255, 0, 0), TRUE);
 }
 
 void Player::Finalize()
@@ -63,9 +64,49 @@ void Player::HandleInput()
 		velocity.x = 5.0f; // 任意の速度で調整
 		flip_flg = FALSE; // 右向きに設定
 	}
+	else if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
+	{
+		// Aボタンで状態を切り替え
+		SwitchState();
+	}
 	else
 	{
 		// 停止
 		velocity.x = 0.0f;
 	}
+}
+
+void Player::SwitchState()
+{
+	if (state == PlayerState::Real)
+	{
+		state = PlayerState::Shadow;
+	}
+	else
+	{
+		state = PlayerState::Real;
+	}
+}
+
+void Player::UpdateState()
+{
+	if (state == PlayerState::Shadow)
+	{
+		shadow_gauge -= shadow_consumption; // 影化ゲージを消費
+		if (shadow_gauge < 0.0f)
+		{
+			shadow_gauge = 0.0f; // ゲージが0未満にならないようにする
+
+			state = PlayerState::Real; // ゲージが0になったら実態に戻る
+		}
+	}
+	else
+	{
+		shadow_gauge += shadow_consumption * 0.1f; // ゲージを徐々に回復
+		if (shadow_gauge > shadow_gauge_max)
+		{
+			shadow_gauge = shadow_gauge_max; // 最大値を超えないようにする
+		}
+	}
+
 }

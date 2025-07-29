@@ -1,9 +1,23 @@
 #pragma once
 #include "../CharacterBase.h"
 #include "../../GameObject.h"
+
+enum class PlayerState {
+    Real,   // 実態
+    Shadow  // 影状態
+};
+
 class Player :
     public CharacterBase
 {
+private:
+	PlayerState state; // プレイヤーの状態（実態か影か）
+
+	float shadow_gauge; //影化ゲージ
+	float shadow_gauge_max; //影化ゲージの最大値
+	float shadow_consumption; //影化ゲージの消費量
+
+
 public:
     Player();
     ~Player();
@@ -23,5 +37,10 @@ public:
     //入力
     void HandleInput();
 
+	// プレイヤーの状態の切り替え
+    void SwitchState();
+
+
+	void UpdateState();
 };
 
