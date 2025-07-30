@@ -56,11 +56,18 @@ T Min(T a, T b)
 
 	return result;
 }
+
 template<typename T>
 T Clamp(T value, T min, T max)
 {
 	if (value < min) return min;
 	if (value > max) return max;
 	return value;
+}
+
+template<typename T>
+T Lerp(int a, int b, float t)
+{
+	return static_cast<int>(a + (b - a) * t);
 }
 

@@ -47,9 +47,12 @@ public:
 	void DrawUI();
 
 	// ‰e‰»ƒQ[ƒW‚Ì•`‰æ
-    void DrawCircularShadowGauge();
+    void DrawCircularShadowGauge(int center_x, int center_y, float scale);
 
 	// À‘Ô‚ÌHPƒQ[ƒW‚ğ•`‰æ
-    void DrawRealHPGauge();
+    void DrawRealHPGauge(int center_x, int center_y, float scale);
+
+	// ƒA[ƒN‚Ì•`‰æ
+    void DrawArc(int center_x, int center_y, int inner_radius, int outer_radius, float start_angle, float end_angle, int color);
 };
 

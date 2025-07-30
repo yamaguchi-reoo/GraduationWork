@@ -1,7 +1,12 @@
 #include <DxLib.h>
 #include "Player.h"
 #include "../../../Utility/UtilityList.h"
+#include "../../../common.h"
 
+namespace {
+	constexpr int BASE_RADIUS = 60;
+	constexpr int BASE_THICKNESS = 30;
+}
 
 Player::Player() : state(PlayerState::Real), shadow_gauge(1200.0f), shadow_gauge_max(1200.0f), shadow_consumption(10.0f)
 {
@@ -32,6 +37,16 @@ void Player::Draw(Vector2D offset, double rate)
 {
 	__super::Draw(offset, rate);
 
+	if (state == PlayerState::Real)
+	{
+		// 実態の描画
+		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), TRUE);
+	}
+	else if (state == PlayerState::Shadow)
+	{
+		// 影状態の描画
+		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(180, 80, 255), TRUE);
+	}
 
 	DrawUI();
 
@@ -84,10 +99,15 @@ void Player::SwitchState()
 {
 	if (state == PlayerState::Real)
 	{
-		state = PlayerState::Shadow;
+		// 影状態に移行できる条件
+		if (shadow_gauge >= shadow_consumption * 10.0f)
+		{
+			state = PlayerState::Shadow;
+		}
 	}
-	else
+	else if (state == PlayerState::Shadow)
 	{
+		// 実態に戻る
 		state = PlayerState::Real;
 	}
 }
@@ -96,140 +116,98 @@ void Player::UpdateState()
 {
 	if (state == PlayerState::Shadow)
 	{
-		shadow_gauge -= shadow_consumption; // 影化ゲージを消費
-		if (shadow_gauge < 0.0f)
+		// ゲージを減少
+		shadow_gauge -= shadow_consumption;
+		if (shadow_gauge <= 0.0f)
 		{
-			shadow_gauge = 0.0f; // ゲージが0未満にならないようにする
-
-			state = PlayerState::Real; // ゲージが0になったら実態に戻る
+			shadow_gauge = 0.0f;
+			// ゲージが尽きたので実態に戻す
+			SwitchState();
 		}
 	}
-	else
+	else if (state == PlayerState::Real)
 	{
-		shadow_gauge += shadow_consumption * 0.1f; // ゲージを徐々に回復
+		// 実態時はゲージが自動で回復
+		shadow_gauge += 0.5f; // 回復量は調整可能
 		if (shadow_gauge > shadow_gauge_max)
 		{
-			shadow_gauge = shadow_gauge_max; // 最大値を超えないようにする
+			shadow_gauge = shadow_gauge_max;
 		}
 	}
-
 }
 
 void Player::DrawUI()
 {
-	//if (state == PlayerState::Real)
-	//{
-	//	DrawRealHPGauge(); // 実態のHPゲージを描画
-	//}
-	//else
-	//{
-		DrawCircularShadowGauge(); // 右上に大きく影ゲージ（減少する）
-	//}
+	constexpr int MARGIN = 20;
+	constexpr int RADIUS = 60;
+
+	int center_x = SCREEN_WIDTH - RADIUS - MARGIN;
+	int center_y_top = RADIUS + MARGIN;
+	int center_y_bottom = center_y_top + 80;
+
+	constexpr float LARGE = 1.0f;
+	constexpr float SMALL = 0.5f;
+
+	if (state == PlayerState::Real)
+	{
+		DrawRealHPGauge(center_x, center_y_top, LARGE);
+		DrawCircularShadowGauge(center_x, center_y_bottom, SMALL);
+	}
+	else
+	{
+		DrawCircularShadowGauge(center_x, center_y_top, LARGE);
+		DrawRealHPGauge(center_x, center_y_bottom, SMALL);
+	}
 }
 
-void Player::DrawCircularShadowGauge()
+void Player::DrawCircularShadowGauge(int center_x, int center_y, float scale)
 {
-	const int screen_width = 1280;
-	const int screen_margin = 20;
+	int outer_radius = static_cast<int>(BASE_RADIUS * scale);
+	int inner_radius = outer_radius - static_cast<int>(BASE_THICKNESS * scale);
 
-	const int outer_radius = 60;     // ゲージ外側の半径（拡大）
-	const int thickness = 30;        // 厚みを増してドーナツ内側を小さく
-	const int inner_radius = outer_radius - thickness;
+	float fill_rate = Clamp(shadow_gauge / shadow_gauge_max, 0.0f, 1.0f);
+	float fill_angle = 360.0f * fill_rate;
 
-	// 右上に配置
-	const int center_x = screen_width - outer_radius - screen_margin;
-	const int center_y = outer_radius + screen_margin;
+	DrawArc(center_x, center_y, inner_radius, outer_radius, 0, 360, GetColor(40, 40, 40));        // 背景
+	DrawArc(center_x, center_y, inner_radius, outer_radius, 0, fill_angle, GetColor(180, 80, 255)); // 紫ゲージ
 
-	// ゲージ割合（0.0～1.0）
-	float rate = Clamp(shadow_gauge / shadow_gauge_max, 0.0f, 1.0f);
-	float max_angle = 360.0f * rate;
-
-	// --- 背景リング ---
-	for (float angle = 0.0f; angle < 360.0f; angle += 2.0f)
-	{
-		float rad = DX_PI_F * angle / 180.0f;
-
-		int x1 = static_cast<int>(center_x + cosf(rad) * inner_radius);
-		int y1 = static_cast<int>(center_y + sinf(rad) * inner_radius);
-		int x2 = static_cast<int>(center_x + cosf(rad) * outer_radius);
-		int y2 = static_cast<int>(center_y + sinf(rad) * outer_radius);
-
-		DrawLine(x1, y1, x2, y2, GetColor(40, 40, 40)); // 背景（濃いグレー）
-	}
-
-	// --- ゲージ部分 ---
-	for (float angle = 0.0f; angle < max_angle; angle += 2.0f)
-	{
-		float rad = DX_PI_F * angle / 180.0f;
-
-		int x1 = static_cast<int>(center_x + cosf(rad) * inner_radius);
-		int y1 = static_cast<int>(center_y + sinf(rad) * inner_radius);
-		int x2 = static_cast<int>(center_x + cosf(rad) * outer_radius);
-		int y2 = static_cast<int>(center_y + sinf(rad) * outer_radius);
-
-		DrawLine(x1, y1, x2, y2, GetColor(180, 80, 255)); // 明るめの紫
-	}
-
-	// --- 内側の円（空洞） ---
-	DrawCircleAA(center_x, center_y, inner_radius - 1, 64, GetColor(0, 0, 0), TRUE);
+	DrawCircleAA(center_x, center_y, inner_radius - 1, 64, GetColor(0, 0, 0), TRUE); // 中央空洞
 }
 
-void Player::DrawRealHPGauge()
+void Player::DrawRealHPGauge(int center_x, int center_y, float scale)
 {
-	const int screen_width = 1280;
-	const int screen_margin = 20;
+	constexpr int SECTION_COUNT = 3;
 
-	const int outer_radius = 60;     // ゲージ外側の半径（拡大）
-	const int thickness = 30;        // 厚みを増してドーナツ内側を小さく
-	const int inner_radius = outer_radius - thickness;
-	const float section_angle = 360.0f / 3; // 120度
+	int outer_radius = static_cast<int>(BASE_RADIUS * scale);
+	int inner_radius = outer_radius - static_cast<int>(BASE_THICKNESS * scale);
+	float section_angle = 360.0f / SECTION_COUNT;
 
-	// 右上に配置
-	const int center_x = screen_width - outer_radius - screen_margin;
-	const int center_y = outer_radius + screen_margin;
+	DrawArc(center_x, center_y, inner_radius, outer_radius, 0, 360, GetColor(80, 80, 80)); // 背景
 
-
-	// 背景ドーナツ（薄いグレー）
-	for (float angle = 0; angle < 360.0f; angle += 2.0f)
+	for (int i = 0; i < SECTION_COUNT; ++i)
 	{
-		float rad = DX_PI_F * angle / 180.0f;
-		int x1 = static_cast<int>(center_x + cosf(rad) * inner_radius);
-		int y1 = static_cast<int>(center_y + sinf(rad) * inner_radius);
-		int x2 = static_cast<int>(center_x + cosf(rad) * outer_radius);
-		int y2 = static_cast<int>(center_y + sinf(rad) * outer_radius);
-		DrawLine(x1, y1, x2, y2, GetColor(80, 80, 80));
+		float angle = i * section_angle;
+		DrawArc(center_x, center_y, inner_radius, outer_radius, angle, angle + 0.5f, GetColor(120, 120, 120)); // 区切り線
 	}
 
-	// 区切り線（3分割の境界）
-	for (int i = 0; i < 3; ++i)
-	{
-		float angle_deg = i * section_angle;
-		float rad = DX_PI_F * angle_deg / 180.0f;
-		int x1 = static_cast<int>(center_x + cosf(rad) * inner_radius);
-		int y1 = static_cast<int>(center_y + sinf(rad) * inner_radius);
-		int x2 = static_cast<int>(center_x + cosf(rad) * outer_radius);
-		int y2 = static_cast<int>(center_y + sinf(rad) * outer_radius);
-		DrawLine(x1, y1, x2, y2, GetColor(120, 120, 120));
-	}
-
-	// 塗りつぶし部分（HP分だけ区間を塗る）
 	for (int i = 0; i < hp; ++i)
 	{
 		float start_angle = i * section_angle;
-		float end_angle = start_angle + section_angle;
-
-		for (float angle = start_angle; angle < end_angle; angle += 2.0f)
-		{
-			float rad = DX_PI_F * angle / 180.0f;
-			int x1 = static_cast<int>(center_x + cosf(rad) * inner_radius);
-			int y1 = static_cast<int>(center_y + sinf(rad) * inner_radius);
-			int x2 = static_cast<int>(center_x + cosf(rad) * outer_radius);
-			int y2 = static_cast<int>(center_y + sinf(rad) * outer_radius);
-			DrawLine(x1, y1, x2, y2, GetColor(150, 255, 100)); // 紫系
-		}
+		DrawArc(center_x, center_y, inner_radius, outer_radius, start_angle, start_angle + section_angle, GetColor(150, 255, 100)); // 蛍光緑
 	}
 }
 
-
+void Player::DrawArc(int center_x, int center_y, int inner_radius, int outer_radius, float start_angle, float end_angle, int color)
+{
+	for (float angle = start_angle; angle < end_angle; angle += 2.0f)
+	{
+		float rad = DX_PI_F * angle / 180.0f;
+		int x1 = center_x + cosf(rad) * inner_radius;
+		int y1 = center_y + sinf(rad) * inner_radius;
+		int x2 = center_x + cosf(rad) * outer_radius;
+		int y2 = center_y + sinf(rad) * outer_radius;
+		DrawLine(x1, y1, x2, y2, color);
+	}
+}
 
 
