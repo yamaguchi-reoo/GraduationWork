@@ -11,7 +11,18 @@ class Player :
     public CharacterBase
 {
 private:
+
+    //ジャンプ
+    float jump_velocity;
+    const float jump_strength; 
+
+    //攻撃
+    bool is_attacking;
+    int attack_cooldown;
+    const int attack_cooldown_max;
+
 	PlayerState state; // プレイヤーの状態（実態か影か）
+
 
 	float shadow_gauge; //影化ゲージ
 	float shadow_gauge_max; //影化ゲージの最大値
@@ -34,8 +45,12 @@ public:
     //当たった時の挙動
     void OnHitCollision(GameObject* hit_object)override;
 
+public:
     //入力
     void HandleInput();
+
+    void UpdateJump();
+    void UpdateAttack();
 
 	// プレイヤーの状態の切り替え
     void SwitchState();

@@ -8,7 +8,17 @@ namespace {
 	constexpr int BASE_THICKNESS = 30;
 }
 
-Player::Player() : state(PlayerState::Real), shadow_gauge(1200.0f), shadow_gauge_max(1200.0f), shadow_consumption(10.0f)
+Player::Player() : 
+	state(PlayerState::Real), 
+	shadow_gauge(1200.0f), 
+	shadow_gauge_max(1200.0f), 
+	shadow_consumption(10.0f),
+	jump_velocity(0.0f),
+	jump_strength(15.0f),
+	is_attacking(false),
+	attack_cooldown(0),
+	attack_cooldown_max(20)
+
 {
 }
 
@@ -23,12 +33,15 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	object_type = PLAYER;
 
 	hp = 3;
+
+	is_jumping = false;
 }
 
 void Player::Update()
 {
 	HandleInput();
 	UpdateState(); // 影状態の更新
+	UpdateJump(); // ジャンプの更新
 
 	__super::Update();
 }
@@ -93,6 +106,29 @@ void Player::HandleInput()
 		// 停止
 		velocity.x = 0.0f;
 	}
+
+	if (input->GetButtonDown(XINPUT_BUTTON_A) && !is_jumping && state == PlayerState::Real)
+	{
+		// ジャンプ
+		is_jumping = true;
+		on_ground = false;
+		jump_velocity = -jump_strength; // ジャンプの初速を設定
+	}
+
+
+}
+
+void Player::UpdateJump()
+{
+	if (is_jumping)
+	{
+		velocity.y = jump_velocity;
+		jump_velocity += gravity;
+	}
+}
+
+void Player::UpdateAttack()
+{
 }
 
 void Player::SwitchState()

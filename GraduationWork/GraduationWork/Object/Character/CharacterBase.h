@@ -11,6 +11,8 @@ protected:
 	int hp = 0;                // ヒットポイント（任意の値で調整可能）
 
 	bool on_ground = false;           //地面にいるかどうか
+	bool is_jumping = false;
+
 
 	Vector2D velocity = { 0, 0 };     // 移動速度（x, y）
 	const float gravity = 0.5f;       // 重力加速度（任意の値で調整可能）

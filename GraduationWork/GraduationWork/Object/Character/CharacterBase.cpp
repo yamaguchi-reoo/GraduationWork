@@ -81,6 +81,7 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
 			location.y = other_top - my_size.y;
 			velocity.y = 0;
 			on_ground = true;
+			is_jumping = false; 
 		}
 	}
 	else {
