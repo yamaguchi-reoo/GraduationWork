@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\dxlib;$(IncludePath)</IncludePath>
+    <IncludePath>C:\dxlib;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include\nlohmann;$(IncludePath)</IncludePath>
     <LibraryPath>C:\dxlib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
