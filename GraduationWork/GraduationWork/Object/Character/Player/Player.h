@@ -2,6 +2,8 @@
 #include "../CharacterBase.h"
 #include "../../GameObject.h"
 
+#include "Gauge.h"
+
 enum class PlayerState {
     Real,   // À‘Ô
     Shadow  // ‰eó‘Ô
@@ -24,10 +26,8 @@ private:
 	PlayerState state; // ƒvƒŒƒCƒ„[‚Ìó‘ÔiÀ‘Ô‚©‰e‚©j
 
 
-	float shadow_gauge; //‰e‰»ƒQ[ƒW
-	float shadow_gauge_max; //‰e‰»ƒQ[ƒW‚ÌÅ‘å’l
-	float shadow_consumption; //‰e‰»ƒQ[ƒW‚ÌÁ”ï—Ê
-
+	Gauge shadow_gauge; // ‰e‰»ƒQ[ƒW
+    Gauge hp_gauge; // À‘Ô‚ÌHPƒQ[ƒW
 
 public:
     Player();
@@ -60,14 +60,5 @@ public:
 
 	// UI‚Ì•`‰æ
 	void DrawUI();
-
-	// ‰e‰»ƒQ[ƒW‚Ì•`‰æ
-    void DrawCircularShadowGauge(int center_x, int center_y, float scale);
-
-	// À‘Ô‚ÌHPƒQ[ƒW‚ğ•`‰æ
-    void DrawRealHPGauge(int center_x, int center_y, float scale);
-
-	// ƒA[ƒN‚Ì•`‰æ
-    void DrawArc(int center_x, int center_y, int inner_radius, int outer_radius, float start_angle, float end_angle, int color);
 };
 
