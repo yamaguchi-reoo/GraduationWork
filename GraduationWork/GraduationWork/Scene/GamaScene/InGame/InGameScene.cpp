@@ -1,5 +1,5 @@
 #include "InGameScene.h"
-#include "DxLib.h"
+#include <DxLib.h>
 
 #include "../../../Object/ObjectList.h"
 
