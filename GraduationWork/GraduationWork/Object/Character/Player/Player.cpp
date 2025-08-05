@@ -10,15 +10,13 @@ namespace {
 
 Player::Player() : 
 	state(PlayerState::Real), 
-	shadow_gauge(1200.0f), 
-	shadow_gauge_max(1200.0f), 
-	shadow_consumption(10.0f),
 	jump_velocity(0.0f),
 	jump_strength(15.0f),
 	is_attacking(false),
 	attack_cooldown(0),
-	attack_cooldown_max(20)
-
+	attack_cooldown_max(20),
+	shadow_gauge(),
+	hp_gauge()
 {
 }
 
@@ -32,16 +30,21 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 
 	object_type = PLAYER;
 
-	hp = 3;
+	hp = 2;
 
 	is_jumping = false;
+
+	shadow_gauge.Initialize(GaugeType::CircularFill, 1200, 1200, 0, GetColor(180, 80, 255));
+	hp_gauge.Initialize(GaugeType::CircularSection, 3, hp, 3, GetColor(255, 0, 0));
 }
 
 void Player::Update()
 {
 	HandleInput();
-	UpdateState(); // 影状態の更新
-	UpdateJump(); // ジャンプの更新
+	UpdateState(); 
+	UpdateJump(); 
+
+	hp_gauge.SetValue(hp); 
 
 	__super::Update();
 }
@@ -64,9 +67,9 @@ void Player::Draw(Vector2D offset, double rate)
 	DrawUI();
 
 #ifdef _DEBUG
-	DrawFormatString(offset.x, offset.y, GetColor(255, 255, 255), "Player");
+	DrawFormatStringF(offset.x, offset.y, GetColor(255, 255, 255), "Player");
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
-	DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
+	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 #endif // DEBUG
 }
 
@@ -96,15 +99,18 @@ void Player::HandleInput()
 		velocity.x = 5.0f; // 任意の速度で調整
 		flip_flg = FALSE; // 右向きに設定
 	}
-	else if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
-	{
-		// Aボタンで状態を切り替え
-		SwitchState();
-	}
 	else
 	{
 		// 停止
 		velocity.x = 0.0f;
+	}
+
+	
+	//影状態
+	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
+	{
+		// Aボタンで状態を切り替え
+		SwitchState();
 	}
 
 	if (input->GetButtonDown(XINPUT_BUTTON_A) && !is_jumping && state == PlayerState::Real)
@@ -116,6 +122,14 @@ void Player::HandleInput()
 	}
 
 
+	if(input->GetKeyDown(KEY_INPUT_Z) && state == PlayerState::Real)
+	{
+		hp--;
+		if (hp <= 0)
+		{
+			hp = 0;
+		}
+	}
 }
 
 void Player::UpdateJump()
@@ -135,40 +149,30 @@ void Player::SwitchState()
 {
 	if (state == PlayerState::Real)
 	{
-		// 影状態に移行できる条件
-		if (shadow_gauge >= shadow_consumption * 10.0f)
-		{
-			state = PlayerState::Shadow;
-		}
+		state = PlayerState::Shadow;
 	}
 	else if (state == PlayerState::Shadow)
 	{
-		// 実態に戻る
 		state = PlayerState::Real;
 	}
 }
 
 void Player::UpdateState()
 {
+	// 影状態のときは影ゲージを更新
 	if (state == PlayerState::Shadow)
 	{
-		// ゲージを減少
-		shadow_gauge -= shadow_consumption;
-		if (shadow_gauge <= 0.0f)
+		// 影ゲージを消費
+		shadow_gauge.Update(true);
+		if (shadow_gauge.IsEmpty()) 
 		{
-			shadow_gauge = 0.0f;
-			// ゲージが尽きたので実態に戻す
 			SwitchState();
 		}
 	}
 	else if (state == PlayerState::Real)
 	{
-		// 実態時はゲージが自動で回復
-		shadow_gauge += 0.5f; // 回復量は調整可能
-		if (shadow_gauge > shadow_gauge_max)
-		{
-			shadow_gauge = shadow_gauge_max;
-		}
+		// 実態のときは影ゲージを回復
+		shadow_gauge.Update(false);
 	}
 }
 
@@ -186,64 +190,18 @@ void Player::DrawUI()
 
 	if (state == PlayerState::Real)
 	{
-		DrawRealHPGauge(center_x, center_y_top, LARGE);
-		DrawCircularShadowGauge(center_x, center_y_bottom, SMALL);
+		// HPゲージ（セクション分割）
+		hp_gauge.Draw(center_x, center_y_top, LARGE);
+
+		// 影ゲージ（連続塗りつぶし）
+		shadow_gauge.Draw(center_x, center_y_bottom, SMALL);
 	}
 	else
 	{
-		DrawCircularShadowGauge(center_x, center_y_top, LARGE);
-		DrawRealHPGauge(center_x, center_y_bottom, SMALL);
+		// 影状態のとき影ゲージを大きく表示
+		shadow_gauge.Draw(center_x, center_y_top, LARGE);
+
+		// HPゲージを小さく表示
+		hp_gauge.Draw(center_x, center_y_bottom, SMALL);
 	}
 }
-
-void Player::DrawCircularShadowGauge(int center_x, int center_y, float scale)
-{
-	int outer_radius = static_cast<int>(BASE_RADIUS * scale);
-	int inner_radius = outer_radius - static_cast<int>(BASE_THICKNESS * scale);
-
-	float fill_rate = Clamp(shadow_gauge / shadow_gauge_max, 0.0f, 1.0f);
-	float fill_angle = 360.0f * fill_rate;
-
-	DrawArc(center_x, center_y, inner_radius, outer_radius, 0, 360, GetColor(40, 40, 40));        // 背景
-	DrawArc(center_x, center_y, inner_radius, outer_radius, 0, fill_angle, GetColor(180, 80, 255)); // 紫ゲージ
-
-	DrawCircleAA(center_x, center_y, inner_radius - 1, 64, GetColor(0, 0, 0), TRUE); // 中央空洞
-}
-
-void Player::DrawRealHPGauge(int center_x, int center_y, float scale)
-{
-	constexpr int SECTION_COUNT = 3;
-
-	int outer_radius = static_cast<int>(BASE_RADIUS * scale);
-	int inner_radius = outer_radius - static_cast<int>(BASE_THICKNESS * scale);
-	float section_angle = 360.0f / SECTION_COUNT;
-
-	DrawArc(center_x, center_y, inner_radius, outer_radius, 0, 360, GetColor(80, 80, 80)); // 背景
-
-	for (int i = 0; i < SECTION_COUNT; ++i)
-	{
-		float angle = i * section_angle;
-		DrawArc(center_x, center_y, inner_radius, outer_radius, angle, angle + 0.5f, GetColor(120, 120, 120)); // 区切り線
-	}
-
-	for (int i = 0; i < hp; ++i)
-	{
-		float start_angle = i * section_angle;
-		DrawArc(center_x, center_y, inner_radius, outer_radius, start_angle, start_angle + section_angle, GetColor(150, 255, 100)); // 蛍光緑
-	}
-}
-
-void Player::DrawArc(int center_x, int center_y, int inner_radius, int outer_radius, float start_angle, float end_angle, int color)
-{
-	for (float angle = start_angle; angle < end_angle; angle += 2.0f)
-	{
-		float rad = DX_PI_F * angle / 180.0f;
-		int x1 = center_x + cosf(rad) * inner_radius;
-		int y1 = center_y + sinf(rad) * inner_radius;
-		int x2 = center_x + cosf(rad) * outer_radius;
-		int y2 = center_y + sinf(rad) * outer_radius;
-		DrawLine(x1, y1, x2, y2, color);
-	}
-}
-
-

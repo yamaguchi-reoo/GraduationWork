@@ -1,6 +1,6 @@
 #pragma once
-#include "../GameObject.h"
-#include "../../common.h"
+#include "../../GameObject.h"
+#include "../../../common.h"
 class Block :
     public GameObject
 {

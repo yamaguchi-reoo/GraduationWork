@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\dxlib;$(IncludePath)</IncludePath>
+    <IncludePath>C:\dxlib;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\VS\include\nlohmann;$(IncludePath)</IncludePath>
     <LibraryPath>C:\dxlib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -120,7 +120,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\dxlib;%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\dxlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,7 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Object\Stage\Block.cpp" />
+    <ClCompile Include="Object\Character\Player\Gauge.cpp" />
+    <ClCompile Include="Object\Stage\Block\Block.cpp" />
     <ClCompile Include="Object\Character\CharacterBase.cpp" />
     <ClCompile Include="Object\ObjectManager.cpp" />
     <ClCompile Include="Object\Character\Player\Player.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="Scene\GamaScene\InGame\TitleScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
+    <ClCompile Include="Object\Stage\StageEditor.cpp" />
     <ClCompile Include="Utility\TileSet.cpp" />
     <ClCompile Include="Utility\InputManager.cpp" />
     <ClCompile Include="Utility\FpsControl.cpp" />
@@ -159,8 +161,9 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Character\Player\Gauge.h" />
     <ClInclude Include="Object\ObjectList.h" />
-    <ClInclude Include="Object\Stage\Block.h" />
+    <ClInclude Include="Object\Stage\Block\Block.h" />
     <ClInclude Include="Object\Character\CharacterBase.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="Object\ObjectManager.h" />
@@ -171,6 +174,7 @@
     <ClInclude Include="Object\ObjectType.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneBase.h" />
+    <ClInclude Include="Object\Stage\StageEditor.h" />
     <ClInclude Include="Scene\GamaScene\InGame\TitleScene.h" />
     <ClInclude Include="Utility\TileSet.h" />
     <ClInclude Include="Utility\InputManager.h" />
