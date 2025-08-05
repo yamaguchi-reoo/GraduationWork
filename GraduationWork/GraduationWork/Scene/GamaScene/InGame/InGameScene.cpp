@@ -147,6 +147,9 @@ void InGameScene::SetStage()
 			case PLAYER: 
 				object_manager.CreateObject<Player>(world_pos, Vector2D(48.0f, 64.0f));
 				break;
+			case WALL:
+				object_manager.CreateObject<Wall>(world_pos, Vector2D(48.0f, 48.0f));
+				break;
 			}
 		}
 	}

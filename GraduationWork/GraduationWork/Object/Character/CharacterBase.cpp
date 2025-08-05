@@ -40,8 +40,8 @@ void CharacterBase::Finalize()
 void CharacterBase::OnHitCollision(GameObject* hit_object)
 {
 	// ブロックとのみ処理
-	if (hit_object->GetObjectType() != BLOCK) return;
-
+	if (hit_object->GetObjectType() != BLOCK && hit_object->GetObjectType() != WALL) return;
+	
 	// AABB情報取得（座標は左上基準と仮定）
 	Vector2D my_pos = GetLocation();
 	Vector2D my_size = GetBoxSize();
