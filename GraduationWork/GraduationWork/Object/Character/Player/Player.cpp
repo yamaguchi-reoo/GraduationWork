@@ -42,11 +42,10 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 void Player::Update()
 {
 	HandleInput();
-	UpdateState(); // ‰eó‘Ô‚ÌXV
-	UpdateJump(); // ƒWƒƒƒ“ƒv‚ÌXV
+	UpdateState(); 
+	UpdateJump(); 
 
-	hp_gauge.SetValue(hp);
-	shadow_gauge.SetValue(1200); 
+	hp_gauge.SetValue(hp); 
 
 	__super::Update();
 }
@@ -69,7 +68,7 @@ void Player::Draw(Vector2D offset, double rate)
 	DrawUI();
 
 #ifdef _DEBUG
-	DrawFormatString(offset.x, offset.y, GetColor(255, 255, 255), "Player");
+	DrawFormatStringF(offset.x, offset.y, GetColor(255, 255, 255), "Player");
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 #endif // DEBUG
@@ -121,6 +120,17 @@ void Player::HandleInput()
 	}
 
 
+	if(input->GetKeyDown(KEY_INPUT_Z))
+	{
+		hp--;
+		if (hp <= 0)
+		{
+			hp = 0; // HP‚ª0ˆÈ‰º‚É‚È‚ç‚È‚¢‚æ‚¤‚É§ŒÀ
+			// ƒQ[ƒ€ƒI[ƒo[ˆ—‚È‚Ç‚ð‚±‚±‚É’Ç‰Á‚·‚é‚±‚Æ‚ª‚Å‚«‚Ü‚·
+		}
+	}
+
+
 }
 
 void Player::UpdateJump()
@@ -141,24 +151,29 @@ void Player::SwitchState()
 	if (state == PlayerState::Real)
 	{
 		state = PlayerState::Shadow;
-
 	}
 	else if (state == PlayerState::Shadow)
 	{
-		// ŽÀ‘Ô‚É–ß‚é
 		state = PlayerState::Real;
 	}
 }
 
 void Player::UpdateState()
 {
+	// ‰eó‘Ô‚Ì‚Æ‚«‚Í‰eƒQ[ƒW‚ðXV
 	if (state == PlayerState::Shadow)
 	{
-		// ƒQ[ƒW‚ªs‚«‚½‚Ì‚ÅŽÀ‘Ô‚É–ß‚·
-		//SwitchState();
+		// ‰eƒQ[ƒW‚ðÁ”ï
+		shadow_gauge.Update(true);
+		if (shadow_gauge.IsEmpty()) 
+		{
+			SwitchState();
+		}
 	}
 	else if (state == PlayerState::Real)
 	{
+		// ŽÀ‘Ô‚Ì‚Æ‚«‚Í‰eƒQ[ƒW‚ð‰ñ•œ
+		shadow_gauge.Update(false);
 	}
 }
 
