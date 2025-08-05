@@ -6,6 +6,7 @@ enum eObjectType
 	BLOCK,
 	PLAYER,
 	WALL,
-	LIGHT
+	LIGHT,
+	INVISIBLEFLOOR,
 
 };

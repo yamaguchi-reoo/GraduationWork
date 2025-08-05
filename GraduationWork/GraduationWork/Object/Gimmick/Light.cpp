@@ -16,7 +16,7 @@ void Light::Draw(Vector2D offset, double rate)
 {
 	__super::Draw(offset, rate);
 #ifdef _DEBUG
-		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(0, 255, 255), TRUE);
+		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 255, 0), TRUE);
 #endif // _DEBUG
 }
 
