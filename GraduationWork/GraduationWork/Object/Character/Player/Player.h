@@ -63,5 +63,7 @@ public:
 
 	// ƒvƒŒƒCƒ„[‚Ìó‘Ô‚ğæ“¾
     PlayerState GetPlayerState(){return state;}
+
+    bool IsPlayerShadow() const override { return state == PlayerState::Shadow; }
 };
 
