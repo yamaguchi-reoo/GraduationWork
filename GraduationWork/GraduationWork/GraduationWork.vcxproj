@@ -120,7 +120,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\dxlib;%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\dxlib</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Object\Character\Player\Gauge.cpp" />
     <ClCompile Include="Object\Stage\Block.cpp" />
     <ClCompile Include="Object\Character\CharacterBase.cpp" />
     <ClCompile Include="Object\ObjectManager.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Character\Player\Gauge.h" />
     <ClInclude Include="Object\ObjectList.h" />
     <ClInclude Include="Object\Stage\Block.h" />
     <ClInclude Include="Object\Character\CharacterBase.h" />
