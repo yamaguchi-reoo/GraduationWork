@@ -158,6 +158,7 @@
     <ClCompile Include="Utility\FpsControl.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Utility\Vector2D.cpp" />
+    <ClCompile Include="Object\Gimmick\Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object\Character\Player\Gauge.h" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Utility\UserTemplate.h" />
     <ClInclude Include="Utility\UtilityList.h" />
     <ClInclude Include="Utility\Vector2D.h" />
+    <ClInclude Include="Object\Gimmick\Wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
