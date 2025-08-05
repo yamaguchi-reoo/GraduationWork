@@ -144,7 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Object\Character\Player\Gauge.cpp" />
-    <ClCompile Include="Object\Stage\Block.cpp" />
+    <ClCompile Include="Object\Stage\Block\Block.cpp" />
     <ClCompile Include="Object\Character\CharacterBase.cpp" />
     <ClCompile Include="Object\ObjectManager.cpp" />
     <ClCompile Include="Object\Character\Player\Player.cpp" />
@@ -152,6 +152,7 @@
     <ClCompile Include="Object\GameObject.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
+    <ClCompile Include="Object\Stage\StageEditor.cpp" />
     <ClCompile Include="Utility\TileSet.cpp" />
     <ClCompile Include="Utility\InputManager.cpp" />
     <ClCompile Include="Utility\FpsControl.cpp" />
@@ -161,7 +162,7 @@
   <ItemGroup>
     <ClInclude Include="Object\Character\Player\Gauge.h" />
     <ClInclude Include="Object\ObjectList.h" />
-    <ClInclude Include="Object\Stage\Block.h" />
+    <ClInclude Include="Object\Stage\Block\Block.h" />
     <ClInclude Include="Object\Character\CharacterBase.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="Object\ObjectManager.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="Object\ObjectType.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneBase.h" />
+    <ClInclude Include="Object\Stage\StageEditor.h" />
     <ClInclude Include="Utility\TileSet.h" />
     <ClInclude Include="Utility\InputManager.h" />
     <ClInclude Include="Utility\FpsControl.h" />

@@ -20,7 +20,6 @@ Player::Player() :
 {
 }
 
-
 Player::~Player()
 {
 }
@@ -100,15 +99,18 @@ void Player::HandleInput()
 		velocity.x = 5.0f; // 任意の速度で調整
 		flip_flg = FALSE; // 右向きに設定
 	}
-	else if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
-	{
-		// Aボタンで状態を切り替え
-		SwitchState();
-	}
 	else
 	{
 		// 停止
 		velocity.x = 0.0f;
+	}
+
+	
+	//影状態
+	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
+	{
+		// Aボタンで状態を切り替え
+		SwitchState();
 	}
 
 	if (input->GetButtonDown(XINPUT_BUTTON_A) && !is_jumping && state == PlayerState::Real)
@@ -120,17 +122,14 @@ void Player::HandleInput()
 	}
 
 
-	if(input->GetKeyDown(KEY_INPUT_Z))
+	if(input->GetKeyDown(KEY_INPUT_Z) && state == PlayerState::Real)
 	{
 		hp--;
 		if (hp <= 0)
 		{
-			hp = 0; // HPが0以下にならないように制限
-			// ゲームオーバー処理などをここに追加することができます
+			hp = 0;
 		}
 	}
-
-
 }
 
 void Player::UpdateJump()
