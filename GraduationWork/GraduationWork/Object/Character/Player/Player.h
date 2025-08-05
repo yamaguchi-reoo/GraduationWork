@@ -60,5 +60,8 @@ public:
 
 	// UI‚Ì•`‰æ
 	void DrawUI();
+
+	// ƒvƒŒƒCƒ„[‚Ìó‘Ô‚ğæ“¾
+    PlayerState GetPlayerState(){return state;}
 };
 
