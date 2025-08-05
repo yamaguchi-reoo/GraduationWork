@@ -5,6 +5,7 @@ enum eObjectType
 	NONE = 0,
 	BLOCK,
 	PLAYER,
-	WALL
+	WALL,
+	LIGHT
 
 };
