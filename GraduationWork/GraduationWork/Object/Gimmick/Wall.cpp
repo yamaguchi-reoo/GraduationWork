@@ -22,3 +22,7 @@ void Wall::Finalize()
 {
 	__super::Finalize();
 }
+
+void Wall::OnHitCollision(GameObject* hit_object)
+{
+}
