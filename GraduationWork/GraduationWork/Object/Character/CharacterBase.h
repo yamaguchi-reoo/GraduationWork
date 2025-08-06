@@ -30,6 +30,9 @@ public:
 
 	virtual void OnHitCollision(GameObject* hit_object)override;
 
+	//‰e‚ÌƒvƒŒƒCƒ„[‚©‚Ç‚¤‚©
+	virtual bool IsPlayerShadow() const { return false; }
+
 	bool IsOnGround() const { return on_ground; }
 
 };

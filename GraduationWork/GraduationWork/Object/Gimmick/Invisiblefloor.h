@@ -1,9 +1,8 @@
 #pragma once
 #include "../GameObject.h"
-class Light :
+class Invisiblefloor :
     public GameObject
 {
-public:
 	//‰Šú‰»ˆ—
 	virtual void Initialize(Vector2D _location, Vector2D _box_size) override;
 	//XVˆ—

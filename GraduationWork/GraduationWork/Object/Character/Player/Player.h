@@ -4,6 +4,8 @@
 
 #include "Gauge.h"
 
+//class ObjectManager;
+
 enum class PlayerState {
     Real,   // À‘Ô
     Shadow  // ‰eó‘Ô
@@ -63,5 +65,7 @@ public:
 
 	// ƒvƒŒƒCƒ„[‚Ìó‘Ô‚ğæ“¾
     PlayerState GetPlayerState(){return state;}
+
+    bool IsPlayerShadow() const override { return state == PlayerState::Shadow; }
 };
 

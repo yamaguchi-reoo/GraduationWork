@@ -2,6 +2,8 @@
 #include "../Utility/Vector2D.h"
 #include "ObjectType.h"
 
+class ObjectManager;
+
 class GameObject
 {
 protected:
@@ -17,6 +19,8 @@ protected:
 
 	int hp = 0;
 	bool is_delete = false;
+
+	ObjectManager* object_manager = nullptr; // オブジェクトマネージャーへのポインタ
 public:
 	GameObject();
 	~GameObject();
@@ -56,5 +60,7 @@ public:
 
 	void SetDelete() { is_delete = true; }
 
+	//オブジェクトマネージャーへのポインタを設定
+	void SetObjectManager(ObjectManager* manager) { object_manager = manager; }
 };
 

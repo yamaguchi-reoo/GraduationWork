@@ -39,9 +39,14 @@ void CharacterBase::Finalize()
 
 void CharacterBase::OnHitCollision(GameObject* hit_object)
 {
-	// ブロックとのみ処理
-	if (hit_object->GetObjectType() != BLOCK && hit_object->GetObjectType() != WALL) return;
-	
+	int type = hit_object->GetObjectType();
+
+	// 対象はブロック or 壁
+	if (type != BLOCK && type != WALL) return;
+
+	// 影状態なら「壁」だけはすり抜け
+	if (type == WALL && IsPlayerShadow()) return;
+
 	// AABB情報取得（座標は左上基準と仮定）
 	Vector2D my_pos = GetLocation();
 	Vector2D my_size = GetBoxSize();
