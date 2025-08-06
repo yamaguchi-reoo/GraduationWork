@@ -8,5 +8,6 @@ enum eObjectType
 	WALL,
 	LIGHT,
 	INVISIBLEFLOOR,
+	PUSHBLOCK,
 
 };
