@@ -1,7 +1,9 @@
 #include <DxLib.h>
 #include "Player.h"
+#include "../../ObjectManager.h"
 #include "../../../Utility/UtilityList.h"
 #include "../../../common.h"
+
 
 namespace {
 	constexpr int BASE_RADIUS = 60;
@@ -81,6 +83,17 @@ void Player::Finalize()
 void Player::OnHitCollision(GameObject* hit_object)
 {
 	__super::OnHitCollision(hit_object);
+
+	int type = hit_object->GetObjectType();
+
+	if (type == LIGHT && state == PlayerState::Shadow)
+	{
+		// ‰eó‘Ô‚ÅŒõ‚É“–‚½‚Á‚½‚çíœ—v‹
+		if (object_manager)
+		{
+			object_manager->RequestDeleteObject(this);
+		}
+	}
 }
 
 void Player::HandleInput()
