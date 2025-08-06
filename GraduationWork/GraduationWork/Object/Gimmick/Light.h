@@ -3,6 +3,14 @@
 class Light :
     public GameObject
 {
+private:
+	
+	float angle;
+	float angular_speed = 0.02f;
+	float length;
+	Vector2D pivot;
+
+
 public:
 	//‰Šú‰»ˆ—
 	virtual void Initialize(Vector2D _location, Vector2D _box_size) override;
