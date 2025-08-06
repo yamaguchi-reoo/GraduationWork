@@ -14,7 +14,8 @@ void Wall::Update()
 
 void Wall::Draw(Vector2D offset, double rate)
 {
-	__super::Draw(offset, rate);
+	Vector2D screen_pos = location - offset;
+	__super::Draw(screen_pos, rate);
 }
 
 

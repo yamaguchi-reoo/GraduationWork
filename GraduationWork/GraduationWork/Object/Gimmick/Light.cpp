@@ -30,10 +30,10 @@ void Light::Update()
 
 void Light::Draw(Vector2D offset, double rate)
 {
-	__super::Draw(offset, rate);
-
+	Vector2D screen_pos = location - offset;
+	__super::Draw(screen_pos, rate);
 #ifdef _DEBUG
-		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 255, 0), TRUE);
+		DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 255, 0), TRUE);
 #endif // _DEBUG
 }
 
