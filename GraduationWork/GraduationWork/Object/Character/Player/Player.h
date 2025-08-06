@@ -4,6 +4,8 @@
 
 #include "Gauge.h"
 
+//class ObjectManager;
+
 enum class PlayerState {
     Real,   // À‘Ô
     Shadow  // ‰eó‘Ô

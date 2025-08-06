@@ -44,6 +44,13 @@ void ObjectManager::Update()
             }
         }
     }
+
+    //Updateå„Ç…çÌèúÇé¿çs
+    for (auto obj : delete_objects)
+    {
+        DeleteObject(obj);
+    }
+    delete_objects.clear();
 }
 
 void ObjectManager::Draw(Vector2D offset, double rate)
@@ -74,6 +81,13 @@ void ObjectManager::Finalize()
         }
     }
     objects.clear();
+}
+
+void ObjectManager::RequestDeleteObject(GameObject* obj)
+{
+    if (obj && std::find(delete_objects.begin(), delete_objects.end(), obj) == delete_objects.end()) {
+        delete_objects.push_back(obj);
+    }
 }
 
 void ObjectManager::DeleteObject(GameObject* obj)

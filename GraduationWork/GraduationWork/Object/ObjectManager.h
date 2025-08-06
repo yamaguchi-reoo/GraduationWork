@@ -8,6 +8,9 @@ class ObjectManager
 private:
 	std::vector<GameObject*> objects;
 
+	// オブジェクトの削除用
+	std::vector<GameObject*> delete_objects;
+
 public:
     ObjectManager();
     ~ObjectManager();
@@ -16,6 +19,9 @@ public:
     void Update();
     void Draw(Vector2D offset, double rate);
     void Finalize();
+
+	//予約しているオブジェクトを削除
+	void RequestDeleteObject(GameObject* obj);
 
     void DeleteObject(GameObject* obj);
 
@@ -37,6 +43,7 @@ public:
 
 		new_object->Initialize(_location, _box_size);
 
+		new_object->SetObjectManager(this);
 		objects.push_back(new_object);
 
 		//生成したインスタンスを返す
