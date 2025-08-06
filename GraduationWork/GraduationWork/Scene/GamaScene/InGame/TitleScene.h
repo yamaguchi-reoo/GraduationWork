@@ -9,7 +9,6 @@ private:
 		HELP,
 		END
 	};
-	int select;
 
 	int MENU_COUNT;
 	int cursorIndex;
@@ -18,7 +17,7 @@ public:
 
 	TitleScene();
 	virtual ~TitleScene();
-	void Title_Input();
+	eSceneType Title_Select();
 	eSceneType GetNowSceneType()const override;
 	eSceneType Update() override;	//XVˆ—
 	virtual void Draw()  override;

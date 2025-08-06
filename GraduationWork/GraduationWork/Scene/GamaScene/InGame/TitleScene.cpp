@@ -21,15 +21,29 @@ eSceneType TitleScene::GetNowSceneType() const
 eSceneType TitleScene::Update()
 {
 
-    return eSceneType::TITLE;
+    return Title_Select();
 }
 
 void TitleScene::Draw()
 {
 	DrawString(0, 0, "Title", GetColor(255, 255, 255));
+
+    const char* menu[] = { "Start", "Option", "Exit" };
+
+    for (int i = 0; i < MENU_COUNT; i++)
+    {
+        if (i == cursorIndex)
+        {
+            DrawFormatString(100, 100 + i * 40, GetColor(255, 255, 0), "¨ %s", menu[i]);
+        }
+        else
+        {
+            DrawFormatString(120, 100 + i * 40, GetColor(255, 255, 255), "%s", menu[i]);
+        }
+    }
 }
 
-void TitleScene::Title_Input()
+eSceneType TitleScene::Title_Select()
 {
 
     InputManager* input = InputManager::GetInstance();
@@ -53,17 +67,17 @@ void TitleScene::Title_Input()
         switch (cursorIndex)
         {
         case 0:
-            // Start
-            eSceneType::GAME_MAIN;
+            // START
+            return eSceneType::GAME_MAIN;
             break;
-        //case 1:
-        //    // Option
+        case 1:
+        //    // HELP
         //    ChangeSceneToOption();
         //    break;
-        //case 2:
-        //    // END
-        //    ExitGame();
-        //    break;
+        case 2:
+            // END
+            DxLib_End();
+            break;
         }
     }
 }
