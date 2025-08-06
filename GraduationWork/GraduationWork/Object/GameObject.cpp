@@ -32,7 +32,7 @@ void GameObject::Update()
 void GameObject::Draw(Vector2D offset, double rate)
 {
 	// •`‰æ”ÍˆÍ‚Ì”»’è
-	Vector2D screen_pos = location + offset;
+	Vector2D screen_pos = location - offset;
 	if (screen_pos.x + box_size.x >= 0 && screen_pos.x < SCREEN_WIDTH)
 	{
 		//if (image == NULL) return; // ‰æ‘œ‚ªÝ’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Í•`‰æ‚µ‚È‚¢
