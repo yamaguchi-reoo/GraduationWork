@@ -28,22 +28,41 @@ void ObjectManager::Update()
         if (obj) obj->Update();
     }
 
-	GameObject* player_f = FindObjectType(eObjectType::PLAYER);
+	//GameObject* player_f = FindObjectType(eObjectType::PLAYER);
 
-    if (player_f)
+ //   if (player_f)
+ //   {
+ //       for (auto obj : objects)
+ //       {
+ //           if (obj && obj != player_f)
+ //           {
+ //               if (player_f->CheckBoxCollision(obj))
+ //               {
+ //                   player_f->OnHitCollision(obj);
+ //                   obj->OnHitCollision(player_f);
+ //               }
+ //           }
+ //       }
+ //   }
+
+     // 全オブジェクト同士の衝突判定（重複チェック回避のため片側ループ）
+    for (size_t i = 0; i < objects.size(); ++i)
     {
-        for (auto obj : objects)
+        for (size_t j = i + 1; j < objects.size(); ++j)
         {
-            if (obj && obj != player_f)
+            auto obj_a = objects[i];
+            auto obj_b = objects[j];
+            if (obj_a && obj_b)
             {
-                if (player_f->CheckBoxCollision(obj))
+                if (obj_a->CheckBoxCollision(obj_b))
                 {
-                    player_f->OnHitCollision(obj);
-                    obj->OnHitCollision(player_f);
+                    obj_a->OnHitCollision(obj_b);
+                    obj_b->OnHitCollision(obj_a);
                 }
             }
         }
     }
+
 
     //Update後に削除を実行
     for (auto obj : delete_objects)

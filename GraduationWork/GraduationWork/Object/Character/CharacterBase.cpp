@@ -1,4 +1,5 @@
 #include "CharacterBase.h"
+#include "../Gimmick/PushBlock.h"
 
 void CharacterBase::Initialize(Vector2D _location, Vector2D _box_size)
 {
@@ -43,7 +44,7 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
 	int type = hit_object->GetObjectType();
 
 	// 対象はブロック or 壁
-	if (type != BLOCK && type != WALL) return;
+	if (type != BLOCK && type != WALL && type != PUSHBLOCK) return;
 
 	// 影状態なら「壁」だけはすり抜け
 	if (type == WALL && IsPlayerShadow()) return;
@@ -96,11 +97,28 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
 			// 左からぶつかった
 			location.x = other_right;
 			velocity.x = 0;
+
+			// 押せるブロックだったら押す
+			if (type == PUSHBLOCK) {
+				PushBlock* pb = dynamic_cast<PushBlock*>(hit_object);
+				if (pb)
+				{
+					pb->StartMove(Vector2D(-1.0f, 0.0f)); 
+				}
+			}
 		}
 		else {
 			// 右からぶつかった
 			location.x = other_left - my_size.x;
 			velocity.x = 0;
+
+			if (type == PUSHBLOCK) {
+				PushBlock* pb = dynamic_cast<PushBlock*>(hit_object);
+				if (pb)
+				{
+					pb->StartMove(Vector2D(1.0f, 0.0f));
+				}
+			}
 		}
 	}
 }
