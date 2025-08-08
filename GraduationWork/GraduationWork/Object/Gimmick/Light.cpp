@@ -19,17 +19,17 @@ void Light::Update()
 	__super::Update();
 
 	angle += angular_speed;
-	if (angle > 0.52f || angle < -0.52f)
-		angular_speed *= -1;
+	if (angle > 0.52f || angle < -0.52f) angular_speed *= -1;
 
-	// 回転後の柱の中心座標を計算
 	float halfLength = length / 2.0f;
-	float dx = sin(angle) * halfLength;
-	float dy = cos(angle) * halfLength;
 
-	// locationは柱の左上。中心から左上にずらす
-	location.x = pivot.x + dx - box_size.x / 2;
-	location.y = pivot.y + dy - box_size.y / 2;
+	// 描画と当たり判定の中心となる位置（柱の中心）
+	location.x = pivot.x + halfLength * sin(angle) - box_size.x / 2;
+	location.y = pivot.y + halfLength * cos(angle) - box_size.y / 2;
+
+	// ↓下端の当たり判定のための位置を更新
+	hit_box.x = pivot.x + length * sin(angle) - hit_box.x / 2;
+	hit_box.y = pivot.y + length * cos(angle) - hit_box.y / 2;
 }
 
 void Light::Draw(Vector2D offset, double rate)
