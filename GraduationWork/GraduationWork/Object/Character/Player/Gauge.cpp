@@ -20,7 +20,13 @@ void Gauge::Initialize(GaugeType _type, int max, int current, int sections, unsi
     color = col;
 
     consumption = 1.5f; 
-    recovery = 1.0f;    
+    recovery = 1.0f;   
+
+    shadow_anim_elapsed = 0.0f;
+    shadow_frame = 0;
+
+    LoadDivGraph("ANIM_‰eƒQ[ƒW.png", 8, 8, 1, 160, 160, shadow_anim);
+
 }
 
 void Gauge::SetValue(int value)
@@ -76,6 +82,11 @@ void Gauge::DrawCircularFill(int cx, int cy, float scale) const
     DrawArc(cx, cy, inner, outer, 0, 360, GetColor(40, 40, 40)); // ”wŒi
     DrawArc(cx, cy, inner, outer, -150, -150 + fill_angle, color);          // –{‘Ì
     DrawCircleAA(cx, cy, inner - 1, 64, GetColor(0, 0, 0), TRUE); // ’†‰›‚ð‹ó“´‚É
+
+    // --- ‰eƒAƒjƒ[ƒVƒ‡ƒ“‚Ì•`‰æií‚É•\Ž¦‚·‚éê‡j ---
+    if (shadow_anim[shadow_frame] != -1) {
+        DrawRotaGraph(cx, cy, scale, 0.0, shadow_anim[shadow_frame], TRUE);
+    }
 }
 
 void Gauge::DrawCircularSection(int cx, int cy, float scale) const
@@ -108,5 +119,18 @@ void Gauge::DrawArc(int cx, int cy, int r1, int r2, float deg_start, float deg_e
         int x2 = cx + cosf(rad) * r2;
         int y2 = cy + sinf(rad) * r2;
         DrawLine(x1, y1, x2, y2, col);
+    }
+}
+
+void Gauge::UpdateShadowAnimation(float delta)
+{
+    shadow_anim_elapsed += delta;
+
+    const float frame_interval = 1.0f / 12.0f; // 12fps‚Ì‰ÎƒAƒjƒ
+
+    if (shadow_anim_elapsed >= frame_interval)
+    {
+        shadow_frame = (shadow_frame + 1) % 8;
+        shadow_anim_elapsed -= frame_interval;
     }
 }

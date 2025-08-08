@@ -22,6 +22,11 @@ private:
     static constexpr int BASE_RADIUS = 60;     // ƒQ[ƒW‚ÌŠî–{”¼Œa
     static constexpr int BASE_THICKNESS = 30;  // ƒQ[ƒW‚ÌŠî–{Œú‚İ
 
+    float shadow_anim_elapsed;  // Œo‰ßŠÔ
+    int shadow_frame;
+    int shadow_anim[8];
+
+
 public:
     Gauge();
 
@@ -49,5 +54,7 @@ private:
 
 	// ‰~ŒÊ‚Ì•`‰æ
     void DrawArc(int cx, int cy, int inner_r, int outer_r, float start_deg, float end_deg, int col) const;
+
+    void UpdateShadowAnimation(float delta);
 };
 
