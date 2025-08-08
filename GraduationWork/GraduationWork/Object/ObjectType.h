@@ -8,5 +8,5 @@ enum eObjectType
 	WALL,
 	LIGHT,
 	INVISIBLEFLOOR,
-
+	ENEMY,
 };

@@ -45,6 +45,26 @@ void ObjectManager::Update()
         }
     }
 
+    GameObject* enemy_f = FindObjectType(eObjectType::ENEMY);
+
+    if (enemy_f)
+    {
+        for (auto obj : objects)
+        {
+            if (obj && obj != enemy_f)
+            {
+                if (enemy_f->CheckBoxCollision(obj))
+                {
+                    enemy_f->OnHitCollision(obj);
+                    obj->OnHitCollision(enemy_f);
+                }
+            }
+        }
+    }
+
+
+
+
     //UpdateŒã‚Éíœ‚ğÀs
     for (auto obj : delete_objects)
     {
