@@ -4,11 +4,16 @@
 
 #include "Gauge.h"
 
-//class ObjectManager;
-
 enum class PlayerState {
     Real,   // 実態
     Shadow  // 影状態
+};
+
+struct AttackHitBox
+{
+    Vector2D position;
+    Vector2D size;
+    int frame; // フレーム数
 };
 
 class Player :
@@ -31,6 +36,8 @@ private:
 	Gauge shadow_gauge; // 影化ゲージ
     Gauge hp_gauge; // 実態のHPゲージ
 
+	//攻撃のヒットボックス
+    std::vector<AttackHitBox> attack_hitboxes;
 public:
     Player();
     ~Player();

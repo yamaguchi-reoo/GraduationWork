@@ -1,18 +1,19 @@
-#include "Invisiblefloor.h"
+#include "PushBlock.h"
 #include "DxLib.h"
 
-void Invisiblefloor::Initialize(Vector2D _location, Vector2D _box_size)
+
+void PushBlock::Initialize(Vector2D _location, Vector2D _box_size)
 {
-	object_type = INVISIBLEFLOOR;
+	object_type = PUSHBLOCK;
 	__super::Initialize(_location, _box_size);
 }
 
-void Invisiblefloor::Update()
+void PushBlock::Update()
 {
 	__super::Update();
 }
 
-void Invisiblefloor::Draw(Vector2D offset, double rate)
+void PushBlock::Draw(Vector2D offset, double rate)
 {
 	Vector2D screen_pos = location - offset;
 	__super::Draw(screen_pos, rate);
@@ -21,11 +22,11 @@ void Invisiblefloor::Draw(Vector2D offset, double rate)
 #endif // _DEBUG
 }
 
-void Invisiblefloor::Finalize()
+void PushBlock::Finalize()
 {
 	__super::Finalize();
 }
 
-void Invisiblefloor::OnHitCollision(GameObject* hit_object)
+void PushBlock::OnHitCollision(GameObject* hit_object)
 {
 }

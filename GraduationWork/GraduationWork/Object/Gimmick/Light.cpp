@@ -1,22 +1,55 @@
 #include "Light.h"
 #include "DxLib.h"
+#include <cmath>
 
 void Light::Initialize(Vector2D _location, Vector2D _box_size)
 {
 	object_type = LIGHT;
 	__super::Initialize(_location, _box_size);
+
+    pivot = { _location.x + _box_size.x / 2, _location.y }; // 柱の上端中央
+
+	length = _box_size.y;
+	angle = 0.0f;
+	angular_speed = 0.02f;
 }
 
 void Light::Update()
 {
 	__super::Update();
+
+	angle += angular_speed;
+	if (angle > 0.52f || angle < -0.52f)
+		angular_speed *= -1;
+
+	// 回転後の柱の中心座標を計算
+	float halfLength = length / 2.0f;
+	float dx = sin(angle) * halfLength;
+	float dy = cos(angle) * halfLength;
+
+	// locationは柱の左上。中心から左上にずらす
+	location.x = pivot.x + dx - box_size.x / 2;
+	location.y = pivot.y + dy - box_size.y / 2;
 }
 
 void Light::Draw(Vector2D offset, double rate)
 {
-	__super::Draw(offset, rate);
+	Vector2D screen_pos = location - offset;
+	__super::Draw(screen_pos, rate);
+	// 支点のスクリーン座標
+	float px = pivot.x - offset.x;
+	float py = pivot.y - offset.y;
+
+	// 柱の下端の位置（lengthだけ回転方向に延ばす）
+	float dx = sin(angle) * length;
+	float dy = cos(angle) * length;
+
+	float ex = px + dx;
+	float ey = py + dy;
+
+	DrawLine(px, py, ex, ey, GetColor(255, 255, 0), 5); // 太めの線で柱表現
 #ifdef _DEBUG
-		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 255, 0), TRUE);
+		//DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 255, 0), TRUE);
 #endif // _DEBUG
 }
 

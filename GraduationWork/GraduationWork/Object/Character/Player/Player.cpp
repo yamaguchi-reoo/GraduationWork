@@ -4,6 +4,8 @@
 #include "../../../Utility/UtilityList.h"
 #include "../../../common.h"
 
+#include <algorithm>
+
 
 namespace {
 	constexpr int BASE_RADIUS = 60;
@@ -18,7 +20,8 @@ Player::Player() :
 	attack_cooldown(0),
 	attack_cooldown_max(20),
 	shadow_gauge(),
-	hp_gauge()
+	hp_gauge(),
+	attack_hitboxes()
 {
 }
 
@@ -45,6 +48,7 @@ void Player::Update()
 	HandleInput();
 	UpdateState(); 
 	UpdateJump(); 
+	UpdateAttack();
 
 	hp_gauge.SetValue(hp); 
 
@@ -53,26 +57,38 @@ void Player::Update()
 
 void Player::Draw(Vector2D offset, double rate)
 {
+
+	Vector2D screen_pos = location - offset;
 	__super::Draw(offset, rate);
 
 	if (state == PlayerState::Real)
 	{
 		// 実態の描画
-		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), TRUE);
+		DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 0), TRUE);
 	}
 	else if (state == PlayerState::Shadow)
 	{
 		// 影状態の描画
-		DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(180, 80, 255), TRUE);
+		DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), TRUE);
 	}
 
 	DrawUI();
 
 #ifdef _DEBUG
-	DrawFormatStringF(offset.x, offset.y, GetColor(255, 255, 255), "Player");
+	DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Player");
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
+
+	for (const auto& hitbox : attack_hitboxes)
+	{
+		Vector2D draw_pos = hitbox.position - offset;
+		DrawBoxAA(draw_pos.x, draw_pos.y, draw_pos.x + hitbox.size.x, draw_pos.y + hitbox.size.y, GetColor(255, 255, 0), TRUE);
+	}
+
+	// Playerの位置
+	DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.2f, %.2f)", location.x, location.y);
 #endif // DEBUG
+
 }
 
 void Player::Finalize()
@@ -88,7 +104,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	if (type == LIGHT && state == PlayerState::Shadow)
 	{
-		// 影状態で光に当たったら削除要求
+		// 影状態で光に当たったら削除
 		if (object_manager)
 		{
 			object_manager->RequestDeleteObject(this);
@@ -141,6 +157,40 @@ void Player::HandleInput()
 		if (hp <= 0)
 		{
 			hp = 0;
+			if (object_manager)
+			{
+				object_manager->RequestDeleteObject(this); // HPが0になったら削除要求
+			}
+		}
+	}
+
+	if (input->GetButtonDown(XINPUT_BUTTON_B))
+	{
+		if (!is_attacking && attack_cooldown <= 0)
+		{
+			is_attacking = true;
+			attack_cooldown = attack_cooldown_max; // 攻撃クールダウンを設定
+
+
+			// 攻撃のヒットボックスを追加
+			AttackHitBox hitbox;
+
+			hitbox.frame = 0;
+			hitbox.size = Vector2D(70, 70); // サイズ設定
+
+			// 向きによって出す位置を変更
+			if (flip_flg) {
+				// 左向き
+				hitbox.position.x = location.x - hitbox.size.x;
+			}
+			else {
+				// 右向き
+				hitbox.position.x = location.x + box_size.x;
+			}
+
+			// Y座標はプレイヤーの中央に合わせる
+			hitbox.position.y = location.y + (box_size.y / 2) - (hitbox.size.y / 2);
+			attack_hitboxes.push_back(hitbox);
 		}
 	}
 }
@@ -156,7 +206,42 @@ void Player::UpdateJump()
 
 void Player::UpdateAttack()
 {
+	if (attack_cooldown > 0)
+	{
+		attack_cooldown--;
+	}
+
+	// 攻撃ヒットボックスの位置更新
+	for (auto& hitbox : attack_hitboxes)
+	{
+		hitbox.frame++;
+
+		// プレイヤーの位置に追従させる
+		if (flip_flg)
+		{
+			hitbox.position.x = location.x - hitbox.size.x;
+		}
+		else
+		{
+			hitbox.position.x = location.x + box_size.x;
+		}
+		hitbox.position.y = location.y + (box_size.y / 2) - (hitbox.size.y / 2);
+	}
+
+	// frame > 5 のものを削除
+	attack_hitboxes.erase(
+		std::remove_if(attack_hitboxes.begin(), attack_hitboxes.end(),
+			[](const AttackHitBox& h) { return h.frame > 10; }),
+		attack_hitboxes.end()
+	);
+
+	// 攻撃判定がなくなったら攻撃状態を解除して再度攻撃できるようにする
+	if (attack_hitboxes.empty())
+	{
+		is_attacking = false;
+	}
 }
+
 
 void Player::SwitchState()
 {

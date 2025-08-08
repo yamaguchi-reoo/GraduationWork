@@ -156,6 +156,9 @@ void InGameScene::SetStage()
 			case INVISIBLEFLOOR:
 				object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
 				break;
+			case PUSHBLOCK:
+				object_manager.CreateObject<PushBlock>(world_pos, Vector2D(48.0f, 48.0f));
+				break;
 			case ENEMY:
 				object_manager.CreateObject<Enemy>(world_pos, Vector2D(48.0f, 64.0f));
 				break;

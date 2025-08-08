@@ -151,8 +151,10 @@
     <ClCompile Include="Object\Character\CharacterBase.cpp" />
     <ClCompile Include="Object\ObjectManager.cpp" />
     <ClCompile Include="Object\Character\Player\Player.cpp" />
+    <ClCompile Include="Object\Gimmick\PushBlock.cpp" />
     <ClCompile Include="Scene\GamaScene\InGame\InGameScene.cpp" />
     <ClCompile Include="Object\GameObject.cpp" />
+    <ClCompile Include="Scene\GamaScene\InGame\TitleScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Object\Stage\StageEditor.cpp" />
@@ -175,12 +177,14 @@
     <ClInclude Include="Object\ObjectManager.h" />
     <ClInclude Include="Object\ObjectInfo.h" />
     <ClInclude Include="Object\Character\Player\Player.h" />
+    <ClInclude Include="Object\Gimmick\PushBlock.h" />
     <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
     <ClInclude Include="Object\GameObject.h" />
     <ClInclude Include="Object\ObjectType.h" />
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneBase.h" />
     <ClInclude Include="Object\Stage\StageEditor.h" />
+    <ClInclude Include="Scene\GamaScene\InGame\TitleScene.h" />
     <ClInclude Include="Utility\TileSet.h" />
     <ClInclude Include="Utility\InputManager.h" />
     <ClInclude Include="Utility\FpsControl.h" />

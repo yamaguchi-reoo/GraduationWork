@@ -5,4 +5,5 @@
 #include "Gimmick/Wall.h"
 #include "Gimmick/Light.h"
 #include "Gimmick/Invisiblefloor.h"
+#include "Gimmick/PushBlock.h"
 #include "Character/Enemy/Enemy.h"
