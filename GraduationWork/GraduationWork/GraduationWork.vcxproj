@@ -153,6 +153,7 @@
     <ClCompile Include="Object\Gimmick\PushBlock.cpp" />
     <ClCompile Include="Scene\GamaScene\InGame\InGameScene.cpp" />
     <ClCompile Include="Object\GameObject.cpp" />
+    <ClCompile Include="Scene\GamaScene\InGame\TitleScene.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
     <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Object\Stage\StageEditor.cpp" />
@@ -181,6 +182,7 @@
     <ClInclude Include="Scene\SceneManager.h" />
     <ClInclude Include="Scene\SceneBase.h" />
     <ClInclude Include="Object\Stage\StageEditor.h" />
+    <ClInclude Include="Scene\GamaScene\InGame\TitleScene.h" />
     <ClInclude Include="Utility\TileSet.h" />
     <ClInclude Include="Utility\InputManager.h" />
     <ClInclude Include="Utility\FpsControl.h" />

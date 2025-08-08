@@ -74,7 +74,7 @@ void Gauge::DrawCircularFill(int cx, int cy, float scale) const
 
 
     DrawArc(cx, cy, inner, outer, 0, 360, GetColor(40, 40, 40)); // 背景
-    DrawArc(cx, cy, inner, outer, 0, fill_angle, color);         // 本体
+    DrawArc(cx, cy, inner, outer, -150, -150 + fill_angle, color);          // 本体
     DrawCircleAA(cx, cy, inner - 1, 64, GetColor(0, 0, 0), TRUE); // 中央を空洞に
 }
 
@@ -94,7 +94,7 @@ void Gauge::DrawCircularSection(int cx, int cy, float scale) const
 
     for (int i = 0; i < current_value; ++i) {
         float start = i * angle_per;
-        DrawArc(cx, cy, inner, outer, start, start + angle_per, color); // 実際のセクション
+        DrawArc(cx, cy, inner, outer, start - 150, start - 150 + angle_per, color); // 実際のセクション
     }
 }
 
