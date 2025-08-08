@@ -7,3 +7,4 @@
 #include "Gimmick/Invisiblefloor.h"
 #include "Gimmick/PushBlock.h"
 #include "Character/Enemy/Enemy.h"
+#include "Character/Enemy/RealEnemy.h"

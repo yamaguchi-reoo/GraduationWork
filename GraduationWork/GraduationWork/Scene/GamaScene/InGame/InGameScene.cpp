@@ -162,6 +162,9 @@ void InGameScene::SetStage()
 			case ENEMY:
 				object_manager.CreateObject<Enemy>(world_pos, Vector2D(48.0f, 64.0f));
 				break;
+			case REALENEMY:
+				object_manager.CreateObject<RealEnemy>(world_pos, Vector2D(48.0f, 64.0f));
+				break;
 			}
 		}
 	}

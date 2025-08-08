@@ -42,6 +42,7 @@ void Enemy::Update()
 
 void Enemy::Draw(Vector2D offset, double rate)
 {
+    Vector2D screen_pos = location - offset;
 
     __super::Draw(offset, rate);
 
@@ -49,13 +50,12 @@ void Enemy::Draw(Vector2D offset, double rate)
 
     // ìGÉLÉÉÉâñ{ëÃÇÃï`âÊ
     DrawBoxAA(
-        offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y,
+        screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y,
         GetColor(0, 255, 0), // óŒêFÇÃìG
         TRUE
     );
 
 #ifdef _DEBUG
-    DrawFormatStringF(offset.x, offset.y, GetColor(255, 255, 255), "Enemy");
     DrawFormatStringF(location.x + offset.x, location.y + offset.y - 16, GetColor(255, 255, 255), "Enemy HP: %d", hp);
 #endif
 }
