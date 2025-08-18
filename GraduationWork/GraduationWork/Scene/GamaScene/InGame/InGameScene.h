@@ -6,7 +6,7 @@
 #include "../../../Object/ObjectManager.h"
 
 #include "../../../Utility/TileSet.h" 
-
+#include "../../../Object/Stage/StageEditor.h"
 
 class InGameScene :
     public SceneBase
@@ -20,6 +20,8 @@ private:
 	ObjectManager object_manager; //オブジェクト管理クラス
 
 	TileSet tile_set; //タイルセット
+
+	StageEditor* editor; //ステージエディター
 public:
 	InGameScene();
 	~InGameScene();

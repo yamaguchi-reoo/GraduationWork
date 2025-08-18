@@ -15,6 +15,8 @@ tile_set("Resource/Images/Tiles/tile.png", BLOCK_SIZE, BLOCK_SIZE)
 	// JSONからタイルセットを読み込み
 	tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
 	
+	// ステージエディターの初期化
+	editor = new StageEditor(BLOCK_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 InGameScene::~InGameScene()
@@ -33,6 +35,7 @@ void InGameScene::Initialize()
 eSceneType InGameScene::Update( )
 {
 	object_manager.Update();
+	//editor->Update();
 	UpdateCamera(); 
 
 	return __super::Update();
@@ -44,6 +47,9 @@ void InGameScene::Draw()
 	// 描画処理
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
+
+	// ステージエディターの描画
+	//editor->Draw(camera_location);
 
 	/*std::vector<int> favorite_tiles = { 0, 5, 12, 25, 31, 45, 62, 78, 89, 105 };
 	tile_set.DrawSelectedTiles(favorite_tiles, 10, 20, 5);*/
@@ -62,6 +68,7 @@ void InGameScene::Finalize()
 	// 終了時処理
 	__super::Finalize();
 	object_manager.Finalize();
+	editor->Finalize();
 }
 
 eSceneType InGameScene::GetNowSceneType() const
