@@ -7,6 +7,7 @@
 
 #include "../../../Utility/TileSet.h" 
 #include "../../../Object/Stage/StageEditor.h"
+#include "../../../Object/Stage/StageData.h"
 
 class InGameScene :
     public SceneBase
@@ -15,7 +16,7 @@ private:
 	int stage_width_num;    //ステージの横のブロック数
 	int stage_height_num;   //ステージの縦のブロック数
 
-	std::vector<std::vector<int>> stage_data; //ステージデータを格納する2次元ベクター
+	StageData stage_data;   //ステージデータを格納する2次元ベクター
 
 	ObjectManager object_manager; //オブジェクト管理クラス
 
