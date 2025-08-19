@@ -1,22 +1,21 @@
 #include "InGameScene.h"
 #include <DxLib.h>
 
-#include "../../../Object/ObjectList.h"
-
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <string>
 
+#include "../../../Object/ObjectList.h"
+#include "../../../Utility/InputManager.h"
+
 
 InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(0, 0),
-tile_set("Resource/Images/Tiles/tile.png", BLOCK_SIZE, BLOCK_SIZE)
+tile_set("Resource/Images/Tiles/tile.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
+edit_mode(false)
 {
 	// JSONからタイルセットを読み込み
 	tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
-	
-	// ステージエディターの初期化
-	editor = new StageEditor(BLOCK_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 InGameScene::~InGameScene()
@@ -30,37 +29,65 @@ void InGameScene::Initialize()
 
 	// 初期化処理
 	LoadStage();
+
+	// ステージエディターの初期化
+	editor = new StageEditor(BLOCK_SIZE, &stage_data);
 }
 
-eSceneType InGameScene::Update( )
+eSceneType InGameScene::Update()
 {
-	object_manager.Update();
-	//editor->Update();
-	UpdateCamera(); 
+	InputManager* input = InputManager::GetInstance();
+
+	// F1で編集モード切り替え
+	if (input->GetKeyDown(KEY_INPUT_F1))
+	{
+		edit_mode = !edit_mode;
+	}
+
+	if (edit_mode)
+	{
+		// 編集モード中：エディターだけ更新
+		editor->Update(camera_location);
+	}
+	else
+	{
+		// 通常モード：オブジェクトを更新
+		object_manager.Update();
+	}
+
+	// カメラは両モードで更新
+	UpdateCamera();
 
 	return __super::Update();
 }
 
+
 void InGameScene::Draw()
 {
-	//DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 255, 255), TRUE); // 背景を黒く塗りつぶす
-	// 描画処理
+	// 通常描画
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
 
-	// ステージエディターの描画
-	//editor->Draw(camera_location);
+	if (edit_mode)
+	{
+		// 背景を半透明で黒く塗る
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // 128 = 50%透明
+		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // ブレンド解除
+
+		// エディターのグリッド描画
+		editor->Draw(camera_location);
+
+		// 編集モード表示
+		DrawString(600, 10, "EDIT MODE", GetColor(255, 255, 0));
+	}
+	else
+	{
+		DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
+	}
 
 	/*std::vector<int> favorite_tiles = { 0, 5, 12, 25, 31, 45, 62, 78, 89, 105 };
-	tile_set.DrawSelectedTiles(favorite_tiles, 10, 20, 5);*/
-
-
-	DrawString(200, 0, "GameMain", GetColor(255, 255, 255));
-
-
-	DrawFormatString(10, 90, GetColor(255,255,255), "Camera Location: (%3f, %3f)", camera_location.x, camera_location.y);
-
-	
+	tile_set.DrawSelectedTiles(favorite_tiles, 10, 20, 5);*/	
 }
 
 void InGameScene::Finalize()
@@ -125,6 +152,8 @@ void InGameScene::SetStage()
 			}
 		}
 	}
+
+
 }
 
 void InGameScene::UpdateCamera()

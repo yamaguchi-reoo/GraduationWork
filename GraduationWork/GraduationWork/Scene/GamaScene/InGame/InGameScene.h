@@ -17,12 +17,11 @@ private:
 	int stage_height_num;   //ステージの縦のブロック数
 
 	StageData stage_data;   //ステージデータを格納する2次元ベクター
-
 	ObjectManager object_manager; //オブジェクト管理クラス
-
 	TileSet tile_set; //タイルセット
-
 	StageEditor* editor; //ステージエディター
+
+	bool edit_mode; // ステージエディットモードかどうか
 public:
 	InGameScene();
 	~InGameScene();

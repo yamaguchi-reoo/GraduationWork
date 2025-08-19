@@ -2,10 +2,14 @@
 #include <DxLib.h>
 
 #include "../../Utility/InputManager.h"
+#include "../../common.h"
 
-StageEditor::StageEditor(int _grid_size, int _width, int _height)
-	: grid_size(_grid_size), width(_width), height(_height)
+StageEditor::StageEditor(int _grid_size, StageData* _stage_data)
+	: grid_size(_grid_size), stage_data(_stage_data)
 {
+	width = stage_data->GetWidth();
+	height = stage_data->GetHeight();
+
 	grid_width = width / grid_size;   
 	grid_height = height / grid_size;  
 }
@@ -19,7 +23,7 @@ void StageEditor::Initialize()
 	// 初期化処理
 }
 
-void StageEditor::Update()
+void StageEditor::Update(Vector2D offset)
 {
 	// 更新処理
 	InputManager* input = InputManager::GetInstance();
@@ -54,17 +58,20 @@ void StageEditor::Update()
 
 void StageEditor::Draw(Vector2D offset)
 {
-	for (int i = 0; i <= grid_width; ++i) {
-		int x = i * grid_size;
-		// グリッドの縦線を描画
-		DrawLine(x, 0, x, height, GetColor(200, 200, 200));
+	int cols = SCREEN_WIDTH / grid_size + 1;
+	int rows = SCREEN_HEIGHT / grid_size + 1;
+
+	for (int i = 0; i <= cols; ++i) {
+		int x = i * grid_size - static_cast<int>(offset.x) % grid_size;
+		DrawLine(x, 0, x, SCREEN_HEIGHT, GetColor(200, 200, 200));
 	}
-	for (int j = 0; j <= grid_height; ++j) {
-		int y = j * grid_size;
-		// グリッドの横線を描画
-		DrawLine(0, y, width, y, GetColor(200, 200, 200));
+
+	for (int j = 0; j <= rows; ++j) {
+		int y = j * grid_size - static_cast<int>(offset.y) % grid_size;
+		DrawLine(0, y, SCREEN_WIDTH, y, GetColor(200, 200, 200));
 	}
 }
+
 
 void StageEditor::Finalize()
 {
