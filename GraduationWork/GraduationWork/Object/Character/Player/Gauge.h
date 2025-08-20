@@ -26,6 +26,13 @@ private:
     int shadow_frame;
     int shadow_anim[8];
 
+    int circle_base = -1;
+    int flame_anim[8]{};
+    static const int FLAME_W = 174;   // フレーム幅
+    static const int FLAME_H = 178;   // フレーム高
+    static const int OX = FLAME_W / 2; // ピボットX（画像内）
+    static const int OY = FLAME_H / 2; // ピボットY（画像内）
+
 
 public:
     Gauge();
@@ -36,7 +43,7 @@ public:
     void SetValue(int value);
 
 	// ゲージの更新
-    void Update(bool is_shadow);
+    void Update(bool is_shadow, float delta);
 
 	// ゲージの値を取得
     bool IsEmpty() const { return current_value <= 0; }

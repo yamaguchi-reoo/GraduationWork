@@ -261,7 +261,7 @@ void Player::UpdateState()
 	if (state == PlayerState::Shadow)
 	{
 		// ‰eƒQ[ƒW‚ğÁ”ï
-		shadow_gauge.Update(true);
+		shadow_gauge.Update(true,8);
 		if (shadow_gauge.IsEmpty()) 
 		{
 			SwitchState();
@@ -270,7 +270,7 @@ void Player::UpdateState()
 	else if (state == PlayerState::Real)
 	{
 		// À‘Ô‚Ì‚Æ‚«‚Í‰eƒQ[ƒW‚ğ‰ñ•œ
-		shadow_gauge.Update(false);
+		shadow_gauge.Update(false,8);
 	}
 }
 
