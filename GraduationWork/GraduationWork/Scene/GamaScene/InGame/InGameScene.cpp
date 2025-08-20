@@ -64,6 +64,7 @@ eSceneType InGameScene::Update()
 
 void InGameScene::Draw()
 {
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 0, 0), FALSE); // ”wŒi‚ğ•‚­“h‚é
 	// ’Êí•`‰æ
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
