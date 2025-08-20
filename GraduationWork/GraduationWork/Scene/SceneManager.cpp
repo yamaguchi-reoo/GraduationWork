@@ -3,6 +3,7 @@
 #include <windows.h>
 
 #include "GamaScene/InGame/InGameScene.h"
+#include "GamaScene/InGame/TitleScene.h"
 
 #include "../common.h"
 #include "../Utility/UtilityList.h"
@@ -38,7 +39,7 @@ void SceneManager::Initialize()
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	//タイトル画面シーンから開始する
-	ChangeScene(eSceneType::GAME_MAIN);
+	ChangeScene(eSceneType::TITLE);
 
 	fps_control.Initialize();;
 }
@@ -121,7 +122,7 @@ SceneBase* SceneManager::CreateScene(eSceneType type)
 	switch (type)
 	{
 	case eSceneType::TITLE:
-		//return dynamic_cast<SceneBase*>(new TitleScene()); // タイトルシーンの生成
+		return dynamic_cast<SceneBase*>(new TitleScene()); // タイトルシーンの生成
 	case eSceneType::GAME_MAIN:
 		return new InGameScene(); // ゲームメインシーンの生成
 	default:
