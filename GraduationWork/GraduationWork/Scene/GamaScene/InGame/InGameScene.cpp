@@ -52,7 +52,7 @@ eSceneType InGameScene::Update()
 	else
 	{
 		// 通常モード：オブジェクトを更新
-		object_manager.Update();
+		object_manager.Update(camera_location);
 	}
 
 	// カメラは両モードで更新

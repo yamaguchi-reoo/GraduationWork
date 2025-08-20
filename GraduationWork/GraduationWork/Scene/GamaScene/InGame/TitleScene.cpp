@@ -61,23 +61,12 @@ eSceneType TitleScene::Title_Select()
         if (cursorIndex < 0) cursorIndex = MENU_COUNT - 1;
     }
 
-    // 決定ボタン（Aボタンなど）
-    if (input->GetButtonDown(XINPUT_BUTTON_A))
-    {
-        switch (cursorIndex)
-        {
-        case 0:
-            // START
-            return eSceneType::GAME_MAIN;
-            break;
-        case 1:
-        //    // HELP
-        //    ChangeSceneToOption();
-        //    break;
-        case 2:
-            // END
-            DxLib_End();
-            break;
+    if (input->GetButtonDown(XINPUT_BUTTON_A)) {
+        switch (cursorIndex) {
+        case 0: return eSceneType::GAME_MAIN;
+        case 1: /* HELP 未実装 */ break;
+        case 2: return eSceneType::EXIT;   
         }
     }
+    return eSceneType::TITLE; // 変更なし
 }

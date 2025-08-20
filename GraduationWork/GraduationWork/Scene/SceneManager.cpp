@@ -66,6 +66,9 @@ void SceneManager::Update()
 		// ƒV[ƒ“Ø‚è‘Ö‚¦
 		if (next_scene_type != current_scene->GetNowSceneType())
 		{
+			if (next_scene_type == eSceneType::EXIT) {
+				break; 
+			}
 			ChangeScene(next_scene_type);
 		}
 
