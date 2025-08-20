@@ -28,23 +28,6 @@ void ObjectManager::Update()
         if (obj) obj->Update();
     }
 
-	//GameObject* player_f = FindObjectType(eObjectType::PLAYER);
-
- //   if (player_f)
- //   {
- //       for (auto obj : objects)
- //       {
- //           if (obj && obj != player_f)
- //           {
- //               if (player_f->CheckBoxCollision(obj))
- //               {
- //                   player_f->OnHitCollision(obj);
- //                   obj->OnHitCollision(player_f);
- //               }
- //           }
- //       }
- //   }
-
      // 全オブジェクト同士の衝突判定（重複チェック回避のため片側ループ）
     for (size_t i = 0; i < objects.size(); ++i)
     {
