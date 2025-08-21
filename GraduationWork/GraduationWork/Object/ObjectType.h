@@ -9,5 +9,6 @@ enum eObjectType
 	LIGHT,
 	INVISIBLEFLOOR,
 	PUSHBLOCK,
+	PLATE,
 
 };

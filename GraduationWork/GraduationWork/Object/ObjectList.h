@@ -6,3 +6,4 @@
 #include "Gimmick/Light.h"
 #include "Gimmick/Invisiblefloor.h"
 #include "Gimmick/PushBlock.h"
+#include "Gimmick/Plate.h"

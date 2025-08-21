@@ -151,6 +151,7 @@
     <ClCompile Include="Object\ObjectManager.cpp" />
     <ClCompile Include="Object\Character\Player\Player.cpp" />
     <ClCompile Include="Object\Gimmick\PushBlock.cpp" />
+    <ClCompile Include="Object\Gimmick\Plate.cpp" />
     <ClCompile Include="Scene\GamaScene\InGame\InGameScene.cpp" />
     <ClCompile Include="Object\GameObject.cpp" />
     <ClCompile Include="Scene\GamaScene\InGame\TitleScene.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Object\ObjectInfo.h" />
     <ClInclude Include="Object\Character\Player\Player.h" />
     <ClInclude Include="Object\Gimmick\PushBlock.h" />
+    <ClInclude Include="Object\Gimmick\Plate.h" />
     <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
     <ClInclude Include="Object\GameObject.h" />
     <ClInclude Include="Object\ObjectType.h" />

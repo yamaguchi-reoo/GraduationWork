@@ -149,6 +149,9 @@ void InGameScene::SetStage()
 			case PUSHBLOCK:
 				object_manager.CreateObject<PushBlock>(world_pos, Vector2D(48.0f, 48.0f));
 				break;
+			case PLATE:
+				object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f,10.0f));
+				break;
 			}
 		}
 	}
