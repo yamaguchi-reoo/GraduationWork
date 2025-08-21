@@ -10,10 +10,10 @@ enum eObjectType
 	LIGHT,
 	INVISIBLEFLOOR,
 	PUSHBLOCK,
+    ENEMY,
+    REALENEMY,
 	OBJECTTYPE_COUNT // タイルの種類数（最後に追加）
-
-	ENEMY,
-	REALENEMY,
+	
 };
 
 struct TypeInfo
@@ -31,7 +31,10 @@ static TypeInfo TILE_INFO[OBJECTTYPE_COUNT] = {
     { WALL,          "Wall",      GetColor(150, 150, 150) },
     { LIGHT,         "Light",     GetColor(255, 255, 0) },
     { INVISIBLEFLOOR,"Invisible", GetColor(100, 100, 200) },
-    { PUSHBLOCK,     "Push",      GetColor(200, 100, 200) }
+    { PUSHBLOCK,     "Push",      GetColor(200, 100, 200) },
+    { ENEMY,         "Enemy",     GetColor(100, 100, 200) },
+    { REALENEMY,     "REnemy",    GetColor( 50, 100, 200) }
+
 };
 
 // ヘルパー関数
