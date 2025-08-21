@@ -23,14 +23,8 @@ void SceneManager::Initialize()
 	//ウィンドウモードで起動
 	ChangeWindowMode(TRUE);
 
-#ifdef _DEBUG
 	//デバッグ用の画面サイズ設定
-	SetGraphMode(DEBUG_SCREEN_WIDTH, DEBUG_SCREEN_HEIGHT, 32); // デバッグ用の画面サイズ
-#else
-	//画面サイズ設定
-	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32); // ウインドウのサイズ
-
-#endif // DEBUG
+	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32); // デバッグ用の画面サイズ
 
 	SetWaitVSyncFlag(FALSE); // VSync待ちを無効化（フレームレート制御のため）
 
@@ -44,7 +38,7 @@ void SceneManager::Initialize()
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	//タイトル画面シーンから開始する
-	ChangeScene(eSceneType::TITLE);
+	ChangeScene(eSceneType::GAME_MAIN);
 
 	fps_control.Initialize();;
 }
