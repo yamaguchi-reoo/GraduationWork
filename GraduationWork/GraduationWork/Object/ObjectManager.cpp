@@ -21,29 +21,15 @@ void ObjectManager::Initialize()
 	//CreateObject<Block>(Vector2D(640.0f, 360.0f), Vector2D(BLOCK_SIZE)); // プレイヤーオブジェクトを生成
 }
 
-void ObjectManager::Update()
+void ObjectManager::Update(Vector2D offset)
 {
     for (auto obj : objects)
     {
-        if (obj) obj->Update();
+        if (IsOnScreen(obj, offset))
+        {
+            obj->Update();
+        }
     }
-
-	//GameObject* player_f = FindObjectType(eObjectType::PLAYER);
-
- //   if (player_f)
- //   {
- //       for (auto obj : objects)
- //       {
- //           if (obj && obj != player_f)
- //           {
- //               if (player_f->CheckBoxCollision(obj))
- //               {
- //                   player_f->OnHitCollision(obj);
- //                   obj->OnHitCollision(player_f);
- //               }
- //           }
- //       }
- //   }
 
      // 全オブジェクト同士の衝突判定（重複チェック回避のため片側ループ）
     for (size_t i = 0; i < objects.size(); ++i)
@@ -95,10 +81,8 @@ void ObjectManager::Draw(Vector2D offset, double rate)
 {
     for (auto obj : objects)
     {
-        if (obj)
+        if (IsOnScreen(obj, offset))
         {
-            //Vector2D draw_location = obj->GetLocation() - offset;
-            //obj->Draw(draw_location, rate);
             obj->Draw(offset, rate);
         }
     }
@@ -153,6 +137,24 @@ GameObject* ObjectManager::FindObjectType(eObjectType type)
         }
     }
     return nullptr;
+}
+
+bool ObjectManager::IsOnScreen(GameObject* obj, Vector2D offset)
+{
+    if (!obj) return false;
+
+    Vector2D loc = obj->GetLocation();
+    Vector2D size = obj->GetBoxSize();
+
+    float screen_left = offset.x;
+    float screen_right = offset.x + SCREEN_WIDTH;
+    float screen_top = offset.y;
+    float screen_bottom = offset.y + SCREEN_HEIGHT;
+
+    return loc.x + size.x > screen_left &&
+        loc.x < screen_right &&
+        loc.y + size.y > screen_top &&
+        loc.y < screen_bottom;
 }
 
 

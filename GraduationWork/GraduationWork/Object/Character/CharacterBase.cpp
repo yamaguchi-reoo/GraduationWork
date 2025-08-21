@@ -43,11 +43,12 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
 {
 	int type = hit_object->GetObjectType();
 
+
+	// 影状態なら「壁」も「押せるブロック」もすり抜ける
+	if (IsPlayerShadow() && (type == WALL || type == PUSHBLOCK)) return;
+
 	// 対象はブロック or 壁
 	if (type != BLOCK && type != WALL && type != PUSHBLOCK) return;
-
-	// 影状態なら「壁」だけはすり抜け
-	if (type == WALL && IsPlayerShadow()) return;
 
 	// AABB情報取得（座標は左上基準と仮定）
 	Vector2D my_pos = GetLocation();

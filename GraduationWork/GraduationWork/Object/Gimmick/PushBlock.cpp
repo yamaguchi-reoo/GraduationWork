@@ -60,6 +60,16 @@ void PushBlock::OnHitCollision(GameObject* hit_object)
     int type = hit_object->GetObjectType();
     if (type != BLOCK && type != WALL && type != PUSHBLOCK && type != PLAYER) return;
 
+    // ƒvƒŒƒCƒ„[‚ª‰eó‘Ô‚È‚çPushBlock‚ÌÕ“Ë‚ğ–³‹‚µ‚Ä‚·‚è”²‚¯‚é
+    if (type == PLAYER)
+    {
+        Player* player = dynamic_cast<Player*>(hit_object);
+        if (player && player->IsPlayerShadow())
+        {
+            return; // ‚·‚è”²‚¯‚é
+        }
+    }
+
     Vector2D my_pos = GetLocation();
     Vector2D my_size = GetBoxSize();
     Vector2D other_pos = hit_object->GetLocation();

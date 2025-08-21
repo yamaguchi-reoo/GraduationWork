@@ -23,9 +23,14 @@ void SceneManager::Initialize()
 	//ウィンドウモードで起動
 	ChangeWindowMode(TRUE);
 
+#ifdef _DEBUG
+	//デバッグ用の画面サイズ設定
+	SetGraphMode(DEBUG_SCREEN_WIDTH, DEBUG_SCREEN_HEIGHT, 32); // デバッグ用の画面サイズ
+#else
 	//画面サイズ設定
 	SetGraphMode(SCREEN_WIDTH, SCREEN_HEIGHT, 32); // ウインドウのサイズ
 
+#endif // DEBUG
 
 	SetWaitVSyncFlag(FALSE); // VSync待ちを無効化（フレームレート制御のため）
 
@@ -61,6 +66,9 @@ void SceneManager::Update()
 		// シーン切り替え
 		if (next_scene_type != current_scene->GetNowSceneType())
 		{
+			if (next_scene_type == eSceneType::EXIT) {
+				break; 
+			}
 			ChangeScene(next_scene_type);
 		}
 
@@ -102,6 +110,12 @@ void SceneManager::ChangeScene(eSceneType type)
 	if (new_scene == nullptr)
 	{
 		throw("\n新しいシーンの生成が出来ませんでした\n");
+	}
+
+	if (DxLib_Init() == -1)
+	{
+		MessageBox(nullptr, "DXライブラリが初期化できませんでした", "Error", MB_ICONERROR);
+		return;
 	}
 
 	//現在のシーンの終了処理
