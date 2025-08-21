@@ -18,9 +18,12 @@ StageEditor::StageEditor(int _grid_size, StageData* _stage_data)
     grid_width = width;
     grid_height = height;
 
-    // タイルリストの初期化（表示順）
-    tile_types = { eObjectType::BLOCK, eObjectType::PLAYER, eObjectType::WALL,
-                   eObjectType::LIGHT, eObjectType::INVISIBLEFLOOR, eObjectType::PUSHBLOCK };
+    // タイルリストの初期化（表示順をTILE_INFOに従う）
+    tile_types.clear();
+    for (int i = 0; i < OBJECTTYPE_COUNT; ++i) // 0はNONEなのでスキップ
+    {
+        tile_types.push_back(static_cast<eObjectType>(i));
+    }
 }
 
 StageEditor::~StageEditor()
