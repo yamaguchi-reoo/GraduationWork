@@ -52,7 +52,7 @@ eSceneType InGameScene::Update()
 	else
 	{
 		// 通常モード：オブジェクトを更新
-		object_manager.Update();
+		object_manager.Update(camera_location);
 	}
 
 	// カメラは両モードで更新
@@ -64,6 +64,7 @@ eSceneType InGameScene::Update()
 
 void InGameScene::Draw()
 {
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 0, 0), FALSE); // 背景を黒く塗る
 	// 通常描画
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
