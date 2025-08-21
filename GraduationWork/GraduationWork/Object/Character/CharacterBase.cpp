@@ -74,8 +74,8 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
 	float from_right = my_right - other_left;
 
 	// Å¬‚Ì‰Ÿ‚µo‚µ•ûŒü‚ğ”»’è
-	float min_y = std::min(from_top, from_bottom);
-	float min_x = std::min(from_left, from_right);
+	float min_y = Min(from_top, from_bottom);
+	float min_x = Min(from_left, from_right);
 
 	if (min_y < min_x) {
 		// ‚’¼•ûŒü‚ÌÕ“Ë
