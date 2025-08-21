@@ -38,11 +38,27 @@ eSceneType InGameScene::Update()
 {
 	InputManager* input = InputManager::GetInstance();
 
+#ifdef _DEBUG
 	// F1で編集モード切り替え
 	if (input->GetKeyDown(KEY_INPUT_F1))
 	{
+		if (edit_mode)
+		{
+			// 編集モード終了 → 保存して再読み込み
+			//editor->SaveStageData("stage.csv");
+			stage_data.SaveCSV("Resource/File/Stage.csv");
+
+			// オブジェクトを一旦クリア
+			object_manager.Finalize();    // オブジェクト解放処理
+			object_manager.Initialize();  // 初期化
+
+			// ステージデータ読み込み
+			LoadStage();
+		}
+
 		edit_mode = !edit_mode;
 	}
+#endif
 
 	if (edit_mode)
 	{
@@ -52,7 +68,7 @@ eSceneType InGameScene::Update()
 	else
 	{
 		// 通常モード：オブジェクトを更新
-		object_manager.Update();
+		object_manager.Update(camera_location);
 	}
 
 	// カメラは両モードで更新
@@ -61,9 +77,9 @@ eSceneType InGameScene::Update()
 	return __super::Update();
 }
 
-
 void InGameScene::Draw()
 {
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 0, 0), FALSE); 
 	// 通常描画
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
@@ -155,21 +171,27 @@ void InGameScene::SetStage()
 			}
 		}
 	}
-
-
 }
 
 void InGameScene::UpdateCamera()
 {
-	GameObject* player = object_manager.FindObjectType(eObjectType::PLAYER);
-	if (!player) return;
+	if (edit_mode)
+	{
+		// 編集モードでは editor のカメラを使用
+		camera_location = editor->GetCameraOffset();
+	}
+	else
+	{
+		GameObject* player = object_manager.FindObjectType(eObjectType::PLAYER);
+		if (!player) return;
 
-	float screen_half_width = SCREEN_WIDTH / 2.0f;
-	float stage_limit_left = 0.0f;
-	float stage_limit_right = static_cast<float>(stage_data.GetWidth()) * BLOCK_SIZE - SCREEN_WIDTH;
+		float screen_half_width = SCREEN_WIDTH / 2.0f;
+		float stage_limit_left = 0.0f;
+		float stage_limit_right = static_cast<float>(stage_data.GetWidth()) * BLOCK_SIZE - SCREEN_WIDTH;
 
-	camera_location.x = player->GetLocation().x - screen_half_width;
+		camera_location.x = player->GetLocation().x - screen_half_width;
 
-	if (camera_location.x < stage_limit_left) camera_location.x = stage_limit_left;
-	if (camera_location.x > stage_limit_right) camera_location.x = stage_limit_right;
+		if (camera_location.x < stage_limit_left) camera_location.x = stage_limit_left;
+		if (camera_location.x > stage_limit_right) camera_location.x = stage_limit_right;
+	}
 }

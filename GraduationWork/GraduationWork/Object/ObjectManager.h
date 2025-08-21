@@ -16,7 +16,7 @@ public:
     ~ObjectManager();
 
     void Initialize();
-    void Update();
+    void Update(Vector2D offset);
     void Draw(Vector2D offset, double rate);
     void Finalize();
 
@@ -52,6 +52,8 @@ public:
 
 
 	GameObject* FindObjectType(eObjectType type);
+
+	bool IsOnScreen(GameObject* obj, Vector2D offset);
 
 
 };

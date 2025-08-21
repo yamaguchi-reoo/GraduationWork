@@ -16,19 +16,19 @@ private:
 	int stage_width_num;    //ステージの横のブロック数
 	int stage_height_num;   //ステージの縦のブロック数
 
-	StageData stage_data;   //ステージデータを格納する2次元ベクター
+	StageData stage_data;		  //ステージデータを格納する2次元ベクター
 	ObjectManager object_manager; //オブジェクト管理クラス
-	TileSet tile_set; //タイルセット
-	StageEditor* editor; //ステージエディター
+	TileSet tile_set;			  //タイルセット
+	StageEditor* editor;		  //ステージエディター
 
-	bool edit_mode; // ステージエディットモードかどうか
+	bool edit_mode;			      //ステージエディットモードかどうか
 public:
 	InGameScene();
 	~InGameScene();
 
 	void Initialize() override;		//初期化処理
 	eSceneType Update() override;	//更新処理
-	void Draw() override;		//描画処理
+	void Draw() override;			//描画処理
 	void Finalize() override;		//終了時処理
 
 	eSceneType GetNowSceneType()const override;
