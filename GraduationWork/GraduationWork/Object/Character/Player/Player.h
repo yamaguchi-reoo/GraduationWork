@@ -30,6 +30,8 @@ private:
     int attack_cooldown;
     const int attack_cooldown_max;
 
+	int invincible_timer; // 無敵時間タイマー
+
 	PlayerState state; // プレイヤーの状態（実態か影か）
 
 

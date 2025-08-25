@@ -139,6 +139,21 @@ GameObject* ObjectManager::FindObjectType(eObjectType type)
     return nullptr;
 }
 
+std::vector<GameObject*> ObjectManager::GetObjects(eObjectType type)
+{
+    std::vector<GameObject*> result;
+
+    for (auto* obj : objects)
+    {
+        if (obj->GetObjectType() == type)
+        {
+            result.push_back(obj);
+        }
+    }
+
+    return result;
+}
+
 bool ObjectManager::IsOnScreen(GameObject* obj, Vector2D offset)
 {
     if (!obj) return false;

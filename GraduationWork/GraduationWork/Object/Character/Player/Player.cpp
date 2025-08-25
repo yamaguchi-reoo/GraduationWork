@@ -17,6 +17,7 @@ Player::Player() :
 	jump_velocity(0.0f),
 	jump_strength(15.0f),
 	is_attacking(false),
+	invincible_timer(0),
 	attack_cooldown(0),
 	attack_cooldown_max(20),
 	shadow_gauge(),
@@ -35,7 +36,7 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 
 	object_type = PLAYER;
 
-	hp = 2;
+	hp = 3;
 
 	is_jumping = false;
 
@@ -52,6 +53,11 @@ void Player::Update()
 
 	hp_gauge.SetValue(hp); 
 
+	// 無敵タイマー減少
+	if (invincible_timer > 0) {
+		invincible_timer--;
+	}
+
 	__super::Update();
 }
 
@@ -61,17 +67,25 @@ void Player::Draw(Vector2D offset, double rate)
 	Vector2D screen_pos = location - offset;
 	__super::Draw(offset, rate);
 
-	if (state == PlayerState::Real)
+	bool visible = true;
+	if (invincible_timer > 0)
 	{
-		// 実態の描画
-		DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 0), TRUE);
-	}
-	else if (state == PlayerState::Shadow)
-	{
-		// 影状態の描画
-		DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), TRUE);
+		visible = (invincible_timer / 5) % 2 == 0; // 点滅効果
 	}
 
+	if (visible) {
+		if (state == PlayerState::Real)
+		{
+			// 実態の描画
+			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 0), TRUE);
+		}
+		else if (state == PlayerState::Shadow)
+		{
+			// 影状態の描画
+			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), TRUE);
+		}
+	}
+	
 	DrawUI();
 
 #ifdef _DEBUG
@@ -109,6 +123,28 @@ void Player::OnHitCollision(GameObject* hit_object)
 		{
 			object_manager->RequestDeleteObject(this);
 		}
+	}
+
+	if (type == ENEMY || type == REALENEMY)
+	{
+		// 敵に当たったらダメージ
+		if (state == PlayerState::Real && invincible_timer <= 0)
+		{
+			if (object_manager)
+			{
+				hp--;
+				invincible_timer = 60;
+				if (hp <= 0)
+				{
+					hp = 0;
+					if (object_manager)
+					{
+						object_manager->RequestDeleteObject(this); // HPが0になったら削除要求
+					}
+				}
+			}
+		}
+
 	}
 }
 
@@ -216,7 +252,6 @@ void Player::UpdateAttack()
 	{
 		hitbox.frame++;
 
-		// プレイヤーの位置に追従させる
 		if (flip_flg)
 		{
 			hitbox.position.x = location.x - hitbox.size.x;
@@ -228,20 +263,46 @@ void Player::UpdateAttack()
 		hitbox.position.y = location.y + (box_size.y / 2) - (hitbox.size.y / 2);
 	}
 
-	// frame > 5 のものを削除
+	// === 敵との当たり判定 ===
+	if (!attack_hitboxes.empty() && object_manager)
+	{
+		for (auto enemy : object_manager->GetObjects(ENEMY)) // ObjectManager側にGetObjects()追加必要
+		{
+			int type = enemy->GetObjectType();
+			if (type == ENEMY || type == REALENEMY)
+			{
+				for (const auto& hitbox : attack_hitboxes)
+				{
+					// ここで矩形同士の当たり判定をする
+					bool hit = (
+						hitbox.position.x < enemy->GetLocation().x + enemy->GetBoxSize().x &&
+						hitbox.position.x + hitbox.size.x > enemy->GetLocation().x &&
+						hitbox.position.y < enemy->GetLocation().y + enemy->GetBoxSize().y &&
+						hitbox.position.y + hitbox.size.y > enemy->GetLocation().y
+						);
+
+					if (hit)
+					{
+						object_manager->RequestDeleteObject(enemy);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	// frame > 10 のものを削除
 	attack_hitboxes.erase(
 		std::remove_if(attack_hitboxes.begin(), attack_hitboxes.end(),
 			[](const AttackHitBox& h) { return h.frame > 10; }),
 		attack_hitboxes.end()
 	);
 
-	// 攻撃判定がなくなったら攻撃状態を解除して再度攻撃できるようにする
 	if (attack_hitboxes.empty())
 	{
 		is_attacking = false;
 	}
 }
-
 
 void Player::SwitchState()
 {
