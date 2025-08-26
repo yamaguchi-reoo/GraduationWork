@@ -19,7 +19,9 @@ private:
 	StageData stage_data;		  //ステージデータを格納する2次元ベクター
 	ObjectManager object_manager; //オブジェクト管理クラス
 	TileSet tile_set;			  //タイルセット
-	StageEditor* editor;		  //ステージエディター
+	StageEditor* editor;		  //ステージエディタ
+	
+	std::vector<PlacedTile> placed_tiles; //配置されたタイル情報
 
 	bool edit_mode;			      //ステージエディットモードかどうか
 public:
@@ -32,6 +34,8 @@ public:
 	void Finalize() override;		//終了時処理
 
 	eSceneType GetNowSceneType()const override;
+	
+	void DrawTiles();
 
 	//ステージデータを読み込む
 	void LoadStage();

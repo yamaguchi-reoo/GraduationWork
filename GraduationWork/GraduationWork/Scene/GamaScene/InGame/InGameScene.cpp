@@ -47,6 +47,7 @@ eSceneType InGameScene::Update()
 			// 編集モード終了 → 保存して再読み込み
 			//editor->SaveStageData("stage.csv");
 			stage_data.SaveCSV("Resource/File/Stage.csv");
+			stage_data.SaveTileCSV("Resource/File/Tile.csv");
 
 			// オブジェクトを一旦クリア
 			object_manager.Finalize();    // オブジェクト解放処理
@@ -79,10 +80,12 @@ eSceneType InGameScene::Update()
 
 void InGameScene::Draw()
 {
-	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 0, 0), FALSE); 
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(185, 185, 185), TRUE); 
 	// 通常描画
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
+
+	DrawTiles();
 
 	if (edit_mode)
 	{
@@ -119,11 +122,40 @@ eSceneType InGameScene::GetNowSceneType() const
 	return eSceneType::GAME_MAIN;
 }
 
+void InGameScene::DrawTiles()
+{
+	for (int y = 0; y < stage_data.GetHeight(); ++y)
+	{
+		for (int x = 0; x < stage_data.GetWidth(); ++x)
+		{
+			int tile_id = stage_data.GetTile(x, y);
+			if (tile_id <= 0) continue;
+
+			int draw_x = x * BLOCK_SIZE - static_cast<int>(camera_location.x);
+			int draw_y = y * BLOCK_SIZE - static_cast<int>(camera_location.y);
+
+			if (tile_set.HasTile(tile_id))
+				tile_set.DrawTile(tile_id, draw_x, draw_y);
+		}
+	}
+
+	/*for (auto& t : placed_tiles)
+	{
+		tile_set.DrawTile(t.tile_id, (int)(t.pos.x - camera_location.x), (int)(t.pos.y - camera_location.y));
+	}*/
+}
+
 void InGameScene::LoadStage()
 {
 	if (!stage_data.LoadCSV("Resource/File/Stage.csv"))
 	{
 		std::cerr << "ステージファイルを開けませんでした\n";
+		return;
+	}
+
+	if (!stage_data.LoadTileCSV("Resource/File/Tile.csv"))
+	{
+		std::cerr << "Tileファイルを開けませんでした\n";
 		return;
 	}
 
@@ -138,12 +170,24 @@ void InGameScene::SetStage()
 	{
 		for (int x = 0; x < stage_data.GetWidth(); ++x)
 		{
+			// タイルレイヤー（背景やブロックの見た目用）
 			int tile = stage_data.GetTile(x, y);
 
-			// 左上原点で描画（上方向がy増加）
+			// 左上原点で描画位置
 			Vector2D world_pos(x * BLOCK_SIZE, y * BLOCK_SIZE);
 
+			//// 例えばタイル番号に応じて背景ブロック生成
 			switch (tile)
+			{
+			case BLOCK:
+				object_manager.CreateObject<Block>(world_pos, block_size);
+				break;
+			}
+
+			// オブジェクトレイヤー
+			int obj = stage_data.GetObj(x, y);
+
+			switch (obj)
 			{
 			case NONE:
 				break;
@@ -164,6 +208,12 @@ void InGameScene::SetStage()
 				break;
 			case PUSHBLOCK:
 				object_manager.CreateObject<PushBlock>(world_pos, Vector2D(48.0f, 48.0f));
+				break;
+			case ENEMY:
+				object_manager.CreateObject<Enemy>(world_pos, Vector2D(48.0f, 64.0f));
+				break;
+			case REALENEMY:
+				object_manager.CreateObject<RealEnemy>(world_pos, Vector2D(48.0f, 64.0f));
 				break;
 			case PLATE:
 				object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f,10.0f));

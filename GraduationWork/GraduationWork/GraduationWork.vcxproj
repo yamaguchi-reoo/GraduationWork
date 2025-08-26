@@ -143,6 +143,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Object\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Object\Gimmick\Invisiblefloor.cpp" />
     <ClCompile Include="Object\Gimmick\Light.cpp" />
     <ClCompile Include="Object\Character\Player\Gauge.cpp" />
@@ -151,6 +153,7 @@
     <ClCompile Include="Object\ObjectManager.cpp" />
     <ClCompile Include="Object\Character\Player\Player.cpp" />
     <ClCompile Include="Object\Gimmick\PushBlock.cpp" />
+    <ClCompile Include="Object\Character\Enemy\RealEnemy.cpp" />
     <ClCompile Include="Object\Gimmick\Plate.cpp" />
     <ClCompile Include="Scene\GamaScene\InGame\InGameScene.cpp" />
     <ClCompile Include="Object\GameObject.cpp" />
@@ -167,6 +170,8 @@
     <ClCompile Include="Object\Gimmick\Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Object\Character\Enemy\EnemyBase.h" />
     <ClInclude Include="Object\Gimmick\Invisiblefloor.h" />
     <ClInclude Include="Object\Gimmick\Light.h" />
     <ClInclude Include="Object\Character\Player\Gauge.h" />
@@ -178,6 +183,7 @@
     <ClInclude Include="Object\ObjectInfo.h" />
     <ClInclude Include="Object\Character\Player\Player.h" />
     <ClInclude Include="Object\Gimmick\PushBlock.h" />
+    <ClInclude Include="Object\Character\Enemy\RealEnemy.h" />
     <ClInclude Include="Object\Gimmick\Plate.h" />
     <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
     <ClInclude Include="Object\GameObject.h" />

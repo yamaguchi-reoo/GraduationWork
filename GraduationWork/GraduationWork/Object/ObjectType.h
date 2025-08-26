@@ -10,9 +10,11 @@ enum eObjectType
 	LIGHT,
 	INVISIBLEFLOOR,
 	PUSHBLOCK,
+    ENEMY,
+    REALENEMY,
 	PLATE,
 	OBJECTTYPE_COUNT // タイルの種類数（最後に追加）
-
+	
 };
 
 struct TypeInfo
@@ -23,7 +25,7 @@ struct TypeInfo
 };
 
 // タイル情報テーブル（グローバルでもOK、StageEditorクラス内に static 配列でもOK）
-static TypeInfo TILE_INFO[OBJECTTYPE_COUNT] = {
+static TypeInfo TYPE_INFO[OBJECTTYPE_COUNT] = {
     { NONE,          "None",      GetColor(55, 55, 55) },
     { BLOCK,         "Block",     GetColor(100, 200, 100) },
     { PLAYER,        "Player",    GetColor(200, 100, 100) },
@@ -31,6 +33,8 @@ static TypeInfo TILE_INFO[OBJECTTYPE_COUNT] = {
     { LIGHT,         "Light",     GetColor(255, 255, 0) },
     { INVISIBLEFLOOR,"Invisible", GetColor(100, 100, 200) },
     { PUSHBLOCK,     "Push",      GetColor(200, 100, 200) },
+    { ENEMY,         "Enemy",     GetColor(100, 100, 200) },
+    { REALENEMY,     "REnemy",    GetColor( 50, 100, 200) }
     { PLATE,         "Plate",     GetColor(200, 0, 200)}
 };
 
@@ -39,6 +43,6 @@ inline const TypeInfo& GetTypeInfo(eObjectType type)
 {
     int idx = static_cast<int>(type);
     if (idx < 0 || idx >= OBJECTTYPE_COUNT)
-        return TILE_INFO[0]; // NONEを返す
-    return TILE_INFO[idx];
+        return TYPE_INFO[0]; // NONEを返す
+    return TYPE_INFO[idx];
 }

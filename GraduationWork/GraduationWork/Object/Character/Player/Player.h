@@ -4,40 +4,29 @@
 
 #include "Gauge.h"
 
-enum class PlayerState {
-    Real,   // 実態
-    Shadow  // 影状態
-};
-
-struct AttackHitBox
-{
-    Vector2D position;
-    Vector2D size;
-    int frame; // フレーム数
-};
-
 class Player :
     public CharacterBase
 {
 private:
+
+    enum class PlayerState { Real, Shadow };
+    PlayerState state; // プレイヤーの状態（実態か影か）
 
     //ジャンプ
     float jump_velocity;
     const float jump_strength; 
 
     //攻撃
+    struct AttackHitBox { Vector2D position; Vector2D size; int frame; };
+    std::vector<AttackHitBox> attack_hitboxes;
     bool is_attacking;
     int attack_cooldown;
     const int attack_cooldown_max;
 
-	PlayerState state; // プレイヤーの状態（実態か影か）
-
-
 	Gauge shadow_gauge; // 影化ゲージ
     Gauge hp_gauge; // 実態のHPゲージ
+    int invincible_timer; // 無敵時間タイマー
 
-	//攻撃のヒットボックス
-    std::vector<AttackHitBox> attack_hitboxes;
 public:
     Player();
     ~Player();
