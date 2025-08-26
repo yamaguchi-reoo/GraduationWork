@@ -136,3 +136,50 @@ bool StageData::SaveCSVInternal(const std::string& filename, const std::vector<s
 	file.close();
 	return true;
 }
+
+void StageData::AddPlacedTile(int id, const Vector2D& pos)
+{
+	free_tiles.push_back({ id, pos });
+}
+
+void StageData::RemovePlacedTileNear(const Vector2D& pos, float radius)
+{
+	for (auto it = free_tiles.begin(); it != free_tiles.end(); ++it) {
+		if ((it->pos - pos).Length() < radius) {
+			free_tiles.erase(it);
+			break;
+		}
+	}
+}
+
+bool StageData::SaveFreeTilesCSV(const std::string& filename)
+{
+	std::ofstream file(filename);
+	if (!file) return false;
+
+	for (auto& t : free_tiles)
+		file << t.tile_id << "," << t.pos.x << "," << t.pos.y << "\n";
+
+	return true;
+}
+
+bool StageData::LoadFreeTilesCSV(const std::string& filename)
+{
+	std::ifstream file(filename);
+	if (!file) return false;
+
+	free_tiles.clear();
+	std::string line;
+	while (std::getline(file, line))
+	{
+		std::stringstream ss(line);
+		std::string s;
+		PlacedTile t;
+		std::getline(ss, s, ','); t.tile_id = std::stoi(s);
+		std::getline(ss, s, ','); t.pos.x = std::stof(s);
+		std::getline(ss, s, ','); t.pos.y = std::stof(s);
+		free_tiles.push_back(t);
+	}
+
+	return true;
+}

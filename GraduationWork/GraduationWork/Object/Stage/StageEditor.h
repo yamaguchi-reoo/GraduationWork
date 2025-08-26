@@ -34,8 +34,8 @@ private:
 
     EditMode current_mode;
 
-    eObjectType selected_tile_type;       // 現在選択中のタイルタイプ
-    std::vector<eObjectType> tile_types;  // タイルタイプリスト
+    eObjectType selected_object_type;       // 現在選択中のタイルタイプ
+    std::vector<eObjectType> object_types;  // タイルタイプリスト
     int selected_tile_id;                 // UIで選択中のタイルID
     std::vector<int> tile_ids;            // UI用タイルIDリスト
 
@@ -87,4 +87,6 @@ private:
     void DrawUI();
     void DrawTiles();
     void DrawScrollBar();
+
+
 };

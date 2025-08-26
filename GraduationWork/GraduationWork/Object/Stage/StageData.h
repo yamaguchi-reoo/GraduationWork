@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "../../Utility/TileSet.h"
+#include "../../Utility/Vector2D.h"
 
 class StageData
 {
@@ -11,6 +13,7 @@ private:
 	std::vector<std::vector<int>> tile_layer;    // 見た目用タイル
 	std::vector<std::vector<int>> object_layer;  // ゲームオブジェクト
 
+	std::vector<PlacedTile> free_tiles; // 自由配置タイル用
 public:
 	StageData(int _width, int _height);
 
@@ -35,6 +38,16 @@ public:
 
 	int GetWidth() const { return width; }
 	int GetHeight() const { return height; }
+
+public:
+	//自由配置タイル用
+	void AddPlacedTile(int id, const Vector2D& pos);
+	void RemovePlacedTileNear(const Vector2D& pos, float radius);
+
+	bool SaveFreeTilesCSV(const std::string& filename);
+	bool LoadFreeTilesCSV(const std::string& filename);
+
+	const std::vector<PlacedTile>& GetFreeTiles() const { return free_tiles; }
 
 };
 

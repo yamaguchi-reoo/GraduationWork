@@ -85,6 +85,8 @@ void InGameScene::Draw()
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
 
+	DrawTiles();
+
 	if (edit_mode)
 	{
 		// îwåiÇîºìßñæÇ≈çïÇ≠ìhÇÈ
@@ -118,6 +120,29 @@ void InGameScene::Finalize()
 eSceneType InGameScene::GetNowSceneType() const
 {
 	return eSceneType::GAME_MAIN;
+}
+
+void InGameScene::DrawTiles()
+{
+	for (int y = 0; y < stage_data.GetHeight(); ++y)
+	{
+		for (int x = 0; x < stage_data.GetWidth(); ++x)
+		{
+			int tile_id = stage_data.GetTile(x, y);
+			if (tile_id <= 0) continue;
+
+			int draw_x = x * BLOCK_SIZE - static_cast<int>(camera_location.x);
+			int draw_y = y * BLOCK_SIZE - static_cast<int>(camera_location.y);
+
+			if (tile_set.HasTile(tile_id))
+				tile_set.DrawTile(tile_id, draw_x, draw_y);
+		}
+	}
+
+	/*for (auto& t : placed_tiles)
+	{
+		tile_set.DrawTile(t.tile_id, (int)(t.pos.x - camera_location.x), (int)(t.pos.y - camera_location.y));
+	}*/
 }
 
 void InGameScene::LoadStage()
