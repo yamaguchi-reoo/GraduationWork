@@ -53,6 +53,8 @@ public:
 
 	GameObject* FindObjectType(eObjectType type);
 
+	std::vector<GameObject*>GetObjects(eObjectType type);
+
 	bool IsOnScreen(GameObject* obj, Vector2D offset);
 
 

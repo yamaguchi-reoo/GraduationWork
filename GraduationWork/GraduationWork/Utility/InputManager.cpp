@@ -52,6 +52,8 @@ void InputManager::Update()
 	}
 	GetMousePoint(&cursor.x, &cursor.y);
 
+	old_mouse_wheel = now_mouse_wheel;
+	now_mouse_wheel = GetMouseWheelRotVol();
 
 	//前回のボタンの更新
 	memcpy(old_button, now_button, (sizeof(char) * BUTTON_MAX));
@@ -105,6 +107,11 @@ Cursor InputManager::GetMouseCursor()
 {
 	//カーソルを返す
 	return cursor;
+}
+
+int InputManager::GetMouseWheel() const
+{
+	return now_mouse_wheel - old_mouse_wheel;
 }
 
 bool InputManager::GetButton(int button) const

@@ -1,183 +1,354 @@
 #include "StageEditor.h"
 #include <DxLib.h>
-
+#include <algorithm>
 #include "../../Utility/InputManager.h"
+#include "../../Utility/UserTemplate.h"
 #include "../../common.h"
+#include <cassert>
 
-#include <fstream>
+#include "../ObjectInfo.h"
 
 StageEditor::StageEditor(int _grid_size, StageData* _stage_data)
-    : grid_size(_grid_size), stage_data(_stage_data),
-    selected_tile_type(NONE), tile_types(),
-    ui_pos({ 50.0f, 50.0f }), ui_size{ 0 }, ui_dragging(false), ui_drag_offset({ 0,0 }),
-    hovered_grid_x(-1), hovered_grid_y(-1)
+    : grid_size(_grid_size),
+    stage_data(_stage_data),
+    tile_set(nullptr),
+    camera_offset{ 0,0 },
+    selected_tile_id(0),
+    ui_pos{ 0,0 },
+    ui_size{ 0,0 },
+    ui_dragging(false),
+    ui_drag_offset{ 0,0 },
+    ui_scroll_offset(0),
+    max_scroll(0),
+    tiles_per_row(2),
+    tile_width(100),
+    tile_height(80),
+    ui_panel_width(0),
+    ui_panel_height(0),
+    hovered_grid_x(-1),
+    hovered_grid_y(-1),
+	current_mode(EditMode::Object)
 {
+    assert(stage_data != nullptr);
+
     width = stage_data->GetWidth();
     height = stage_data->GetHeight();
-
     grid_width = width;
     grid_height = height;
 
-    // タイルリストの初期化（表示順をTILE_INFOに従う）
-    tile_types.clear();
-    for (int i = 0; i < OBJECTTYPE_COUNT; ++i) // 0はNONEなのでスキップ
-    {
-        tile_types.push_back(static_cast<eObjectType>(i));
+    // タイルセット初期化（既定のパスを使う。必要なら引数化してください）
+    tile_set = new TileSet("Resource/Images/Tiles/tile.png", BLOCK_SIZE, BLOCK_SIZE);
+    tile_set->LoadFromJson("Resource/Images/Tiles/tile.json");
+
+    // tile_ids を作る
+    int count = tile_set->GetTileCount();
+    tile_ids.reserve(count);
+    for (int i = 0; i < count; ++i) tile_ids.push_back(i);
+
+    // UIパネル幅・高さ計算（余白込み）
+    ui_panel_width = tiles_per_row * tile_width + 20;
+    ui_panel_height = SCREEN_HEIGHT - 20;
+
+    // UIは右側に固定
+    ui_pos.x = SCREEN_WIDTH - ui_panel_width;
+    ui_pos.y = 0;
+    ui_size.x = static_cast<float>(ui_panel_width);
+    ui_size.y = static_cast<float>(ui_panel_height + 20); // ヘッダ分含む
+
+    selection_box.x = static_cast<int>(ui_pos.x);
+    selection_box.y = 20; // ヘッダ下
+    selection_box.width = ui_panel_width;
+    selection_box.height = ui_panel_height;
+
+    selected_object_type = NONE;
+    for (int i = 0; i < OBJECTTYPE_COUNT; ++i) {
+        object_types.push_back(static_cast<eObjectType>(i));
     }
 }
 
 StageEditor::~StageEditor()
 {
+    delete tile_set;
 }
 
-void StageEditor::Initialize()
+void StageEditor::Initialize() 
 {
-    // 必要ならロードなど
-}
 
-void StageEditor::CalcUIRect(int& out_w, int& out_h) const
-{
-    int tile_box_w = 120;
-    int tile_box_h = static_cast<int>(tile_types.size()) * 50;
-    out_w = tile_box_w;
-    out_h = tile_box_h + 60;
 }
-
-void StageEditor::ClampUIToScreen()
-{
-    int ui_w, ui_h;
-    CalcUIRect(ui_w, ui_h);
-
-    if (ui_pos.x < 0) ui_pos.x = 0;
-    if (ui_pos.y < 0) ui_pos.y = 0;
-    if (ui_pos.x > SCREEN_WIDTH - ui_w) ui_pos.x = SCREEN_WIDTH - ui_w;
-    if (ui_pos.y > SCREEN_HEIGHT - ui_h) ui_pos.y = SCREEN_HEIGHT - ui_h;
-}
+void StageEditor::Finalize() {}
 
 void StageEditor::Update(Vector2D& offset)
 {
+    // offset は呼び出し元のカメラ位置（world->screen 用）なので同期して最後に書き戻す
+    camera_offset = offset;
+
     InputManager* input = InputManager::GetInstance();
     Cursor c = input->GetMouseCursor();
-
-    int header_height = 20;
-    int tile_height = 50;
-    ui_size.x = 120;
-    ui_size.y = header_height + static_cast<int>(tile_types.size()) * tile_height + 20;
-
-    selection_box.x = ui_pos.x;
-    selection_box.y = ui_pos.y + header_height;
-    selection_box.width = ui_size.x;
-    selection_box.height = static_cast<int>(tile_types.size()) * tile_height;
+    Vector2D mouse_pos{ (float)c.x, (float)c.y };
 
     bool ui_handled = false;
 
-    // --- UIタイル選択 ---
-    int y = selection_box.y;
-    for (size_t i = 0; i < tile_types.size(); ++i)
+    // ← モード切り替え
+    if (input->GetKeyDown(KEY_INPUT_TAB))
     {
-        bool over_button = (c.x >= selection_box.x + 5 &&
-            c.x <= selection_box.x + selection_box.width - 10 &&
-            c.y >= y &&
-            c.y <= y + 40);
-        if (over_button && input->GetMouseDown(MOUSE_INPUT_LEFT))
-        {
-            selected_tile_type = tile_types[i];
-            ui_handled = true;
-        }
-        y += 50;
+        current_mode = (current_mode == EditMode::Tile) ? EditMode::Object : EditMode::Tile;
     }
 
-    // --- グリッド上のマウス座標を計算 ---
-    hovered_grid_x = (c.x + camera_offset.x) / grid_size;
-    hovered_grid_y = (c.y + camera_offset.y) / grid_size;
+    // UI 入力処理（スクロール/選択）
+    HandleUIInput(mouse_pos, ui_handled);
 
-    if (ui_handled)
-    {
-        hovered_grid_x = -1;
-        hovered_grid_y = -1;
-    }
+    // グリッド編集（UI 操作が優先される）
+    HandleGridEditing(mouse_pos, ui_handled);
 
-    // --- グリッド編集 ---
-    if (!ui_handled && hovered_grid_x >= 0 && hovered_grid_x < grid_width &&
-        hovered_grid_y >= 0 && hovered_grid_y < grid_height)
-    {
-        if (input->GetMouse(MOUSE_INPUT_LEFT) && selected_tile_type != NONE)
-        {
-            stage_data->SetTile(hovered_grid_x, hovered_grid_y, selected_tile_type);
+    // カメラ移動（UI の外でのみ）
+    HandleCameraMovement(!ui_handled);
+
+    // 書き戻し（外部の camera offset を更新）
+
+    offset = camera_offset;
+}
+
+void StageEditor::Draw(Vector2D /*offset*/)
+{
+    DrawGrid();
+    DrawUI();
+    DrawTiles();
+    DrawScrollBar();
+}
+
+void StageEditor::HandleUIInput(const Vector2D& mouse_pos, bool& out_ui_handled)
+{
+    InputManager* input = InputManager::GetInstance();
+
+    if (current_mode == EditMode::Tile) {
+        // 既存のタイル用のUI処理
+        int rows = static_cast<int>((tile_ids.size() + tiles_per_row - 1) / tiles_per_row);
+        int content_height = rows * tile_height;
+        max_scroll = Max(0, content_height - selection_box.height);
+
+        int scroll_delta = 0;
+        if (input->GetKey(KEY_INPUT_UP))    scroll_delta = -tile_height;
+        if (input->GetKey(KEY_INPUT_DOWN))  scroll_delta = +tile_height;
+        if (scroll_delta != 0)
+            ui_scroll_offset = Clamp(ui_scroll_offset + scroll_delta, 0, max_scroll);
+
+        int y_start = selection_box.y - ui_scroll_offset;
+        for (size_t i = 0; i < tile_ids.size(); ++i) {
+            int row = static_cast<int>(i) / tiles_per_row;
+            int col = static_cast<int>(i) % tiles_per_row;
+            int x = selection_box.x + col * tile_width + 5;
+            int y = y_start + row * tile_height;
+
+            if (y + tile_height < selection_box.y || y > selection_box.y + selection_box.height) continue;
+
+            bool over_button = (mouse_pos.x >= x && mouse_pos.x <= x + tile_width - 5 &&
+                mouse_pos.y >= y && mouse_pos.y <= y + tile_height - 5);
+            if (over_button && input->GetMouseDown(MOUSE_INPUT_LEFT)) {
+                selected_tile_id = tile_ids[i];
+                out_ui_handled = true;
+            }
         }
-
-        if (input->GetMouse(MOUSE_INPUT_RIGHT))
-        {
-            stage_data->SetTile(hovered_grid_x, hovered_grid_y, NONE);
-        }
     }
-
-    // --- カメラ移動（UI操作中は無効） ---
-    if (!ui_handled)
-    {
-        float speed = 8.0f;
-        if (input->GetKey(KEY_INPUT_W)) camera_offset.y -= speed;
-        if (input->GetKey(KEY_INPUT_S)) camera_offset.y += speed;
-        if (input->GetKey(KEY_INPUT_A)) camera_offset.x -= speed;
-        if (input->GetKey(KEY_INPUT_D)) camera_offset.x += speed;
+    else { // Objectモード
+        int y = selection_box.y;
+        for (size_t i = 0; i < object_types.size(); ++i) {
+            bool over_button = (mouse_pos.x >= selection_box.x + 5 &&
+                mouse_pos.x <= selection_box.x + selection_box.width - 10 &&
+                mouse_pos.y >= y &&
+                mouse_pos.y <= y + 40);
+            if (over_button && input->GetMouseDown(MOUSE_INPUT_LEFT)) {
+                selected_object_type = object_types[i];
+                out_ui_handled = true;
+            }
+            y += 50;
+        }
     }
 }
 
-void StageEditor::Draw(Vector2D)
+void StageEditor::HandleGridEditing(const Vector2D& mouse_pos, bool ui_handled)
 {
-    Cursor c = InputManager::GetInstance()->GetMouseCursor();
+    InputManager* input = InputManager::GetInstance();
 
-    // グリッド描画
+    hovered_grid_x = static_cast<int>((mouse_pos.x + camera_offset.x) / grid_size);
+    hovered_grid_y = static_cast<int>((mouse_pos.y + camera_offset.y) / grid_size);
+
+    bool is_over_ui = (mouse_pos.x >= ui_pos.x && mouse_pos.x <= ui_pos.x + ui_panel_width &&
+        mouse_pos.y >= ui_pos.y && mouse_pos.y <= ui_pos.y + ui_panel_height + 20);
+    if (ui_handled || is_over_ui)
+    {
+        hovered_grid_x = -1;
+        hovered_grid_y = -1;
+        return;
+    }
+
+    if (hovered_grid_x >= 0 && hovered_grid_x < grid_width &&
+        hovered_grid_y >= 0 && hovered_grid_y < grid_height)
+    {
+        if (current_mode == EditMode::Tile)
+        {
+            if (input->GetMouse(MOUSE_INPUT_LEFT) && selected_tile_id >= 0)
+            {
+                stage_data->SetTile(hovered_grid_x, hovered_grid_y, selected_tile_id);
+            }
+            if (input->GetMouse(MOUSE_INPUT_RIGHT))
+            {
+                stage_data->SetTile(hovered_grid_x, hovered_grid_y, 0);
+            }
+        }
+        else if (current_mode == EditMode::Object)
+        {
+            if (input->GetMouse(MOUSE_INPUT_LEFT))
+            {
+                // 選択されたオブジェクトタイプをセット
+                stage_data->SetObj(hovered_grid_x, hovered_grid_y, static_cast<int>(selected_object_type));
+            }
+            if (input->GetMouse(MOUSE_INPUT_RIGHT))
+            {
+                stage_data->SetObj(hovered_grid_x, hovered_grid_y, 0); // 空に戻す
+            }
+        }
+    }
+}
+
+void StageEditor::HandleCameraMovement(bool allow)
+{
+    if (!allow) return;
+    InputManager* input = InputManager::GetInstance();
+    float cam_speed = 8.0f;
+    if (input->GetKey(KEY_INPUT_W)) camera_offset.y -= cam_speed;
+    if (input->GetKey(KEY_INPUT_S)) camera_offset.y += cam_speed;
+    if (input->GetKey(KEY_INPUT_A)) camera_offset.x -= cam_speed;
+    if (input->GetKey(KEY_INPUT_D)) camera_offset.x += cam_speed;
+}
+
+void StageEditor::DrawGrid()
+{
     for (int y = 0; y < grid_height; ++y)
     {
         for (int x = 0; x < grid_width; ++x)
         {
-            eObjectType type = static_cast<eObjectType>(stage_data->GetTile(x, y));
-            auto info = GetTypeInfo(type);
+            int draw_x = x * grid_size - static_cast<int>(camera_offset.x);
+            int draw_y = y * grid_size - static_cast<int>(camera_offset.y);
 
-            int draw_x0 = x * grid_size - static_cast<int>(camera_offset.x);
-            int draw_y0 = y * grid_size - static_cast<int>(camera_offset.y);
-            int draw_x1 = (x + 1) * grid_size - static_cast<int>(camera_offset.x);
-            int draw_y1 = (y + 1) * grid_size - static_cast<int>(camera_offset.y);
-
-            DrawBox(draw_x0, draw_y0, draw_x1, draw_y1, info.color, TRUE);
-            DrawString(draw_x0 + 4, draw_y0 + 4, info.name, GetColor(0, 0, 0));
+            if (current_mode == EditMode::Tile)
+            {
+                int id = stage_data->GetTile(x, y);
+                if (id >= 0 && tile_set->HasTile(id))
+                {
+                    tile_set->DrawTile(id, draw_x, draw_y);
+                }
+                // TileモードでもID表示は任意で
+                DrawFormatString(draw_x, draw_y, GetColor(255, 255, 0), "%d", id);
+          
+            }
+            else // Objectモード
+            {
+                eObjectType type = static_cast<eObjectType>(stage_data->GetObj(x, y));
+                auto info = GetTypeInfo(type);
+                DrawBox(draw_x, draw_y, draw_x + grid_size, draw_y + grid_size, info.color, TRUE);
+                DrawString(draw_x + 2, draw_y + 2, info.name, GetColor(0, 0, 0));
+            }
         }
     }
 
-    // UI描画
-    DrawBox(ui_pos.x, ui_pos.y, ui_pos.x + ui_size.x, ui_pos.y + 20, GetColor(80, 80, 80), TRUE);
-    DrawString(ui_pos.x + 6, ui_pos.y + 4, "Stage Editor", GetColor(255, 255, 255));
+    // ホバー表示
+    if (hovered_grid_x >= 0 && hovered_grid_y >= 0 &&
+        hovered_grid_x < grid_width && hovered_grid_y < grid_height)
+    {
+        int hx0 = hovered_grid_x * grid_size - static_cast<int>(camera_offset.x);
+        int hy0 = hovered_grid_y * grid_size - static_cast<int>(camera_offset.y);
+        int hx1 = hx0 + grid_size;
+        int hy1 = hy0 + grid_size;
+        DrawBox(hx0, hy0, hx1, hy1, GetColor(200, 200, 255), FALSE);
+    }
+}
 
-    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+void StageEditor::DrawUI()
+{
+    // ヘッダー
+    const int header_h = 20;
+    DrawBox(static_cast<int>(ui_pos.x), static_cast<int>(ui_pos.y),
+        static_cast<int>(ui_pos.x) + selection_box.width,
+        static_cast<int>(ui_pos.y) + header_h, GetColor(80, 80, 80), TRUE);
+    DrawString(static_cast<int>(ui_pos.x) + 6, static_cast<int>(ui_pos.y) + 4, "Stage Editor", GetColor(255, 255, 255));
+
+    const char* mode_text = (current_mode == EditMode::Tile) ? "Mode:TILE" : "Mode:OBJ";
+    DrawFormatString((int)ui_pos.x + 6, (int)ui_pos.y + 4, GetColor(255, 255, 255),
+        "Stage Editor [%s]", mode_text);
+
+    // 背景（白）
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
     DrawBox(selection_box.x, selection_box.y,
         selection_box.x + selection_box.width,
         selection_box.y + selection_box.height,
-        GetColor(50, 50, 50), TRUE);
+        GetColor(255, 255, 255), TRUE);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+    // 枠線
     DrawBox(selection_box.x, selection_box.y,
         selection_box.x + selection_box.width,
         selection_box.y + selection_box.height,
         GetColor(0, 0, 0), FALSE);
+}
 
-    // タイル選択ボタン描画
-    int y = selection_box.y;
-    int button_width = selection_box.width - 10;
-    int button_height = 40;
-    for (size_t i = 0; i < tile_types.size(); ++i)
-    {
-        auto info = GetTypeInfo(tile_types[i]);
-        int color = (selected_tile_type == tile_types[i]) ? GetColor(255, 255, 0) : info.color;
+void StageEditor::DrawTiles()
+{
+    if (current_mode == EditMode::Tile) {
+        // タイルリスト描画
+        int y_start = selection_box.y - ui_scroll_offset;
+        int button_w = tile_width - 5;
+        int button_h = tile_height - 5;
 
-        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
-        DrawBox(selection_box.x + 5, y, selection_box.x + 5 + button_width, y + button_height, color, TRUE);
-        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
-        DrawBox(selection_box.x + 5, y, selection_box.x + 5 + button_width, y + button_height, GetColor(0, 0, 0), FALSE);
-        DrawFormatString(selection_box.x + 10, y + 10, GetColor(255, 255, 255), "%s", info.name);
-        y += 50;
+        for (size_t i = 0; i < tile_ids.size(); ++i) {
+            int row = static_cast<int>(i) / tiles_per_row;
+            int col = static_cast<int>(i) % tiles_per_row;
+            int x = selection_box.x + col * tile_width + 5;
+            int y = y_start + row * tile_height;
+
+            if (y + button_h < selection_box.y || y > selection_box.y + selection_box.height) continue;
+
+            bool selected = (selected_tile_id == tile_ids[i]);
+            int bg = selected ? GetColor(255, 255, 0) : GetColor(255, 255, 255);
+
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+            DrawBox(x, y, x + button_w, y + button_h, bg, TRUE);
+            SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+            DrawBox(x, y, x + button_w, y + button_h, GetColor(0, 0, 0), FALSE);
+
+            TileInfo const* info = tile_set->GetTileInfo(tile_ids[i]);
+            if (info) {
+                tile_set->DrawTile(tile_ids[i], x + 5, y + 5);
+            }
+            DrawFormatString(x + 60, y + 10, GetColor(0, 0, 0), "%d", tile_ids[i]);
+        }
+    }
+    else {
+        // オブジェクトリスト描画
+        int y = selection_box.y;
+        int button_width = selection_box.width - 10;
+        int button_height = 40;
+        for (size_t i = 0; i < object_types.size(); ++i) {
+            auto info = GetTypeInfo(object_types[i]);
+            int color = (selected_object_type == object_types[i]) ? GetColor(255, 255, 0) : info.color;
+
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, 200);
+            DrawBox(selection_box.x + 5, y, selection_box.x + 5 + button_width, y + button_height, color, TRUE);
+            SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+            DrawBox(selection_box.x + 5, y, selection_box.x + 5 + button_width, y + button_height, GetColor(0, 0, 0), FALSE);
+            DrawFormatString(selection_box.x + 10, y + 10, GetColor(255, 255, 255), "%s", info.name);
+            y += 50;
+        }
     }
 }
 
-void StageEditor::Finalize()
+void StageEditor::DrawScrollBar()
 {
+    if (max_scroll <= 0) return;
+
+    int bar_w = 6;
+    int bar_h = Max(8, (selection_box.height * selection_box.height) / (selection_box.height + max_scroll));
+    int bar_x = selection_box.x + selection_box.width - 10;
+    int bar_y = selection_box.y + (ui_scroll_offset * (selection_box.height - bar_h)) / Max(1, max_scroll);
+
+    DrawBox(bar_x, bar_y, bar_x + bar_w, bar_y + bar_h, GetColor(0, 0, 0), TRUE);
 }
