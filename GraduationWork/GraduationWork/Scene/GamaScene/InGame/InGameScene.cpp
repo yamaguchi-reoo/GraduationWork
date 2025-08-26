@@ -139,6 +139,14 @@ void InGameScene::DrawTiles()
 		}
 	}
 
+	// 自由配置タイル描画
+	for (const auto& tile : stage_data.GetFreeTiles())
+	{
+		int draw_x = static_cast<int>(tile.pos.x - camera_location.x);
+		int draw_y = static_cast<int>(tile.pos.y - camera_location.y);
+		tile_set.DrawTile(tile.tile_id, draw_x, draw_y);
+	}
+
 	/*for (auto& t : placed_tiles)
 	{
 		tile_set.DrawTile(t.tile_id, (int)(t.pos.x - camera_location.x), (int)(t.pos.y - camera_location.y));
