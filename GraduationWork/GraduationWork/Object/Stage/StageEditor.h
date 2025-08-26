@@ -40,6 +40,7 @@ private:
     std::vector<int> tile_ids;            // UI用タイルIDリスト
 
 
+
     TileSet* tile_set; // 描画用タイルセット
     Vector2D camera_offset; // カメラオフセット（スクロール用）
 
@@ -86,6 +87,7 @@ private:
     void DrawGrid();
     void DrawUI();
     void DrawTiles();
+    void DrawFreeTiles();
     void DrawScrollBar();
 
 

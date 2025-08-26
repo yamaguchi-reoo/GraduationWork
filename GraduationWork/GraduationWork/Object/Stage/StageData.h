@@ -4,6 +4,14 @@
 #include "../../Utility/TileSet.h"
 #include "../../Utility/Vector2D.h"
 
+struct PlacedTile
+{
+	int tile_id;      // タイル番号
+	Vector2D pos;     // ワールド座標（任意）
+	float scale;      // 拡大縮小（オプション）
+	bool active;
+};
+
 class StageData
 {
 private:
