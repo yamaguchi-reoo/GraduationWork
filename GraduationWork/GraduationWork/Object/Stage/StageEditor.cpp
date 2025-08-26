@@ -179,7 +179,7 @@ void StageEditor::HandleGridEditing(const Vector2D& mouse_pos, bool ui_handled)
     InputManager* input = InputManager::GetInstance();
 
     if (current_mode == EditMode::Tile) {
-        if (input->GetMouse(MOUSE_INPUT_LEFT) && selected_tile_id >= 0)
+       /* if (input->GetMouse(MOUSE_INPUT_LEFT) && selected_tile_id >= 0)
         {
             Vector2D world_pos = mouse_pos + camera_offset;
             stage_data->AddPlacedTile(selected_tile_id, world_pos);
@@ -188,6 +188,36 @@ void StageEditor::HandleGridEditing(const Vector2D& mouse_pos, bool ui_handled)
         {
             Vector2D world_pos = mouse_pos + camera_offset;
             stage_data->RemovePlacedTileNear(world_pos, tile_set->GetTileWidth() / 2.0f);
+        }*/
+        Vector2D world_pos = mouse_pos + camera_offset;
+
+        if (preview_tile.active) {
+            // ドラッグで位置更新
+            preview_tile.pos = world_pos;
+
+            // 左クリックで確定（押した瞬間だけ）
+            if (input->GetMouseDown(MOUSE_INPUT_LEFT)) {
+                stage_data->AddPlacedTile(preview_tile.tile_id, preview_tile.pos);
+                preview_tile.active = false;
+            }
+            // 右クリックでキャンセル
+            if (input->GetMouseDown(MOUSE_INPUT_RIGHT)) {
+                preview_tile.active = false;
+            }
+        }
+        else {
+            // UIからタイル選択時にプレビュー開始
+            if (selected_tile_id >= 0 && input->GetMouseDown(MOUSE_INPUT_LEFT)) {
+                preview_tile.tile_id = selected_tile_id;
+                preview_tile.pos = world_pos;
+                preview_tile.active = true;
+                preview_tile.scale = 1.0f;
+            }
+
+            // 右クリックで既存タイルを削除
+            if (input->GetMouseDown(MOUSE_INPUT_RIGHT)) {
+                stage_data->RemovePlacedTileNear(world_pos, tile_set->GetTileWidth() / 2.0f);
+            }
         }
     }
     else if (current_mode == EditMode::Object) {
@@ -344,11 +374,19 @@ void StageEditor::DrawTiles()
 
 void StageEditor::DrawFreeTiles()
 {
+    // 確定済みタイル描画
     for (const auto& tile : stage_data->GetFreeTiles())
     {
         int draw_x = static_cast<int>(tile.pos.x - camera_offset.x);
         int draw_y = static_cast<int>(tile.pos.y - camera_offset.y);
         tile_set->DrawTile(tile.tile_id, draw_x, draw_y);
+    }
+
+    // プレビュー描画
+    if (preview_tile.active) {
+        int draw_x = static_cast<int>(preview_tile.pos.x - camera_offset.x);
+        int draw_y = static_cast<int>(preview_tile.pos.y - camera_offset.y);
+        tile_set->DrawTile(preview_tile.tile_id, draw_x, draw_y);
     }
 }
 
