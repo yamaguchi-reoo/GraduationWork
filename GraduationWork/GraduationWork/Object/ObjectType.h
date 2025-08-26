@@ -34,7 +34,7 @@ static TypeInfo TYPE_INFO[OBJECTTYPE_COUNT] = {
     { INVISIBLEFLOOR,"Invisible", GetColor(100, 100, 200) },
     { PUSHBLOCK,     "Push",      GetColor(200, 100, 200) },
     { ENEMY,         "Enemy",     GetColor(100, 100, 200) },
-    { REALENEMY,     "REnemy",    GetColor( 50, 100, 200) }
+    { REALENEMY,     "REnemy",    GetColor( 50, 100, 200) },
     { PLATE,         "Plate",     GetColor(200, 0, 200)}
 };
 
