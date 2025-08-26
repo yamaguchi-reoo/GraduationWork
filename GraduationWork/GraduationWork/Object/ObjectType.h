@@ -30,7 +30,8 @@ static TypeInfo TILE_INFO[OBJECTTYPE_COUNT] = {
     { WALL,          "Wall",      GetColor(150, 150, 150) },
     { LIGHT,         "Light",     GetColor(255, 255, 0) },
     { INVISIBLEFLOOR,"Invisible", GetColor(100, 100, 200) },
-    { PUSHBLOCK,     "Push",      GetColor(200, 100, 200) }
+    { PUSHBLOCK,     "Push",      GetColor(200, 100, 200) },
+    { PLATE,         "Plate",     GetColor(200, 0, 200)}
 };
 
 // ÉwÉãÉpÅ[ä÷êî

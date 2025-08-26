@@ -11,6 +11,9 @@ private:
 	float Draw_length;
 	int beam_width;
 	
+	float target_angle;  // 目標角度
+	float angle_speed;   // 角度の変化速度
+	
 	// 当たり判定用（地面付近に横長で置きたい）
 // 例えば pivot より少し下（y方向へ）に横幅の広い矩形を設定
 	Vector2D hit_box_pos;   // 当たり判定矩形の左上座標
