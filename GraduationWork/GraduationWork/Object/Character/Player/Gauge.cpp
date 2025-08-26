@@ -31,6 +31,7 @@ void Gauge::Initialize(GaugeType _type, int max, int current, int sections, unsi
     circle_base = LoadGraph("Resource/images/UI/circle_base.png"); // 1枚
 
     int sheet = LoadGraph("Resource/images/UI/flames_only_sheet.png"); // 4x2
+
     // 4x2に分割（174x178）
     int idx = 0;
     for (int r = 0; r < 2; ++r) {
@@ -65,7 +66,16 @@ void Gauge::Update(bool is_shadow, float delta)
 	//範囲を0からmax_valueの間に制限
     current_value = Clamp(current_value, 0, max_value);
 
-    UpdateShadowAnimation(delta);
+    // ★ 影状態のときだけ Shadow アニメを進める。影でなければリセットして非表示に。
+    if (is_shadow) {
+        UpdateShadowAnimation(delta);
+    }
+    else {
+        shadow_anim_elapsed = 0.0f;
+        shadow_frame = 0; // 先頭に戻す（任意）
+    }
+
+    //UpdateShadowAnimation(delta);
 }
 
 void Gauge::Draw(int center_x, int center_y, float scale) const 
@@ -120,6 +130,12 @@ void Gauge::DrawCircularSection(int cx, int cy, float scale) const
     float angle_per = 360.0f / section_count;
 
     DrawArc(cx, cy, inner, outer, 0, 360, GetColor(80, 80, 80)); // 背景
+
+       // ---- 円の縁（静止パーツ）を必ず同じ位置に描く ----
+    if (circle_base != -1) {
+        // 画像内の中心(OX,OY) = 画面の(cx,cy) に一致させる
+        DrawRotaGraph2(cx, cy, OX, OY, scale, 0.0, circle_base, TRUE);
+    }
 
     for (int i = 0; i < section_count; ++i) {
         float angle = i * angle_per;
