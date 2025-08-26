@@ -24,7 +24,7 @@ struct TypeInfo
 };
 
 // タイル情報テーブル（グローバルでもOK、StageEditorクラス内に static 配列でもOK）
-static TypeInfo TILE_INFO[OBJECTTYPE_COUNT] = {
+static TypeInfo TYPE_INFO[OBJECTTYPE_COUNT] = {
     { NONE,          "None",      GetColor(55, 55, 55) },
     { BLOCK,         "Block",     GetColor(100, 200, 100) },
     { PLAYER,        "Player",    GetColor(200, 100, 100) },
@@ -42,6 +42,6 @@ inline const TypeInfo& GetTypeInfo(eObjectType type)
 {
     int idx = static_cast<int>(type);
     if (idx < 0 || idx >= OBJECTTYPE_COUNT)
-        return TILE_INFO[0]; // NONEを返す
-    return TILE_INFO[idx];
+        return TYPE_INFO[0]; // NONEを返す
+    return TYPE_INFO[idx];
 }

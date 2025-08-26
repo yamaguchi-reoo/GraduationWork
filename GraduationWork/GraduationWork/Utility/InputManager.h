@@ -34,6 +34,9 @@ private:
     //マウスカーソルの座標
     Cursor cursor;
 
+    int now_mouse_wheel;   // 現在のホイール値
+    int old_mouse_wheel;   // 前回のホイール値
+
     //現在のコントローラーボタン入力状態
     char now_button[BUTTON_MAX];
     //前回のコントローラーボタン入力状態
@@ -87,6 +90,9 @@ public:
 
     //マウスカーソルの座標を取得
     Cursor GetMouseCursor();
+
+	//マウスホイールの回転量を取得（前回からの差分）
+    int GetMouseWheel() const;
 
     //コントローラ入力処理
     //コントローラのボタンが押されている間

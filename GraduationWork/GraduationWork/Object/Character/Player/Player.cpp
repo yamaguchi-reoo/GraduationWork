@@ -170,7 +170,6 @@ void Player::HandleInput()
 		velocity.x = 0.0f;
 	}
 
-	
 	//‰eó‘Ô
 	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
 	{

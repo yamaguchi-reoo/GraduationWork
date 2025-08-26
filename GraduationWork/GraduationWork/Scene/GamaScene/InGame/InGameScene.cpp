@@ -47,6 +47,7 @@ eSceneType InGameScene::Update()
 			// 編集モード終了 → 保存して再読み込み
 			//editor->SaveStageData("stage.csv");
 			stage_data.SaveCSV("Resource/File/Stage.csv");
+			stage_data.SaveTileCSV("Resource/File/Tile.csv");
 
 			// オブジェクトを一旦クリア
 			object_manager.Finalize();    // オブジェクト解放処理
@@ -79,7 +80,7 @@ eSceneType InGameScene::Update()
 
 void InGameScene::Draw()
 {
-	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(255, 0, 0), FALSE); 
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(185, 185, 185), TRUE); 
 	// 通常描画
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
@@ -127,6 +128,12 @@ void InGameScene::LoadStage()
 		return;
 	}
 
+	if (!stage_data.LoadTileCSV("Resource/File/Tile.csv"))
+	{
+		std::cerr << "Tileファイルを開けませんでした\n";
+		return;
+	}
+
 	SetStage(); // データをもとにオブジェクト生成
 }
 
@@ -138,12 +145,24 @@ void InGameScene::SetStage()
 	{
 		for (int x = 0; x < stage_data.GetWidth(); ++x)
 		{
+			// タイルレイヤー（背景やブロックの見た目用）
 			int tile = stage_data.GetTile(x, y);
 
-			// 左上原点で描画（上方向がy増加）
+			// 左上原点で描画位置
 			Vector2D world_pos(x * BLOCK_SIZE, y * BLOCK_SIZE);
 
+			//// 例えばタイル番号に応じて背景ブロック生成
 			switch (tile)
+			{
+			case BLOCK:
+				object_manager.CreateObject<Block>(world_pos, block_size);
+				break;
+			}
+
+			// オブジェクトレイヤー
+			int obj = stage_data.GetObj(x, y);
+
+			switch (obj)
 			{
 			case NONE:
 				break;
