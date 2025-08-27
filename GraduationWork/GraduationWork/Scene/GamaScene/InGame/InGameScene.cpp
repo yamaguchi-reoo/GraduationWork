@@ -178,19 +178,8 @@ void InGameScene::SetStage()
 	{
 		for (int x = 0; x < stage_data.GetWidth(); ++x)
 		{
-			// タイルレイヤー（背景やブロックの見た目用）
-			int tile = stage_data.GetTile(x, y);
-
 			// 左上原点で描画位置
 			Vector2D world_pos(x * BLOCK_SIZE, y * BLOCK_SIZE);
-
-			//// 例えばタイル番号に応じて背景ブロック生成
-			switch (tile)
-			{
-			case BLOCK:
-				object_manager.CreateObject<Block>(world_pos, block_size);
-				break;
-			}
 
 			// オブジェクトレイヤー
 			int obj = stage_data.GetObj(x, y);
