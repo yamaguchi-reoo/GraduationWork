@@ -1,4 +1,4 @@
-#include "Gauge.h"
+ï»¿#include "Gauge.h"
 #include <DxLib.h>
 #include <cmath>
 #include <algorithm>
@@ -25,14 +25,14 @@ void Gauge::Initialize(GaugeType _type, int max, int current, int sections, unsi
     shadow_anim_elapsed = 0.0f;
     shadow_frame = 0;
 
-    SetTransColor(255, 255, 255); // ”’‚ğ“§‰ßF‚Éİ’è
+    SetTransColor(255, 255, 255); // ç™½ã‚’é€éè‰²ã«è¨­å®š
     LoadDivGraph("Resource/images/UI/test_shadow2.png", 8, 4, 2, 174, 178, shadow_anim);
 
-    circle_base = LoadGraph("Resource/images/UI/circle_base.png"); // 1–‡
+    circle_base = LoadGraph("Resource/images/UI/circle_base.png"); // 1æš
 
     int sheet = LoadGraph("Resource/images/UI/flames_only_sheet.png"); // 4x2
 
-    // 4x2‚É•ªŠ„i174x178j
+    // 4x2ã«åˆ†å‰²ï¼ˆ174x178ï¼‰
     int idx = 0;
     for (int r = 0; r < 2; ++r) {
         for (int c = 0; c < 4; ++c) {
@@ -40,6 +40,15 @@ void Gauge::Initialize(GaugeType _type, int max, int current, int sections, unsi
         }
     }
 
+    // ç‚¹æ»…ã®åˆæœŸåŒ–
+    blink_elapsed = 5.0f;
+    blink_visible = true;
+    blink_interval = 5.0f; // 5ç§’é–“éš”
+    current_is_shadow = false;
+
+    fade_elapsed = 0.0f;
+    fade_speed = 1.0f; 
+    fade_alpha = 255;
 
 
 
@@ -47,32 +56,47 @@ void Gauge::Initialize(GaugeType _type, int max, int current, int sections, unsi
 
 void Gauge::SetValue(int value)
 {
-	// ”ÍˆÍ‚ğ0‚©‚çmax_value‚ÌŠÔ‚É§ŒÀ
+	// ç¯„å›²ã‚’0ã‹ã‚‰max_valueã®é–“ã«åˆ¶é™
     current_value = Clamp(value, 0, max_value);
 }
 
 void Gauge::Update(bool is_shadow, float delta)
 {
-	// ‰eó‘Ô‚Ì‚Æ‚«‚ÍÁ”ïAÀ‘Ô‚Ì‚Æ‚«‚Í‰ñ•œ
-    if(is_shadow) 
+    // ç¾åœ¨çŠ¶æ…‹ã‚’ä¿å­˜ï¼ˆDraw ãŒå‚ç…§ã™ã‚‹ãŸã‚ï¼‰
+    current_is_shadow = is_shadow;
+
+    // å½±çŠ¶æ…‹ã®ã¨ãã¯æ¶ˆè²»ã€å®Ÿæ…‹ã®ã¨ãã¯å›å¾©
+    if (is_shadow)
     {
-        current_value -= static_cast<int>(consumption);        
+        current_value -= static_cast<int>(consumption);
     }
-    else 
+    else
     {
         current_value += static_cast<int>(recovery);
     }
 
-	//”ÍˆÍ‚ğ0‚©‚çmax_value‚ÌŠÔ‚É§ŒÀ
+    // ç¯„å›²ã‚’0ã‹ã‚‰max_valueã®é–“ã«åˆ¶é™
     current_value = Clamp(current_value, 0, max_value);
 
-    // š ‰eó‘Ô‚Ì‚Æ‚«‚¾‚¯ Shadow ƒAƒjƒ‚ği‚ß‚éB‰e‚Å‚È‚¯‚ê‚ÎƒŠƒZƒbƒg‚µ‚Ä”ñ•\¦‚ÉB
     if (is_shadow) {
+        // å½±çŠ¶æ…‹ã®ã¨ãã ã‘ Shadow ã‚¢ãƒ‹ãƒ¡ã‚’é€²ã‚ã‚‹ã€‚å½±ã§ãªã‘ã‚Œã°ãƒªã‚»ãƒƒãƒˆã—ã¦éè¡¨ç¤ºã«ã€‚
         UpdateShadowAnimation(delta);
+
+        // å›å¾©ç”¨ã®ç‚¹æ»…ã¯å½±ã§ãªã„ã¨ãã«ä½¿ã†ã®ã§ãƒªã‚»ãƒƒãƒˆã—ã¦ãŠã
+        blink_elapsed = 0.0f;
+        blink_visible = true;
     }
     else {
+        // å›å¾©ä¸­ â†’ ãƒ•ã‚§ãƒ¼ãƒ‰é¢¨ç‚¹æ»…
+        fade_elapsed += delta * fade_speed;
+
+        // ã‚µã‚¤ãƒ³æ³¢ã§ 0ã€œ255 ã‚’å¾€å¾©ã•ã›ã‚‹
+        float t = (sinf(fade_elapsed * DX_PI_F) * 0.5f + 0.5f); // 0.0ã€œ1.0
+        fade_alpha = static_cast<int>(t * 255);
+
+        // å½±ã‚¢ãƒ‹ãƒ¡ã¯åœæ­¢ãƒ»å…ˆé ­ã«æˆ»ã™
         shadow_anim_elapsed = 0.0f;
-        shadow_frame = 0; // æ“ª‚É–ß‚·i”CˆÓj
+        shadow_frame = 0;
     }
 
     //UpdateShadowAnimation(delta);
@@ -84,8 +108,8 @@ void Gauge::Draw(int center_x, int center_y, float scale) const
     {
     case GaugeType::CircularFill:
         DrawCircularFill(center_x, center_y, scale);
-        DrawFormatString(1100, 100, GetColor(255, 255, 255), "Å‘åƒQ[ƒW—Ê: %d", max_value);
-        DrawFormatString(1100, 120, GetColor(255, 255, 255), "Œ»İ‚ÌƒQ[ƒW—Ê: %d", current_value);
+        DrawFormatString(1100, 100, GetColor(255, 255, 255), "æœ€å¤§ã‚²ãƒ¼ã‚¸é‡: %d", max_value);
+        DrawFormatString(1100, 120, GetColor(255, 255, 255), "ç¾åœ¨ã®ã‚²ãƒ¼ã‚¸é‡: %d", current_value);
         break;
     case GaugeType::CircularSection:
         DrawCircularSection(center_x, center_y, scale);
@@ -97,60 +121,79 @@ void Gauge::Draw(int center_x, int center_y, float scale) const
 
 void Gauge::DrawCircularFill(int cx, int cy, float scale) const
 {
+    // å›å¾©ä¸­ã§ç‚¹æ»…OFFãªã‚‰ã€æ ï¼ˆcircle_baseï¼‰ã ã‘æã„ã¦æ—©æœŸãƒªã‚¿ãƒ¼ãƒ³
+    if (!current_is_shadow && !blink_visible) {
+        if (circle_base != -1) {
+            DrawRotaGraph2(cx, cy, OX, OY, scale, 0.0, circle_base, TRUE);
+        }
+        return;
+    }
+
     int outer = static_cast<int>(BASE_RADIUS * scale);
     int inner = outer - static_cast<int>(BASE_THICKNESS * scale);
 
     float rate = Clamp(static_cast<float>(current_value) / max_value, 0.0f, 1.0f);
     float fill_angle = 360.0f * rate;
 
-    // ---- ƒQ[ƒW–{‘Ìi‰~E”’lj ----
-    DrawArc(cx, cy, inner, outer, 0, 360, GetColor(40, 40, 40));        // ”wŒi
-    DrawArc(cx, cy, inner, outer, -150, -150 + fill_angle, color);      // –{‘Ì
-    DrawCircleAA(cx, cy, inner - 1, 64, GetColor(0, 0, 0), TRUE);        // ’†‰›‹ó“´
+    // ---- ã‚²ãƒ¼ã‚¸æœ¬ä½“ï¼ˆå††ãƒ»æ•°å€¤ï¼‰ ----
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, fade_alpha);  // â† ãƒ•ã‚§ãƒ¼ãƒ‰ã‚’åæ˜ 
+    DrawArc(cx, cy, inner, outer, 0, 360, GetColor(40, 40, 40));
+    DrawArc(cx, cy, inner, outer, -150, -150 + fill_angle, color);
+    DrawCircleAA(cx, cy, inner - 1, 64, GetColor(0, 0, 0), TRUE);
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);         // â† ãƒªã‚»ãƒƒãƒˆ
 
-    // ---- ‰~‚Ì‰iÃ~ƒp[ƒcj‚ğ•K‚¸“¯‚¶ˆÊ’u‚É•`‚­ ----
+    // ---- å††ã®ç¸ï¼ˆé™æ­¢ãƒ‘ãƒ¼ãƒ„ï¼‰ã‚’å¿…ãšåŒã˜ä½ç½®ã«æã ----
     if (circle_base != -1) {
-        // ‰æ‘œ“à‚Ì’†S(OX,OY) = ‰æ–Ê‚Ì(cx,cy) ‚Éˆê’v‚³‚¹‚é
         DrawRotaGraph2(cx, cy, OX, OY, scale, 0.0, circle_base, TRUE);
     }
 
-    // ---- ‰ŠiƒAƒjƒj‚¾‚¯d‚Ë‚é ----
+    // ---- ç‚ï¼ˆã‚¢ãƒ‹ãƒ¡ï¼‰ã¯å¾“æ¥é€šã‚Šå½±ç”¨ã¨ã—ã¦æç”»ï¼ˆå¿…è¦ãªã‚‰ã“ã¡ã‚‰ã‚‚æ¡ä»¶ä»˜ã‘å¯ï¼‰ ----
     if (flame_anim[shadow_frame] != -1) {
-        SetDrawBlendMode(DX_BLENDMODE_ADD, 180); // ‚¨D‚İ‚Å
+        SetDrawBlendMode(DX_BLENDMODE_ADD, 180);
         DrawRotaGraph2(cx, cy, OX, OY, scale, 0.0, flame_anim[shadow_frame], TRUE);
         SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
     }
+
+    // ãƒ‡ãƒãƒƒã‚°è¡¨ç¤ºï¼ˆæ•°å€¤ï¼‰ã‚‚ç‚¹æ»…å¯¾è±¡ã«ã—ãŸã„ã®ã§ã“ã“ã§æç”»
+    DrawFormatString(1100, 100, GetColor(255, 255, 255), "æœ€å¤§ã‚²ãƒ¼ã‚¸é‡: %d", max_value);
+    DrawFormatString(1100, 120, GetColor(255, 255, 255), "ç¾åœ¨ã®ã‚²ãƒ¼ã‚¸é‡: %d", current_value);
 }
 
 void Gauge::DrawCircularSection(int cx, int cy, float scale) const
 {
-	// ‰~Œ`ƒZƒNƒVƒ‡ƒ“ƒQ[ƒW‚Ì•`‰æ
+    // å›å¾©ä¸­ã§ç‚¹æ»…OFFãªã‚‰ã€æ ï¼ˆcircle_baseï¼‰ã ã‘æã„ã¦æ—©æœŸãƒªã‚¿ãƒ¼ãƒ³
+    if (!current_is_shadow && !blink_visible) {
+        if (circle_base != -1) {
+            DrawRotaGraph2(cx, cy, OX, OY, scale, 0.0, circle_base, TRUE);
+        }
+        return;
+    }
+
+    // ä»¥ä¸‹ã¯æ—¢å­˜ã®å‡¦ç†
     int outer = static_cast<int>(BASE_RADIUS * scale);
     int inner = outer - static_cast<int>(BASE_THICKNESS * scale);
     float angle_per = 360.0f / section_count;
 
-    DrawArc(cx, cy, inner, outer, 0, 360, GetColor(80, 80, 80)); // ”wŒi
+    DrawArc(cx, cy, inner, outer, 0, 360, GetColor(80, 80, 80)); // èƒŒæ™¯
 
-       // ---- ‰~‚Ì‰iÃ~ƒp[ƒcj‚ğ•K‚¸“¯‚¶ˆÊ’u‚É•`‚­ ----
     if (circle_base != -1) {
-        // ‰æ‘œ“à‚Ì’†S(OX,OY) = ‰æ–Ê‚Ì(cx,cy) ‚Éˆê’v‚³‚¹‚é
         DrawRotaGraph2(cx, cy, OX, OY, scale, 0.0, circle_base, TRUE);
     }
 
     for (int i = 0; i < section_count; ++i) {
         float angle = i * angle_per;
-        DrawArc(cx, cy, inner, outer, angle, angle + 0.5f, GetColor(120, 120, 120)); // ‹æØ‚èü
+        DrawArc(cx, cy, inner, outer, angle, angle + 0.5f, GetColor(120, 120, 120)); // åŒºåˆ‡ã‚Šç·š
     }
 
     for (int i = 0; i < current_value; ++i) {
         float start = i * angle_per;
-        DrawArc(cx, cy, inner, outer, start - 150, start - 150 + angle_per, color); // ÀÛ‚ÌƒZƒNƒVƒ‡ƒ“
+        DrawArc(cx, cy, inner, outer, start - 150, start - 150 + angle_per, color); // å®Ÿéš›ã®ã‚»ã‚¯ã‚·ãƒ§ãƒ³
     }
 }
 
 void Gauge::DrawArc(int cx, int cy, int r1, int r2, float deg_start, float deg_end, int col) const 
 {
-	// ‰~ŒÊ‚Ì•`‰æ
+	// å††å¼§ã®æç”»
     for (float angle = deg_start; angle < deg_end; angle += 2.0f) {
         float rad = angle * DX_PI_F / 180.0f;
         int x1 = cx + cosf(rad) * r1;
@@ -165,7 +208,7 @@ void Gauge::UpdateShadowAnimation(float delta)
 {
     shadow_anim_elapsed += delta;
 
-    const float frame_interval = 1.0f / 12.0f; // 12fps‚Ì‰ÎƒAƒjƒ
+    const float frame_interval = 1.0f / 12.0f; // 12fpsã®ç«ã‚¢ãƒ‹ãƒ¡
 
     if (shadow_anim_elapsed >= frame_interval)
     {
