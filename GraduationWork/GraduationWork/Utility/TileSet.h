@@ -13,13 +13,6 @@ struct TileInfo
 	bool is_collision;
 };
 
-struct PlacedTile
-{
-	int tile_id;      // タイル番号
-	Vector2D pos;     // ワールド座標（任意）
-	float scale;      // 拡大縮小（オプション）
-};
-
 class TileSet
 {
 private:

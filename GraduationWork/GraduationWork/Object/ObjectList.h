@@ -8,3 +8,4 @@
 #include "Gimmick/PushBlock.h"
 #include "Character/Enemy/Enemy.h"
 #include "Character/Enemy/RealEnemy.h"
+#include "Gimmick/Plate.h"

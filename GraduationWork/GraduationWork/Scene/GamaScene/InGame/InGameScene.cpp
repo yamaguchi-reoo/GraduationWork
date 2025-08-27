@@ -139,6 +139,14 @@ void InGameScene::DrawTiles()
 		}
 	}
 
+	// 自由配置タイル描画
+	for (const auto& tile : stage_data.GetFreeTiles())
+	{
+		int draw_x = static_cast<int>(tile.pos.x - camera_location.x);
+		int draw_y = static_cast<int>(tile.pos.y - camera_location.y);
+		tile_set.DrawTile(tile.tile_id, draw_x, draw_y);
+	}
+
 	/*for (auto& t : placed_tiles)
 	{
 		tile_set.DrawTile(t.tile_id, (int)(t.pos.x - camera_location.x), (int)(t.pos.y - camera_location.y));
@@ -170,19 +178,8 @@ void InGameScene::SetStage()
 	{
 		for (int x = 0; x < stage_data.GetWidth(); ++x)
 		{
-			// タイルレイヤー（背景やブロックの見た目用）
-			int tile = stage_data.GetTile(x, y);
-
 			// 左上原点で描画位置
 			Vector2D world_pos(x * BLOCK_SIZE, y * BLOCK_SIZE);
-
-			//// 例えばタイル番号に応じて背景ブロック生成
-			switch (tile)
-			{
-			case BLOCK:
-				object_manager.CreateObject<Block>(world_pos, block_size);
-				break;
-			}
 
 			// オブジェクトレイヤー
 			int obj = stage_data.GetObj(x, y);
@@ -214,6 +211,9 @@ void InGameScene::SetStage()
 				break;
 			case REALENEMY:
 				object_manager.CreateObject<RealEnemy>(world_pos, Vector2D(48.0f, 64.0f));
+				break;
+			case PLATE:
+				object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f,10.0f));
 				break;
 			}
 		}
