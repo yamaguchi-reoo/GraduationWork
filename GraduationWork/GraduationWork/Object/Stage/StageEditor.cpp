@@ -111,6 +111,7 @@ void StageEditor::Update(Vector2D& offset)
 void StageEditor::Draw(Vector2D /*offset*/)
 {
     DrawGrid();
+    DrawFreeTiles();
     DrawUI();
     DrawTiles();
     DrawScrollBar();
@@ -121,43 +122,40 @@ void StageEditor::HandleUIInput(const Vector2D& mouse_pos, bool& out_ui_handled)
     InputManager* input = InputManager::GetInstance();
 
     if (current_mode == EditMode::Tile) {
-        // 既存のタイル用のUI処理
-        int rows = static_cast<int>((tile_ids.size() + tiles_per_row - 1) / tiles_per_row);
+        int rows = (tile_set->GetTileCount() + tiles_per_row - 1) / tiles_per_row;
         int content_height = rows * tile_height;
         max_scroll = Max(0, content_height - selection_box.height);
 
         int scroll_delta = 0;
-        if (input->GetKey(KEY_INPUT_UP))    scroll_delta = -tile_height;
-        if (input->GetKey(KEY_INPUT_DOWN))  scroll_delta = +tile_height;
+        if (input->GetKey(KEY_INPUT_UP)) scroll_delta = -tile_height;
+        if (input->GetKey(KEY_INPUT_DOWN)) scroll_delta = +tile_height;
         if (scroll_delta != 0)
             ui_scroll_offset = Clamp(ui_scroll_offset + scroll_delta, 0, max_scroll);
 
         int y_start = selection_box.y - ui_scroll_offset;
-        for (size_t i = 0; i < tile_ids.size(); ++i) {
-            int row = static_cast<int>(i) / tiles_per_row;
-            int col = static_cast<int>(i) % tiles_per_row;
+        for (int i = 0; i < tile_set->GetTileCount(); ++i) {
+            int row = i / tiles_per_row;
+            int col = i % tiles_per_row;
             int x = selection_box.x + col * tile_width + 5;
             int y = y_start + row * tile_height;
-
-            if (y + tile_height < selection_box.y || y > selection_box.y + selection_box.height) continue;
 
             bool over_button = (mouse_pos.x >= x && mouse_pos.x <= x + tile_width - 5 &&
                 mouse_pos.y >= y && mouse_pos.y <= y + tile_height - 5);
             if (over_button && input->GetMouseDown(MOUSE_INPUT_LEFT)) {
-                selected_tile_id = tile_ids[i];
+                selected_tile_id = i;
                 out_ui_handled = true;
             }
         }
     }
     else { // Objectモード
         int y = selection_box.y;
-        for (size_t i = 0; i < object_types.size(); ++i) {
+        for (int i = 0; i < OBJECTTYPE_COUNT; ++i) {
             bool over_button = (mouse_pos.x >= selection_box.x + 5 &&
                 mouse_pos.x <= selection_box.x + selection_box.width - 10 &&
                 mouse_pos.y >= y &&
                 mouse_pos.y <= y + 40);
             if (over_button && input->GetMouseDown(MOUSE_INPUT_LEFT)) {
-                selected_object_type = object_types[i];
+                selected_object_type = static_cast<eObjectType>(i);
                 out_ui_handled = true;
             }
             y += 50;
@@ -167,45 +165,67 @@ void StageEditor::HandleUIInput(const Vector2D& mouse_pos, bool& out_ui_handled)
 
 void StageEditor::HandleGridEditing(const Vector2D& mouse_pos, bool ui_handled)
 {
-    InputManager* input = InputManager::GetInstance();
-
     hovered_grid_x = static_cast<int>((mouse_pos.x + camera_offset.x) / grid_size);
     hovered_grid_y = static_cast<int>((mouse_pos.y + camera_offset.y) / grid_size);
 
     bool is_over_ui = (mouse_pos.x >= ui_pos.x && mouse_pos.x <= ui_pos.x + ui_panel_width &&
         mouse_pos.y >= ui_pos.y && mouse_pos.y <= ui_pos.y + ui_panel_height + 20);
-    if (ui_handled || is_over_ui)
-    {
+    if (ui_handled || is_over_ui) {
         hovered_grid_x = -1;
         hovered_grid_y = -1;
         return;
     }
 
-    if (hovered_grid_x >= 0 && hovered_grid_x < grid_width &&
-        hovered_grid_y >= 0 && hovered_grid_y < grid_height)
-    {
-        if (current_mode == EditMode::Tile)
+    InputManager* input = InputManager::GetInstance();
+
+    if (current_mode == EditMode::Tile) {
+       /* if (input->GetMouse(MOUSE_INPUT_LEFT) && selected_tile_id >= 0)
         {
-            if (input->GetMouse(MOUSE_INPUT_LEFT) && selected_tile_id >= 0)
-            {
-                stage_data->SetTile(hovered_grid_x, hovered_grid_y, selected_tile_id);
+            Vector2D world_pos = mouse_pos + camera_offset;
+            stage_data->AddPlacedTile(selected_tile_id, world_pos);
+        }
+        if (input->GetMouse(MOUSE_INPUT_RIGHT))
+        {
+            Vector2D world_pos = mouse_pos + camera_offset;
+            stage_data->RemovePlacedTileNear(world_pos, tile_set->GetTileWidth() / 2.0f);
+        }*/
+        Vector2D world_pos = mouse_pos + camera_offset;
+
+        if (preview_tile.active) {
+            // ドラッグで位置更新
+            preview_tile.pos = world_pos;
+
+            // 左クリックで確定（押した瞬間だけ）
+            if (input->GetMouseDown(MOUSE_INPUT_LEFT)) {
+                stage_data->AddPlacedTile(preview_tile.tile_id, preview_tile.pos);
+                preview_tile.active = false;
             }
-            if (input->GetMouse(MOUSE_INPUT_RIGHT))
-            {
-                stage_data->SetTile(hovered_grid_x, hovered_grid_y, 0);
+            // 右クリックでキャンセル
+            if (input->GetMouseDown(MOUSE_INPUT_RIGHT)) {
+                preview_tile.active = false;
             }
         }
-        else if (current_mode == EditMode::Object)
-        {
+        else {
+            // UIからタイル選択時にプレビュー開始
+            if (selected_tile_id >= 0 && input->GetMouseDown(MOUSE_INPUT_LEFT)) {
+                preview_tile.tile_id = selected_tile_id;
+                preview_tile.pos = world_pos;
+                preview_tile.active = true;
+                preview_tile.scale = 1.0f;
+            }
+
+            // 右クリックで既存タイルを削除
+            if (input->GetMouseDown(MOUSE_INPUT_RIGHT)) {
+                stage_data->RemovePlacedTileNear(world_pos, tile_set->GetTileWidth() / 2.0f);
+            }
+        }
+    }
+    else if (current_mode == EditMode::Object) {
+        if (hovered_grid_x >= 0 && hovered_grid_y >= 0) {
             if (input->GetMouse(MOUSE_INPUT_LEFT))
-            {
-                // 選択されたオブジェクトタイプをセット
                 stage_data->SetObj(hovered_grid_x, hovered_grid_y, static_cast<int>(selected_object_type));
-            }
             if (input->GetMouse(MOUSE_INPUT_RIGHT))
-            {
-                stage_data->SetObj(hovered_grid_x, hovered_grid_y, 0); // 空に戻す
-            }
+                stage_data->SetObj(hovered_grid_x, hovered_grid_y, 0);
         }
     }
 }
@@ -223,44 +243,55 @@ void StageEditor::HandleCameraMovement(bool allow)
 
 void StageEditor::DrawGrid()
 {
-    for (int y = 0; y < grid_height; ++y)
+    // 自由配置中ならグリッド非表示
+    if (current_mode == EditMode::Tile)
     {
-        for (int x = 0; x < grid_width; ++x)
-        {
-            int draw_x = x * grid_size - static_cast<int>(camera_offset.x);
-            int draw_y = y * grid_size - static_cast<int>(camera_offset.y);
+        //for (int y = 0; y < grid_height; ++y)
+        //{
+        //    for (int x = 0; x < grid_width; ++x)
+        //    {
+        //        int draw_x = x * grid_size - static_cast<int>(camera_offset.x);
+        //        int draw_y = y * grid_size - static_cast<int>(camera_offset.y);
 
-            if (current_mode == EditMode::Tile)
+        //        int id = stage_data->GetTile(x, y);
+        //        if (id >= 0 && tile_set->HasTile(id))
+        //        {
+        //            tile_set->DrawTile(id, draw_x, draw_y);
+        //        }
+
+        //        // ID表示は任意
+        //        DrawFormatString(draw_x, draw_y, GetColor(255, 255, 0), "%d", id);
+        //    }
+        //}
+    }
+    else if (current_mode == EditMode::Object)
+    {
+        for (int y = 0; y < grid_height; ++y)
+        {
+            for (int x = 0; x < grid_width; ++x)
             {
-                int id = stage_data->GetTile(x, y);
-                if (id >= 0 && tile_set->HasTile(id))
-                {
-                    tile_set->DrawTile(id, draw_x, draw_y);
-                }
-                // TileモードでもID表示は任意で
-                DrawFormatString(draw_x, draw_y, GetColor(255, 255, 0), "%d", id);
-          
-            }
-            else // Objectモード
-            {
+                int draw_x = x * grid_size - static_cast<int>(camera_offset.x);
+                int draw_y = y * grid_size - static_cast<int>(camera_offset.y);
+
                 eObjectType type = static_cast<eObjectType>(stage_data->GetObj(x, y));
                 auto info = GetTypeInfo(type);
                 DrawBox(draw_x, draw_y, draw_x + grid_size, draw_y + grid_size, info.color, TRUE);
                 DrawString(draw_x + 2, draw_y + 2, info.name, GetColor(0, 0, 0));
             }
         }
+        // ホバー表示は残す
+        if (hovered_grid_x >= 0 && hovered_grid_y >= 0 &&
+            hovered_grid_x < grid_width && hovered_grid_y < grid_height)
+        {
+            int hx0 = hovered_grid_x * grid_size - static_cast<int>(camera_offset.x);
+            int hy0 = hovered_grid_y * grid_size - static_cast<int>(camera_offset.y);
+            int hx1 = hx0 + grid_size;
+            int hy1 = hy0 + grid_size;
+            DrawBox(hx0, hy0, hx1, hy1, GetColor(200, 200, 255), FALSE);
+        }
     }
 
-    // ホバー表示
-    if (hovered_grid_x >= 0 && hovered_grid_y >= 0 &&
-        hovered_grid_x < grid_width && hovered_grid_y < grid_height)
-    {
-        int hx0 = hovered_grid_x * grid_size - static_cast<int>(camera_offset.x);
-        int hy0 = hovered_grid_y * grid_size - static_cast<int>(camera_offset.y);
-        int hx1 = hx0 + grid_size;
-        int hy1 = hy0 + grid_size;
-        DrawBox(hx0, hy0, hx1, hy1, GetColor(200, 200, 255), FALSE);
-    }
+   
 }
 
 void StageEditor::DrawUI()
@@ -338,6 +369,24 @@ void StageEditor::DrawTiles()
             DrawFormatString(selection_box.x + 10, y + 10, GetColor(255, 255, 255), "%s", info.name);
             y += 50;
         }
+    }
+}
+
+void StageEditor::DrawFreeTiles()
+{
+    // 確定済みタイル描画
+    for (const auto& tile : stage_data->GetFreeTiles())
+    {
+        int draw_x = static_cast<int>(tile.pos.x - camera_offset.x);
+        int draw_y = static_cast<int>(tile.pos.y - camera_offset.y);
+        tile_set->DrawTile(tile.tile_id, draw_x, draw_y);
+    }
+
+    // プレビュー描画
+    if (preview_tile.active) {
+        int draw_x = static_cast<int>(preview_tile.pos.x - camera_offset.x);
+        int draw_y = static_cast<int>(preview_tile.pos.y - camera_offset.y);
+        tile_set->DrawTile(preview_tile.tile_id, draw_x, draw_y);
     }
 }
 
