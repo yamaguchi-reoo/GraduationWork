@@ -48,7 +48,7 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
 	if (IsPlayerShadow() && (type == WALL || type == PUSHBLOCK)) return;
 
 	// 対象はブロック or 壁
-	if (type != BLOCK && type != WALL && type != PUSHBLOCK) return;
+	if (type != BLOCK && type != WALL && type != PUSHBLOCK && type!=INVISIBLEFLOOR) return;
 
 	// AABB情報取得（座標は左上基準と仮定）
 	Vector2D my_pos = GetLocation();
