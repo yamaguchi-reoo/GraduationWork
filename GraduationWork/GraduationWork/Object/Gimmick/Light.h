@@ -4,20 +4,9 @@ class Light :
     public GameObject
 {
 private:
-	
-	Vector2D pivot;
-	float angle;
-	float length;
-	float Draw_length;
-	int beam_width;
-	
-	float target_angle;  // 目標角度
-	float angle_speed;   // 角度の変化速度
-	
-	// 当たり判定用（地面付近に横長で置きたい）
-// 例えば pivot より少し下（y方向へ）に横幅の広い矩形を設定
-	Vector2D hit_box_pos;   // 当たり判定矩形の左上座標
-	Vector2D hit_box_size;  // 当たり判定矩形の幅・高さ
+	Vector2D apex;
+	float width;
+	float height;
 
 public:
 	//初期化処理
@@ -31,9 +20,10 @@ public:
 
 	virtual void OnHitCollision(GameObject* hit_object)override;
 
-	void DrawLightColumn(Vector2D pivot, float width, float length, float angle_rad);
+private:
+	bool PointInTriangle(const Vector2D& p, const Vector2D& a, const Vector2D& b, const Vector2D& c);
 
-	void DrawParallelogramFilled(Vector2D p0, Vector2D p1, Vector2D p2, Vector2D p3, unsigned int color);
+	bool CheckLightCollision(GameObject* obj);
 	
 };
 
