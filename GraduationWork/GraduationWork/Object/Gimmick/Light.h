@@ -13,6 +13,8 @@ private:
 	
 	float target_angle;  // 目標角度
 	float angle_speed;   // 角度の変化速度
+
+	Vector2D corner[4];
 	
 	// 当たり判定用（地面付近に横長で置きたい）
 // 例えば pivot より少し下（y方向へ）に横幅の広い矩形を設定
@@ -34,6 +36,5 @@ public:
 	void DrawLightColumn(Vector2D pivot, float width, float length, float angle_rad);
 
 	void DrawParallelogramFilled(Vector2D p0, Vector2D p1, Vector2D p2, Vector2D p3, unsigned int color);
-	
 };
 

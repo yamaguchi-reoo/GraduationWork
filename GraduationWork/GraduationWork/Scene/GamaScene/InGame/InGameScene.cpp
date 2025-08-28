@@ -201,7 +201,7 @@ void InGameScene::SetStage()
 				object_manager.CreateObject<Wall>(world_pos, Vector2D(48.0f, 48.0f));
 				break;
 			case LIGHT:
-				object_manager.CreateObject<Light>(world_pos, Vector2D(170.0f, 70.0f));
+				object_manager.CreateObject<Light>(world_pos, Vector2D(70.0f,370.0f));
 				break;
 			case INVISIBLEFLOOR:
 				object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
