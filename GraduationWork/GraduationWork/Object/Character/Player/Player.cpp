@@ -1,5 +1,6 @@
 #include <DxLib.h>
 #include "Player.h"
+#include "../Enemy/EnemyBase.h"
 #include "../../ObjectManager.h"
 #include "../../../Utility/UtilityList.h"
 #include "../../../common.h"
@@ -42,6 +43,7 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 
 	shadow_gauge.Initialize(GaugeType::CircularFill, 1200, 1200, 0, GetColor(180, 80, 255));
 	hp_gauge.Initialize(GaugeType::CircularSection, 3, hp, 3, GetColor(255, 0, 0));
+
 }
 
 void Player::Update()
@@ -116,14 +118,14 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	int type = hit_object->GetObjectType();
 
-	if (type == LIGHT && state == PlayerState::Shadow)
-	{
-		// ‰eó‘Ô‚ÅŒõ‚É“–‚½‚Á‚½‚çíœ
-		if (object_manager)
-		{
-			object_manager->RequestDeleteObject(this);
-		}
-	}
+	//if (type == LIGHT && state == PlayerState::Shadow)
+	//{
+	//	// ‰eó‘Ô‚ÅŒõ‚É“–‚½‚Á‚½‚çíœ
+	//	if (object_manager)
+	//	{
+	//		object_manager->RequestDeleteObject(this);
+	//	}
+	//}
 
 	if (type == ENEMY || type == REALENEMY)
 	{
@@ -265,7 +267,7 @@ void Player::UpdateAttack()
 	// === “G‚Æ‚Ì“–‚½‚è”»’è ===
 	if (!attack_hitboxes.empty() && object_manager)
 	{
-		for (auto enemy : object_manager->GetObjects(ENEMY)) // ObjectManager‘¤‚ÉGetObjects()’Ç‰Á•K—v
+		for (auto enemy : object_manager->GetObjects(ENEMY)) 
 		{
 			int type = enemy->GetObjectType();
 			if (type == ENEMY || type == REALENEMY)
@@ -279,10 +281,9 @@ void Player::UpdateAttack()
 						hitbox.position.y < enemy->GetLocation().y + enemy->GetBoxSize().y &&
 						hitbox.position.y + hitbox.size.y > enemy->GetLocation().y
 						);
-
 					if (hit)
 					{
-						object_manager->RequestDeleteObject(enemy);
+						object_manager->RequestDeleteObject(enemy); // “G‚ğíœ
 						break;
 					}
 				}

@@ -1,6 +1,7 @@
 #include "Plate.h"
 #include "DxLib.h"
 
+
 void Plate::Initialize(Vector2D _location, Vector2D _box_size)
 {
 	object_type = PLATE;

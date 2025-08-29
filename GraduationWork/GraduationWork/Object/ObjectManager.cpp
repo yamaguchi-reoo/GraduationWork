@@ -40,6 +40,13 @@ void ObjectManager::Update(Vector2D offset)
             auto obj_b = objects[j];
             if (obj_a && obj_b)
             {
+                // Player と Light の組み合わせはスキップ
+                if ((obj_a->GetObjectType() == PLAYER && obj_b->GetObjectType() == LIGHT) ||
+                    (obj_a->GetObjectType() == LIGHT && obj_b->GetObjectType() == PLAYER))
+                {
+                    continue;
+                }
+
                 if (obj_a->CheckBoxCollision(obj_b))
                 {
                     obj_a->OnHitCollision(obj_b);
