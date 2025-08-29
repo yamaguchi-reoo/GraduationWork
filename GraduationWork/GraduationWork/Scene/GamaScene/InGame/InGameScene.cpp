@@ -179,8 +179,7 @@ void InGameScene::SetStage()
 		for (int x = 0; x < stage_data.GetWidth(); ++x)
 		{
 			// 左上原点で描画位置
-			Vector2D world_pos(x * BLOCK_SIZE, y * BLOCK_SIZE);
-
+			Vector2D world_pos(x * static_cast<float>(BLOCK_SIZE), y * static_cast<float>(BLOCK_SIZE));
 			// オブジェクトレイヤー
 			int obj = stage_data.GetObj(x, y);
 
@@ -198,7 +197,7 @@ void InGameScene::SetStage()
 				object_manager.CreateObject<Wall>(world_pos, Vector2D(48.0f, 48.0f));
 				break;
 			case LIGHT:
-				object_manager.CreateObject<Light>(world_pos, Vector2D(100.0f, 200.0f));
+				object_manager.CreateObject<Light>(world_pos, Vector2D(30.0f, 100.0f));
 				break;
 			case INVISIBLEFLOOR:
 				object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));

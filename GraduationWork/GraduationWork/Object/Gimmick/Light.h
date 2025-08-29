@@ -1,12 +1,26 @@
 #pragma once
 #include "../GameObject.h"
+
+struct LightData {
+	Vector2D origin = { 0.0f,0.0f };      // ’¸“_iŒÅ’èj
+	float angle = 0.0f;          // Œ»İ‚ÌŒü‚«
+	float min_angle = 0.0f;      // Å¬Šp“x
+	float max_angle = 0.0f;      // Å‘åŠp“x
+	float rotate_speed = 0.0f;   // ‰ñ“]‘¬“xi“x/•bj
+	bool moving = false;         // Š´ˆ³”Å‚Å“®ì’†‚©‚Ç‚¤‚©
+	int direction = 1;			 // 1: ³•ûŒü‰ñ“], -1: ‹t•ûŒü‰ñ“]
+};
+
 class Light :
     public GameObject
 {
 private:
-	Vector2D apex;
-	float width;
-	float height;
+	Vector2D apex = { 0.0f };
+	float width = 0.0f;
+	float height = 0.0f;
+	float max_height = 0.0f;
+
+	LightData light_data;
 
 public:
 	//‰Šú‰»ˆ—

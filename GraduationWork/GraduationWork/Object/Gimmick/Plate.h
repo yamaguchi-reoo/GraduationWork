@@ -4,7 +4,7 @@ class Plate :
     public GameObject
 {
 public:
-	bool TrapOn_flg;
+	bool TrapOn_flg = false;
 
 
 public:
