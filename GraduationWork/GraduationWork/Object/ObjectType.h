@@ -26,16 +26,16 @@ struct TypeInfo
 
 // タイル情報テーブル（グローバルでもOK、StageEditorクラス内に static 配列でもOK）
 static TypeInfo TYPE_INFO[OBJECTTYPE_COUNT] = {
-    { NONE,          "None",      GetColor(55, 55, 55) },
-    { BLOCK,         "Block",     GetColor(100, 200, 100) },
-    { PLAYER,        "Player",    GetColor(200, 100, 100) },
-    { WALL,          "Wall",      GetColor(150, 150, 150) },
-    { LIGHT,         "Light",     GetColor(255, 255, 0) },
-    { INVISIBLEFLOOR,"Invisible", GetColor(100, 100, 200) },
-    { PUSHBLOCK,     "Push",      GetColor(200, 100, 200) },
-    { ENEMY,         "Enemy",     GetColor(100, 100, 200) },
-    { REALENEMY,     "REnemy",    GetColor( 50, 100, 200) },
-    { PLATE,         "Plate",     GetColor(200, 0, 200)}
+    { NONE,          "None",      static_cast<int>(GetColor(55, 55, 55)) },
+    { BLOCK,         "Block",     static_cast<int>(GetColor(100, 200, 100)) },
+    { PLAYER,        "Player",    static_cast<int>(GetColor(200, 100, 100)) },
+    { WALL,          "Wall",      static_cast<int>(GetColor(150, 150, 150)) },
+    { LIGHT,         "Light",     static_cast<int>(GetColor(255, 255, 0)) },
+    { INVISIBLEFLOOR,"Invisible", static_cast<int>(GetColor(100, 100, 200)) },
+    { PUSHBLOCK,     "Push",      static_cast<int>(GetColor(200, 100, 200)) },
+    { ENEMY,         "Enemy",     static_cast<int>(GetColor(100, 100, 200)) },
+    { REALENEMY,     "REnemy",    static_cast<int>(GetColor(50, 100, 200)) },
+    { PLATE,         "Plate",     static_cast<int>(GetColor(200, 0, 200)) }
 };
 
 // ヘルパー関数

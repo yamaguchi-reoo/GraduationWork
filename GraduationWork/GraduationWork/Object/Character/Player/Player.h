@@ -4,6 +4,13 @@
 
 #include "Gauge.h"
 
+struct AttackHitBox 
+{
+    Vector2D position = { 0.0f };
+    Vector2D size = { 0.0f };
+    int frame = 0; 
+};
+
 class Player :
     public CharacterBase
 {
@@ -17,7 +24,6 @@ private:
     const float jump_strength; 
 
     //çUåÇ
-    struct AttackHitBox { Vector2D position; Vector2D size; int frame; };
     std::vector<AttackHitBox> attack_hitboxes;
     bool is_attacking;
     int attack_cooldown;

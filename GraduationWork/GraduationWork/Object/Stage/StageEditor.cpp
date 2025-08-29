@@ -50,7 +50,7 @@ StageEditor::StageEditor(int _grid_size, StageData* _stage_data)
     ui_panel_height = SCREEN_HEIGHT - 20;
 
     // UI‚Í‰E‘¤‚ÉŒÅ’è
-    ui_pos.x = SCREEN_WIDTH - ui_panel_width;
+    ui_pos.x = static_cast<float>(SCREEN_WIDTH) - ui_panel_width;
     ui_pos.y = 0;
     ui_size.x = static_cast<float>(ui_panel_width);
     ui_size.y = static_cast<float>(ui_panel_height + 20); // ƒwƒbƒ_•ªŠÜ‚Þ
