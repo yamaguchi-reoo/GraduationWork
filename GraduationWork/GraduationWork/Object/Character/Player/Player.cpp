@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "Player.h"
 #include "../Enemy/EnemyBase.h"
+#include "../Enemy/Enemy.h"
 #include "../../ObjectManager.h"
 #include "../../../Utility/UtilityList.h"
 #include "../../../common.h"
@@ -260,11 +261,15 @@ void Player::UpdateAttack()
 	// === “G‚Æ‚Ì“–‚½‚è”»’è ===
 	if (!attack_hitboxes.empty() && object_manager)
 	{
-		for (auto enemy : object_manager->GetObjects(ENEMY)) 
+		for (auto enemy_obj : object_manager->GetObjects(ENEMY)) 
 		{
-			int type = enemy->GetObjectType();
+			int type = enemy_obj->GetObjectType();
 			if (type == ENEMY || type == REALENEMY)
 			{
+				Enemy* enemy = dynamic_cast<Enemy*>(enemy_obj);
+				//EnemyBase* enemy = dynamic_cast<EnemyBase*>(enemy_obj);
+				if (!enemy) continue; // ‰eó‘Ô‚Ì“G‚Í–³‹
+
 				for (const auto& hitbox : attack_hitboxes)
 				{
 					// ‚±‚±‚Å‹éŒ`“¯m‚Ì“–‚½‚è”»’è‚ğ‚·‚é
@@ -276,6 +281,7 @@ void Player::UpdateAttack()
 						);
 					if (hit)
 					{
+						//enemy->ReceiveDamage(1); // “G‚Éƒ_ƒ[ƒW‚ğ—^‚¦‚é
 						object_manager->RequestDeleteObject(enemy); // “G‚ğíœ
 						break;
 					}
