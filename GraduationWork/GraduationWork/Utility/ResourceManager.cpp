@@ -86,6 +86,10 @@ void ResourceManager::UnloadResourcesAll()
     sounds_container.clear();
 }
 
+void ResourceManager::CreateImagesResource(std::string file_name)
+{
+}
+
 // •ªŠ„‰æ‘œì¬
 void ResourceManager::CreateImagesResource(std::string file_name, int all_num, int num_x, int num_y, int size_x, int size_y)
 {

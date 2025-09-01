@@ -34,6 +34,8 @@ public:
 
 	virtual void OnHitCollision(GameObject* hit_object)override;
 
+	void SetLightMoving(bool flg) { light_data.moving = flg; }
+
 private:
 	bool PointInTriangle(const Vector2D& p, const Vector2D& a, const Vector2D& b, const Vector2D& c);
 
