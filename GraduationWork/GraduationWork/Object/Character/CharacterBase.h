@@ -18,6 +18,7 @@ protected:
 	const float gravity = 0.5f;       // 重力加速度（任意の値で調整可能）
 	const float max_fall_speed = 10.0f; // 最大落下速度
 
+	std::vector<int> animation_data;//アニメーションデータ
 public:
 	//初期化処理
 	virtual void Initialize(Vector2D _location, Vector2D _box_size) override;

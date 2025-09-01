@@ -21,7 +21,7 @@ private:
 
     //ジャンプ
     float jump_velocity;
-    const float jump_strength; 
+    const float jump_strength;
 
     //攻撃
     std::vector<AttackHitBox> attack_hitboxes;
@@ -29,9 +29,14 @@ private:
     int attack_cooldown;
     const int attack_cooldown_max;
 
-	Gauge shadow_gauge; // 影化ゲージ
-    Gauge hp_gauge; // 実態のHPゲージ
-    int invincible_timer; // 無敵時間タイマー
+    Gauge shadow_gauge;     // 影化ゲージ
+    Gauge hp_gauge;         // 実態のHPゲージ
+    int invincible_timer;   // 無敵時間タイマー
+
+	//アニメーション
+    int current_frame = 0;
+    int frame_timer = 0;
+    int frame_delay = 0;
 
 public:
     Player();
@@ -55,19 +60,22 @@ public:
 
     void UpdateJump();
     void UpdateAttack();
+	void UpdateAnimation();
 
-	// プレイヤーの状態の切り替え
+    // プレイヤーの状態の切り替え
     void SwitchState();
 
-	// 影状態の更新
-	void UpdateState();
+    // 影状態の更新
+    void UpdateState();
 
-	// UIの描画
-	void DrawUI();
+    // UIの描画
+    void DrawUI();
 
-	// プレイヤーの状態を取得
-    PlayerState GetPlayerState(){return state;}
+    // プレイヤーの状態を取得
+    PlayerState GetPlayerState() { return state; }
 
     bool IsPlayerShadow() const override { return state == PlayerState::Shadow; }
+
+    void LoadPlayerImage();
 };
 

@@ -44,6 +44,7 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	shadow_gauge.Initialize(GaugeType::CircularFill, 1200, 1200, 0, GetColor(180, 80, 255));
 	hp_gauge.Initialize(GaugeType::CircularSection, 3, hp, 3, GetColor(255, 0, 0));
 
+	LoadPlayerImage();
 }
 
 void Player::Update()
@@ -52,6 +53,7 @@ void Player::Update()
 	UpdateState(); 
 	UpdateJump(); 
 	UpdateAttack();
+	UpdateAnimation();
 
 	hp_gauge.SetValue(hp); 
 
@@ -67,7 +69,18 @@ void Player::Draw(Vector2D offset, double rate)
 {
 
 	Vector2D screen_pos = location - offset;
-	__super::Draw(offset, rate);
+	//__super::Draw(offset, 3.0f);
+	int add = 0;
+	if (flip_flg)
+	{
+		add = -100;
+	}
+	else
+	{
+		add = 100;
+	}
+	DrawRotaGraphF(screen_pos.x + (box_size.x / 2) + add, screen_pos.y + (box_size.y / 2) - 8, 3.0f, 0.0, image, TRUE, flip_flg);
+
 
 	bool visible = true;
 	if (invincible_timer > 0)
@@ -79,12 +92,12 @@ void Player::Draw(Vector2D offset, double rate)
 		if (state == PlayerState::Real)
 		{
 			// 実態の描画
-			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 0), TRUE);
+			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 0), FALSE);
 		}
 		else if (state == PlayerState::Shadow)
 		{
 			// 影状態の描画
-			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), TRUE);
+			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), FALSE);
 		}
 	}
 	
@@ -304,6 +317,24 @@ void Player::UpdateAttack()
 	}
 }
 
+void Player::UpdateAnimation()
+{
+	if (animation_data.empty()) return;
+
+	// フレームタイマーを進める
+	frame_timer++;
+	if (frame_timer >= frame_delay)
+	{
+		frame_timer = 0;
+		current_frame++;
+		if (current_frame >= animation_data.size())
+			current_frame = 0; // ループ
+
+		// 表示用画像を更新
+		image = animation_data[current_frame];
+	}
+}
+
 void Player::SwitchState()
 {
 	if (state == PlayerState::Real)
@@ -363,4 +394,25 @@ void Player::DrawUI()
 		// HPゲージを小さく表示
 		hp_gauge.Draw(center_x, center_y_bottom, SMALL);
 	}
+}
+
+void Player::LoadPlayerImage()
+{
+	// ResourceManager のインスタンス取得
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	// 画像取得（単体画像の場合 all_num = 1 なので省略可能）
+	auto idle_image = rm->GetImages("Resource/Images/Character/Player/Player_idle.png", 7, 7, 1, 128, 70);
+	//auto idle_image = rm->GetImages("Resource/Images/Character/Player/Player_idle.png",1);
+
+	// アニメーション用にコピー（今回は単体画像だけど配列扱い）
+	animation_data = idle_image;
+
+	// 表示用画像に設定
+	image = animation_data[0];
+
+	// アニメーション関連変数初期化
+	current_frame = 0;
+	frame_timer = 0;
+	frame_delay = 5; // 5フレームごとに次の画像に切り替える
 }

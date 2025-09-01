@@ -4,3 +4,4 @@
 #include "InputManager.h"
 #include "Vector2D.h"
 #include "UserTemplate.h"
+#include "ResourceManager.h"

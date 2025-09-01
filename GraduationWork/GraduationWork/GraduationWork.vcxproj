@@ -162,6 +162,7 @@
     <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Object\Stage\StageEditor.cpp" />
     <ClCompile Include="Object\Stage\StageData.cpp" />
+    <ClCompile Include="Utility\ResourceManager.cpp" />
     <ClCompile Include="Utility\TileSet.cpp" />
     <ClCompile Include="Utility\InputManager.cpp" />
     <ClCompile Include="Utility\FpsControl.cpp" />
@@ -185,6 +186,7 @@
     <ClInclude Include="Object\Gimmick\PushBlock.h" />
     <ClInclude Include="Object\Character\Enemy\RealEnemy.h" />
     <ClInclude Include="Object\Gimmick\Plate.h" />
+    <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
     <ClInclude Include="Object\GameObject.h" />
     <ClInclude Include="Object\ObjectType.h" />

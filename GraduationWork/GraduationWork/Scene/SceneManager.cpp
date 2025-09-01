@@ -51,7 +51,7 @@ void SceneManager::Update()
 		fps_control.Update(); // フレームレート制御の更新
 
 		//入力情報の更新
-		InputManager::GetInstance()->Update();
+		InputManager::GetInstance()->Update();;
 
 		// 更新＆描画
 		eSceneType next_scene_type = current_scene->Update();
@@ -78,6 +78,8 @@ void SceneManager::Finalize()
 {
 	//入力機能のインスタンスを削除
 	InputManager::DeleteInstance();
+	//終了処理
+	ResourceManager::DeleteInstance();
 	//DXライブラリの終了処理
 	DxLib_End();
 }
