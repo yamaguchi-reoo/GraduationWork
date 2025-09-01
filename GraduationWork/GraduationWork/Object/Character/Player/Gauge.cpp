@@ -4,6 +4,7 @@
 #include <algorithm>
 
 #include "../../../Utility/UtilityList.h"
+#include "../../../Scene/SceneManager.h"
 
 Gauge::Gauge() :
     type(GaugeType::CircularFill), max_value(0), current_value(0),
@@ -189,6 +190,8 @@ void Gauge::DrawCircularSection(int cx, int cy, float scale) const
         float start = i * angle_per;
         DrawArc(cx, cy, inner, outer, start - 150, start - 150 + angle_per, color); // 実際のセクション
     }
+
+    DrawStringToHandle(100, 100, "HELLO,WORLD", GetColor(255, 255, 255), SceneManager::font);
 }
 
 void Gauge::DrawArc(int cx, int cy, int r1, int r2, float deg_start, float deg_end, int col) const 

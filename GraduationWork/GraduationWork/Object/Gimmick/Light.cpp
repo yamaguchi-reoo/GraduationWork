@@ -19,7 +19,7 @@ void Light::Initialize(Vector2D _location, Vector2D _box_size)
 	light_data.max_angle = 120.0f;		// Å‘åŠp“x
 	light_data.rotate_speed = 30.0f;	// ‰ñ“]‘¬“xi“x/•bj
 	light_data.direction = 1;			// ³•ûŒü‰ñ“]
-	light_data.moving = false;			// “®ì’†
+	light_data.moving = true;			// “®ì’†
 }
 
 void Light::Update()
