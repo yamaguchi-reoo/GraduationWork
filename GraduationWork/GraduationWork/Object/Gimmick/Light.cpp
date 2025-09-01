@@ -17,9 +17,9 @@ void Light::Initialize(Vector2D _location, Vector2D _box_size)
 	light_data.angle = 90.0f;			// 初期角度（上向き）
 	light_data.min_angle = 60.0f;		// 最小角度
 	light_data.max_angle = 120.0f;		// 最大角度
-	light_data.rotate_speed = 30.0f;	// 回転速度（度/秒）
-	light_data.direction = 1;			// 正方向回転
-	light_data.moving = true;			// 動作中
+	light_data.rotate_speed = 20.0f;	// 回転速度（度/秒）
+	light_data.direction = -1;			// 正方向回転
+	light_data.moving = false;			// 動作中
 }
 
 void Light::Update()

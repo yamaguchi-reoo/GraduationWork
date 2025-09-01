@@ -1,5 +1,6 @@
 #include "Plate.h"
 #include "DxLib.h"
+#include "../../Object/ObjectManager.h"
 
 
 void Plate::Initialize(Vector2D _location, Vector2D _box_size)
@@ -10,11 +11,26 @@ void Plate::Initialize(Vector2D _location, Vector2D _box_size)
 	__super::Initialize(_location, _box_size);
 
 	TrapOn_flg = false;
+
 }
 
 void Plate::Update()
 {
+
+	if (TrapOn_flg && linked_light)
+	{
+		linked_light->SetLightMoving(true);
+	}
+	else
+	{
+		if (linked_light)
+		{
+			linked_light->SetLightMoving(false);
+		}
+	}
 	__super::Update();
+
+	TrapOn_flg = false;
 }
 
 void Plate::Draw(Vector2D offset, double rate)
@@ -45,7 +61,8 @@ void Plate::Draw(Vector2D offset, double rate)
 	if (TrapOn_flg==true)
 	{
 		DrawString(100, 50, "Trap flg On", GetColor(255, 0, 0));
-		TrapOn_flg = false;
+		DrawString(100, 50, "Trap flg On", GetColor(255, 0, 0));
+		//TrapOn_flg = false;
 	}
 #endif // _DEBUG
 }
@@ -60,7 +77,7 @@ void Plate::OnHitCollision(GameObject* hit_object)
 	int type = hit_object->GetObjectType();
 	if (type != BLOCK && type != WALL && type != PUSHBLOCK && type != PLAYER) return;
 
-	if (type == PLAYER) // プレイヤーと判定
+	if (type == PLAYER || type == PUSHBLOCK) // プレイヤーと判定
 	{
 		// 当たり判定を描画と同じ位置に下げる
 		float plateHeight = 3.0f;       // 板の厚さ

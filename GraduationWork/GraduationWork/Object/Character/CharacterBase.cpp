@@ -81,15 +81,17 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
 		// 垂直方向の衝突
 		if (from_top < from_bottom) {
 			// ブロックの上に着地
-			location.y = other_bottom;
-			velocity.y = 0;
+			location.y = other_bottom + 0.1f;   // 少しだけ下にずらして接触解消
+			if (velocity.y < 0) velocity.y = 0;
+			//is_jumping = false; 
 		}
 		else {
-			// 地面に着地
-			location.y = other_top - my_size.y;
-			velocity.y = 0;
-			on_ground = true;
-			is_jumping = false; 
+			if (velocity.y >= 0) {
+				location.y = other_top - my_size.y;
+				velocity.y = 0;
+				on_ground = true;
+				is_jumping = false;
+			}
 		}
 	}
 	else {

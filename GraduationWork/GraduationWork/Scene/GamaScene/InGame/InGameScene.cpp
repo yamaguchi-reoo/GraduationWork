@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 
-#include "../../../Object/ObjectList.h"
 #include "../../../Utility/InputManager.h"
 
 
@@ -197,8 +196,11 @@ void InGameScene::SetStage()
 				object_manager.CreateObject<Wall>(world_pos, Vector2D(48.0f, 48.0f));
 				break;
 			case LIGHT:
-				object_manager.CreateObject<Light>(world_pos, Vector2D(30.0f, 100.0f));
+			{
+				Light* light = object_manager.CreateObject<Light>(world_pos, Vector2D(30.0f, 100.0f));
+				lights.push_back(light);
 				break;
+			}
 			case INVISIBLEFLOOR:
 				object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
 				break;
@@ -212,10 +214,18 @@ void InGameScene::SetStage()
 				object_manager.CreateObject<RealEnemy>(world_pos, Vector2D(48.0f, 64.0f));
 				break;
 			case PLATE:
-				object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f,10.0f));
+			{
+				Plate* plate = object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f, 10.0f));
+				plates.push_back(plate);
 				break;
 			}
+			}
 		}
+	}
+	// ê∂ê¨å„Ç…ïRïtÇØ
+	for (size_t i = 0; i < plates.size() && i < lights.size(); ++i)
+	{
+		plates[i]->linked_light = lights[i];
 	}
 }
 

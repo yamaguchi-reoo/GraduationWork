@@ -1,6 +1,7 @@
 #include <DxLib.h>
 #include "Player.h"
 #include "../Enemy/EnemyBase.h"
+#include "../Enemy/Enemy.h"
 #include "../../ObjectManager.h"
 #include "../../../Utility/UtilityList.h"
 #include "../../../common.h"
@@ -16,7 +17,7 @@ namespace {
 Player::Player() : 
 	state(PlayerState::Real), 
 	jump_velocity(0.0f),
-	jump_strength(15.0f),
+	jump_strength(12.0f),
 	is_attacking(false),
 	invincible_timer(0),
 	attack_cooldown(0),
@@ -44,14 +45,16 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	shadow_gauge.Initialize(GaugeType::CircularFill, 1200, 1200, 0, GetColor(180, 80, 255));
 	hp_gauge.Initialize(GaugeType::CircularSection, 3, hp, 3, GetColor(255, 0, 0));
 
+	LoadPlayerImage();
 }
 
 void Player::Update()
 {
 	HandleInput();
 	UpdateState(); 
-	UpdateJump(); 
+	//UpdateJump(); 
 	UpdateAttack();
+	UpdateAnimation();
 
 	hp_gauge.SetValue(hp); 
 
@@ -67,8 +70,8 @@ void Player::Draw(Vector2D offset, double rate)
 {
 
 	Vector2D screen_pos = location - offset;
-	__super::Draw(offset, rate);
-
+	//__super::Draw(offset, 3.0f);
+	
 	bool visible = true;
 	if (invincible_timer > 0)
 	{
@@ -79,12 +82,15 @@ void Player::Draw(Vector2D offset, double rate)
 		if (state == PlayerState::Real)
 		{
 			// 実態の描画
-			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 0), TRUE);
+			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 0), FALSE);
 		}
 		else if (state == PlayerState::Shadow)
 		{
 			// 影状態の描画
-			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), TRUE);
+			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), FALSE);
+
+			float offset_x = (flip_flg ? -100.0f : 100.0f);
+			DrawRotaGraphF(screen_pos.x + (box_size.x / 2) + offset_x, screen_pos.y + (box_size.y / 2) - 8, 3.0f, 0.0, image, TRUE, flip_flg);
 		}
 	}
 	
@@ -118,15 +124,6 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	int type = hit_object->GetObjectType();
 
-	//if (type == LIGHT && state == PlayerState::Shadow)
-	//{
-	//	// 影状態で光に当たったら削除
-	//	if (object_manager)
-	//	{
-	//		object_manager->RequestDeleteObject(this);
-	//	}
-	//}
-
 	if (type == ENEMY || type == REALENEMY)
 	{
 		// 敵に当たったらダメージ
@@ -154,37 +151,34 @@ void Player::HandleInput()
 {
 	InputManager* input = InputManager::GetInstance();
 
-	if (input->GetButton(XINPUT_BUTTON_DPAD_LEFT))
-	{
-		// 左に移動
-		velocity.x = -5.0f; // 任意の速度で調整
-		flip_flg = TRUE; // 左向きに設定
+	// 水平移動（加速度あり）
+	float target_speed = 0.0f;
+	if (input->GetButton(XINPUT_BUTTON_DPAD_LEFT)) {
+		target_speed = -3.5f;
+		flip_flg = TRUE;
 	}
-	else if (input->GetButton(XINPUT_BUTTON_DPAD_RIGHT))
-	{
-		// 右に移動
-		velocity.x = 5.0f; // 任意の速度で調整
-		flip_flg = FALSE; // 右向きに設定
-	}
-	else
-	{
-		// 停止
-		velocity.x = 0.0f;
+	else if (input->GetButton(XINPUT_BUTTON_DPAD_RIGHT)) {
+		target_speed = 3.5f;
+		flip_flg = FALSE;
 	}
 
-	//影状態
+	const float accel = 0.5f; // 速度変化の割合（0～1）
+	velocity.x += (target_speed - velocity.x) * accel;
+
+	// 状態切替
 	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
 	{
 		// Aボタンで状態を切り替え
 		SwitchState();
 	}
 
+
+	// ジャンプ
 	if (input->GetButtonDown(XINPUT_BUTTON_A) && !is_jumping && state == PlayerState::Real)
 	{
-		// ジャンプ
 		is_jumping = true;
 		on_ground = false;
-		jump_velocity = -jump_strength; // ジャンプの初速を設定
+		velocity.y = -jump_strength;
 	}
 
 
@@ -267,11 +261,15 @@ void Player::UpdateAttack()
 	// === 敵との当たり判定 ===
 	if (!attack_hitboxes.empty() && object_manager)
 	{
-		for (auto enemy : object_manager->GetObjects(ENEMY)) 
+		for (auto enemy_obj : object_manager->GetObjects(ENEMY)) 
 		{
-			int type = enemy->GetObjectType();
+			int type = enemy_obj->GetObjectType();
 			if (type == ENEMY || type == REALENEMY)
 			{
+				Enemy* enemy = dynamic_cast<Enemy*>(enemy_obj);
+				//EnemyBase* enemy = dynamic_cast<EnemyBase*>(enemy_obj);
+				if (!enemy) continue; // 影状態の敵は無視
+
 				for (const auto& hitbox : attack_hitboxes)
 				{
 					// ここで矩形同士の当たり判定をする
@@ -283,6 +281,7 @@ void Player::UpdateAttack()
 						);
 					if (hit)
 					{
+						//enemy->ReceiveDamage(1); // 敵にダメージを与える
 						object_manager->RequestDeleteObject(enemy); // 敵を削除
 						break;
 					}
@@ -301,6 +300,24 @@ void Player::UpdateAttack()
 	if (attack_hitboxes.empty())
 	{
 		is_attacking = false;
+	}
+}
+
+void Player::UpdateAnimation()
+{
+	if (animation_data.empty()) return;
+
+	// フレームタイマーを進める
+	frame_timer++;
+	if (frame_timer >= frame_delay)
+	{
+		frame_timer = 0;
+		current_frame++;
+		if (current_frame >= animation_data.size())
+			current_frame = 0; // ループ
+
+		// 表示用画像を更新
+		image = animation_data[current_frame];
 	}
 }
 
@@ -363,4 +380,25 @@ void Player::DrawUI()
 		// HPゲージを小さく表示
 		hp_gauge.Draw(center_x, center_y_bottom, SMALL);
 	}
+}
+
+void Player::LoadPlayerImage()
+{
+	// ResourceManager のインスタンス取得
+	ResourceManager* rm = ResourceManager::GetInstance();
+
+	// 画像取得（単体画像の場合 all_num = 1 なので省略可能）
+	auto idle_image = rm->GetImages("Resource/Images/Character/Player/Player_idle.png", 7, 7, 1, 128, 70);
+	//auto idle_image = rm->GetImages("Resource/Images/Character/Player/Player_idle.png",1);
+
+	// アニメーション用にコピー（今回は単体画像だけど配列扱い）
+	animation_data = idle_image;
+
+	// 表示用画像に設定
+	image = animation_data[0];
+
+	// アニメーション関連変数初期化
+	current_frame = 0;
+	frame_timer = 0;
+	frame_delay = 5; // 5フレームごとに次の画像に切り替える
 }

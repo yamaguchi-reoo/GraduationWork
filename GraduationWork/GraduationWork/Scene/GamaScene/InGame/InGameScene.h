@@ -4,6 +4,7 @@
 
 #include "../../../Object/ObjectInfo.h"
 #include "../../../Object/ObjectManager.h"
+#include "../../../Object/ObjectList.h"
 
 #include "../../../Utility/TileSet.h" 
 #include "../../../Object/Stage/StageEditor.h"
@@ -24,6 +25,10 @@ private:
 	std::vector<PlacedTile> placed_tiles; //配置されたタイル情報
 
 	bool edit_mode;			      //ステージエディットモードかどうか
+
+	//Object同士の紐づけ
+	std::vector<Light*> lights;
+	std::vector<Plate*> plates;
 public:
 	InGameScene();
 	~InGameScene();
