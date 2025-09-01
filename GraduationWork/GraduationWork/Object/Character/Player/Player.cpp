@@ -16,7 +16,7 @@ namespace {
 Player::Player() : 
 	state(PlayerState::Real), 
 	jump_velocity(0.0f),
-	jump_strength(15.0f),
+	jump_strength(12.0f),
 	is_attacking(false),
 	invincible_timer(0),
 	attack_cooldown(0),
@@ -51,7 +51,7 @@ void Player::Update()
 {
 	HandleInput();
 	UpdateState(); 
-	UpdateJump(); 
+	//UpdateJump(); 
 	UpdateAttack();
 	UpdateAnimation();
 
@@ -70,18 +70,7 @@ void Player::Draw(Vector2D offset, double rate)
 
 	Vector2D screen_pos = location - offset;
 	//__super::Draw(offset, 3.0f);
-	int add = 0;
-	if (flip_flg)
-	{
-		add = -100;
-	}
-	else
-	{
-		add = 100;
-	}
-	DrawRotaGraphF(screen_pos.x + (box_size.x / 2) + add, screen_pos.y + (box_size.y / 2) - 8, 3.0f, 0.0, image, TRUE, flip_flg);
-
-
+	
 	bool visible = true;
 	if (invincible_timer > 0)
 	{
@@ -98,6 +87,9 @@ void Player::Draw(Vector2D offset, double rate)
 		{
 			// 影状態の描画
 			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), FALSE);
+
+			float offset_x = (flip_flg ? -100.0f : 100.0f);
+			DrawRotaGraphF(screen_pos.x + (box_size.x / 2) + offset_x, screen_pos.y + (box_size.y / 2) - 8, 3.0f, 0.0, image, TRUE, flip_flg);
 		}
 	}
 	
@@ -131,15 +123,6 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	int type = hit_object->GetObjectType();
 
-	//if (type == LIGHT && state == PlayerState::Shadow)
-	//{
-	//	// 影状態で光に当たったら削除
-	//	if (object_manager)
-	//	{
-	//		object_manager->RequestDeleteObject(this);
-	//	}
-	//}
-
 	if (type == ENEMY || type == REALENEMY)
 	{
 		// 敵に当たったらダメージ
@@ -167,37 +150,34 @@ void Player::HandleInput()
 {
 	InputManager* input = InputManager::GetInstance();
 
-	if (input->GetButton(XINPUT_BUTTON_DPAD_LEFT))
-	{
-		// 左に移動
-		velocity.x = -5.0f; // 任意の速度で調整
-		flip_flg = TRUE; // 左向きに設定
+	// 水平移動（加速度あり）
+	float target_speed = 0.0f;
+	if (input->GetButton(XINPUT_BUTTON_DPAD_LEFT)) {
+		target_speed = -3.5f;
+		flip_flg = TRUE;
 	}
-	else if (input->GetButton(XINPUT_BUTTON_DPAD_RIGHT))
-	{
-		// 右に移動
-		velocity.x = 5.0f; // 任意の速度で調整
-		flip_flg = FALSE; // 右向きに設定
-	}
-	else
-	{
-		// 停止
-		velocity.x = 0.0f;
+	else if (input->GetButton(XINPUT_BUTTON_DPAD_RIGHT)) {
+		target_speed = 3.5f;
+		flip_flg = FALSE;
 	}
 
-	//影状態
+	const float accel = 0.5f; // 速度変化の割合（0～1）
+	velocity.x += (target_speed - velocity.x) * accel;
+
+	// 状態切替
 	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
 	{
 		// Aボタンで状態を切り替え
 		SwitchState();
 	}
 
+
+	// ジャンプ
 	if (input->GetButtonDown(XINPUT_BUTTON_A) && !is_jumping && state == PlayerState::Real)
 	{
-		// ジャンプ
 		is_jumping = true;
 		on_ground = false;
-		jump_velocity = -jump_strength; // ジャンプの初速を設定
+		velocity.y = -jump_strength;
 	}
 
 
