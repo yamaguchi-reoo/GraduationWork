@@ -170,9 +170,12 @@ void Player::OnHitCollision(GameObject* hit_object)
 				invincible_timer = 60;
 				if (hp <= 0)
 				{
-					hp = 0;
+					/*hp = 0;
 					action = PlayerAction::Death;
-					animation_frame = 0;
+					animation_frame = 0;*/
+					if (object_manager) {
+						object_manager->RequestDeleteObject(this);
+					}
 				}
 			}
 		}
