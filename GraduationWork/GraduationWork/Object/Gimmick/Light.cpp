@@ -26,7 +26,7 @@ void Light::Update()
 {
 	__super::Update();
 
-	if (light_data.moving)
+	if (!light_data.moving)
 	{
 		light_data.angle += light_data.rotate_speed * (1.0f / 60.0f) * light_data.direction; 
 

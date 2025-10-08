@@ -55,15 +55,15 @@ void Plate::Draw(Vector2D offset, double rate)
 #ifdef _DEBUG
 	//DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 255), TRUE);
 
-	DrawBoxAA(screen_pos.x, screen_pos.y + 45, screen_pos.x + box_size.x, screen_pos.y + box_size.y + 45, GetColor(255, 0, 255), TRUE);
+	DrawBoxAA(screen_pos.x, screen_pos.y + 45, screen_pos.x + box_size.x, screen_pos.y + box_size.y + 45, GetColor(125, 125, 125), TRUE);
 
 	// プレイヤーが上に乗っていたら文字を表示
-	if (TrapOn_flg==true)
-	{
-		DrawString(100, 50, "Trap flg On", GetColor(255, 0, 0));
-		DrawString(100, 50, "Trap flg On", GetColor(255, 0, 0));
-		//TrapOn_flg = false;
-	}
+	//if (TrapOn_flg==true)
+	//{
+	//	DrawString(100, 50, "Trap flg On", GetColor(255, 0, 0));
+	//	DrawString(100, 50, "Trap flg On", GetColor(255, 0, 0));
+	//	//TrapOn_flg = false;
+	//}
 #endif // _DEBUG
 }
 
