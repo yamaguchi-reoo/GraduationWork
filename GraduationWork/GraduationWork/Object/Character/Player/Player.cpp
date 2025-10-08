@@ -124,7 +124,7 @@ void Player::Draw(Vector2D offset, double rate)
 	DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.2f, %.2f)", location.x, location.y);
 
 
-	/*switch (action)
+	switch (action)
 	{
 	case Player::PlayerAction::Idle:
 		DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Idle");
@@ -138,9 +138,12 @@ void Player::Draw(Vector2D offset, double rate)
 	case Player::PlayerAction::Attack:
 		DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Attack");
 		break;
+	case Player::PlayerAction::Death:
+		DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Death");
+		break;
 	default:
 		break;
-	}*/
+	}
 #endif // DEBUG
 
 }
@@ -168,12 +171,14 @@ void Player::OnHitCollision(GameObject* hit_object)
 				if (hp <= 0)
 				{
 					hp = 0;
-					if (object_manager)
-					{
-						object_manager->RequestDeleteObject(this); // HPが0になったら削除要求
-					}
+					action = PlayerAction::Death;
+					animation_frame = 0;
 				}
 			}
+		}
+		else if (state == PlayerState::Shadow)
+		{
+			action = PlayerAction::Death;
 		}
 
 	}
@@ -183,6 +188,12 @@ void Player::HandleInput()
 {
 	InputManager* input = InputManager::GetInstance();
 
+	// 死亡中は入力無効
+	if (action == PlayerAction::Death) {
+		velocity.x = 0.0f;
+		velocity.y = 0.0f;
+		return; // 入力無効
+	}
 	// 攻撃中は完全固定（移動・ジャンプ・向き変更禁止）
 	if (is_attacking) {
 		velocity.x = 0.0f;   // 移動停止
@@ -269,9 +280,15 @@ void Player::HandleInput()
 	if (!is_jumping && !is_attacking)
 	{
 		if (fabs(velocity.x) > 0.1f)
+		{
 			action = PlayerAction::Walk;
-		else
+			animation_frame = 0;
+		}
+		else {
 			action = PlayerAction::Idle;
+			animation_frame = 0;
+		}
+
 	}
 }
 
@@ -369,20 +386,38 @@ void Player::UpdateAnimation()
 
 	int index = animation_frame / delay;
 
-	if (action == PlayerAction::Attack) {
-		// 攻撃は最後のフレームで止める
-		if (index >= frames.size()) {
+	switch (action)
+	{
+	case PlayerAction::Attack:
+		if (index >= frames.size())
+		{
 			index = frames.size() - 1;
-			// アニメが終わったら Idle に戻す
-			if (!is_attacking) {
+			if (!is_attacking)
+			{
 				action = PlayerAction::Idle;
 				animation_frame = 0;
 			}
 		}
-	}
-	else {
-		// 通常はループ
-		index %= frames.size();
+		break;
+
+	case PlayerAction::Death:
+		// 最後のフレームで止める
+		if (index >= frames.size())
+		{
+			index = frames.size() - 1;
+		}
+
+		// 最後のフレームを描画した次のフレームで削除
+		if (index == frames.size() - 1 && animation_frame / delay > frames.size()) {
+			if (object_manager) {
+				object_manager->RequestDeleteObject(this);
+			}
+		}
+		break;
+
+	default:
+		index %= frames.size(); // ループさせる
+		break;
 	}
 
 	image = frames[index];
@@ -458,8 +493,7 @@ void Player::LoadPlayerImage()
 	animation_shadow[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Player_idle.png", 7, 7, 1, 128, 64);
 	animation_shadow[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Player_walk.png", 4, 4, 1, 128, 64);
 	animation_shadow[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Player_attack.png", 3, 3, 1, 128, 64);
-
-
+	animation_shadow[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Player_death.png", 9, 9, 1, 128, 64);
 
 	//animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Player_real_idle.png", 2, 2, 1, 32, 32);
 
