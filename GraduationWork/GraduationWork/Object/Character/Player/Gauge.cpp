@@ -29,7 +29,7 @@ void Gauge::Initialize(GaugeType _type, int max, int current, int sections, unsi
     SetTransColor(255, 255, 255); // 白を透過色に設定
     LoadDivGraph("Resource/images/UI/test_shadow2.png", 8, 4, 2, 174, 178, shadow_anim);
 
-    circle_base = LoadGraph("Resource/images/UI/circle_base.png"); // 1枚
+    circle_base = LoadGraph("Resource/images/UI/Darksiders Concept.png"); // 1枚
 
     int sheet = LoadGraph("Resource/images/UI/flames_only_sheet.png"); // 4x2
 
@@ -139,7 +139,7 @@ void Gauge::DrawCircularFill(int cx, int cy, float scale) const
     // ---- ゲージ本体（円・数値） ----
     SetDrawBlendMode(DX_BLENDMODE_ALPHA, fade_alpha);  // ← フェードを反映
     DrawArc(cx, cy, inner, outer, 0, 360, GetColor(40, 40, 40));
-    DrawArc(cx, cy, inner, outer, -150, -150 + fill_angle, color);
+    DrawArc(cx, cy, inner, outer, -90 - fill_angle, - 90, color);
     DrawCircleAA(cx, cy, inner - 1, 64, GetColor(0, 0, 0), TRUE);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);         // ← リセット
 
@@ -187,8 +187,8 @@ void Gauge::DrawCircularSection(int cx, int cy, float scale) const
     }
 
     for (int i = 0; i < current_value; ++i) {
-        float start = i * angle_per;
-        DrawArc(cx, cy, inner, outer, start - 150, start - 150 + angle_per, color); // 実際のセクション
+        float start = -i * angle_per;
+        DrawArc(cx, cy, inner, outer, start+150 , start+150  + angle_per, color); // 実際のセクション
     }
 
     DrawStringToHandle(100, 100, "HELLO,WORLD", GetColor(255, 255, 255), SceneManager::font);

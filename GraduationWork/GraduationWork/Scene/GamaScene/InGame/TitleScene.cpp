@@ -1,5 +1,6 @@
 #include "TitleScene.h"
 #include "../../../Utility/InputManager.h"
+#include "../../SceneManager.h"
 
 
 TitleScene::TitleScene()
@@ -26,19 +27,19 @@ eSceneType TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	DrawString(0, 0, "Title", GetColor(255, 255, 255));
+	DrawString(0, 0, "Title", GetColor(255, 255, 255), SceneManager::font);
 
-    const char* menu[] = { "Start", "Option", "Exit" };
+    const char* menu[] = { "START", "OPTION", "EXIT" };
 
     for (int i = 0; i < MENU_COUNT; i++)
     {
         if (i == cursorIndex)
         {
-            DrawFormatString(100, 100 + i * 40, GetColor(255, 255, 0), "¨ %s", menu[i]);
+            DrawFormatStringToHandle(100, 100 + i * 40, GetColor(255, 255, 0), SceneManager::font, "> %s", menu[i]);
         }
         else
         {
-            DrawFormatString(120, 100 + i * 40, GetColor(255, 255, 255), "%s", menu[i]);
+            DrawFormatStringToHandle(120, 100 + i * 40, GetColor(255, 255, 255), SceneManager::font, "%s", menu[i]);
         }
     }
 }

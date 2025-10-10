@@ -25,6 +25,7 @@ private:
     float shadow_anim_elapsed;  // 経過時間
     int shadow_frame;
     int shadow_anim[8];
+    int circle_base;
 
     // 点滅用（回復中に 1 秒ごとに ON/OFF）
     float blink_elapsed;       // 経過時間
@@ -40,7 +41,6 @@ private:
     // 現在の影状態を Draw 側で参照するために保持
     bool current_is_shadow;
 
-    int circle_base = -1;
     int flame_anim[8]{};
     static const int FLAME_W = 174;   // フレーム幅
     static const int FLAME_H = 178;   // フレーム高
