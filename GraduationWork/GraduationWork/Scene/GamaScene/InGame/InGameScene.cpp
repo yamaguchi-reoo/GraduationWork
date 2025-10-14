@@ -112,6 +112,8 @@ void InGameScene::Finalize()
 {
 	// I—¹Žžˆ—
 	__super::Finalize();
+	plates.clear();
+	lights.clear();
 	object_manager.Finalize();
 	editor->Finalize();
 }
@@ -171,6 +173,8 @@ void InGameScene::LoadStage()
 
 void InGameScene::SetStage()
 {
+	plates.clear();
+	lights.clear();
 	const Vector2D block_size((float)BLOCK_SIZE);
 
 	for (int y = 0; y < stage_data.GetHeight(); ++y)
