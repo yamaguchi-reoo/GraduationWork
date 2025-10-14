@@ -15,6 +15,9 @@ edit_mode(false)
 {
 	// JSONからタイルセットを読み込み
 	tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
+
+	background_handle = LoadGraph("Resource/images/BackGround/background 1.png");
+
 }
 
 InGameScene::~InGameScene()
@@ -80,11 +83,15 @@ eSceneType InGameScene::Update()
 void InGameScene::Draw()
 {
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(185, 185, 185), TRUE); 
+	//背景
+	DrawBackground();
 	// 通常描画
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
 
 	DrawTiles();
+
+
 
 	if (edit_mode)
 	{
@@ -103,6 +110,7 @@ void InGameScene::Draw()
 	{
 		DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
 	}
+
 
 	/*std::vector<int> favorite_tiles = { 0, 5, 12, 25, 31, 45, 62, 78, 89, 105 };
 	tile_set.DrawSelectedTiles(favorite_tiles, 10, 20, 5);*/	
@@ -253,5 +261,20 @@ void InGameScene::UpdateCamera()
 
 		if (camera_location.x < stage_limit_left) camera_location.x = stage_limit_left;
 		if (camera_location.x > stage_limit_right) camera_location.x = stage_limit_right;
+	}
+}
+
+void InGameScene::DrawBackground()
+{
+	// 背景画像のサイズを取得
+	int bg_w, bg_h;
+	GetGraphSize(background_handle, &bg_w, &bg_h);
+
+	int offset_x = static_cast<int>(camera_location.x) % bg_w;
+	if (offset_x < 0) offset_x += bg_w;
+
+	for (int x = -offset_x; x < SCREEN_WIDTH; x += bg_w)
+	{
+		DrawGraph(x, 0, background_handle, TRUE);
 	}
 }

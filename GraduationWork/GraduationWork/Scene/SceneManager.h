@@ -19,6 +19,7 @@ public:
     void Update();      //更新処理
     void Finalize();    //終了時処理
     void Draw();  //描画処理
+    static int font;
 
 private:
     //シーン切替処理
