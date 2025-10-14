@@ -29,6 +29,8 @@ private:
 	//Object“¯m‚Ì•R‚Ã‚¯
 	std::vector<Light*> lights;
 	std::vector<Plate*> plates;
+
+	int background_handle;
 public:
 	InGameScene();
 	~InGameScene();
@@ -50,5 +52,8 @@ public:
 
 	//ƒJƒƒ‰‚ÌˆÊ’u‚ğXV
 	void UpdateCamera();
+
+	//”wŒi
+	void DrawBackground();
 };
 

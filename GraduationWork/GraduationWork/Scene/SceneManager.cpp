@@ -8,6 +8,8 @@
 #include "../common.h"
 #include "../Utility/UtilityList.h"
 
+int SceneManager::font = -1;
+
 SceneManager::SceneManager() :current_scene(nullptr), fps_control()
 {
 }
@@ -34,11 +36,17 @@ void SceneManager::Initialize()
 		throw("DXライブラリが初期化できませんでした\n");
 	}
 
+	// ここでフォントファイルを登録する
+	AddFontFile("Resource/Font/party-bold/party-bold.ttf");
+
+	// 登録したフォントをハンドル化
+	font = CreateFontToHandle("Party Bold", 32, 6, DX_FONTTYPE_ANTIALIASING_4X4);
+
 	//裏画面から描画を始める
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	//タイトル画面シーンから開始する
-	ChangeScene(eSceneType::GAME_MAIN);
+	ChangeScene(eSceneType::TITLE/*GAME_MAIN*/);
 
 	fps_control.Initialize();;
 }
