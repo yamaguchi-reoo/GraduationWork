@@ -176,8 +176,8 @@ bool ObjectManager::IsOnScreen(GameObject* obj, Vector2D offset)
     Vector2D loc = obj->GetLocation();
     Vector2D size = obj->GetBoxSize();
 
-    float screen_left = offset.x;
-    float screen_right = offset.x + SCREEN_WIDTH + 100;
+    float screen_left = offset.x - 300;
+    float screen_right = offset.x + SCREEN_WIDTH + 300;
     float screen_top = offset.y;
     float screen_bottom = offset.y + SCREEN_HEIGHT;
 
