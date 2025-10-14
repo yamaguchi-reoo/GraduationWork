@@ -3,6 +3,7 @@
 #include "../../GameObject.h"
 
 #include "Gauge.h"
+#include <map>
 
 struct AttackHitBox 
 {
@@ -16,7 +17,9 @@ class Player :
 {
 private:
 
+    enum class PlayerAction { Idle, Walk, Jump, Attack, Death };
     enum class PlayerState { Real, Shadow };
+	PlayerAction action; // プレイヤーの現在の行動
     PlayerState state; // プレイヤーの状態（実態か影か）
 
     //ジャンプ
@@ -34,9 +37,11 @@ private:
     int invincible_timer;   // 無敵時間タイマー
 
 	//アニメーション
-    int current_frame = 0;
-    int frame_timer = 0;
-    int frame_delay = 0;
+    std::map<PlayerAction, std::vector<int>> animation_shadow;
+	std::map<PlayerAction, std::vector<int>> animation_real;
+
+    std::map<PlayerAction, int> animation_frame_count;
+    int animation_frame = 0; //現在のアニメーションフレーム
 
 public:
     Player();

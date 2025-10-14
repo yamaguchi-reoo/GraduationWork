@@ -16,12 +16,13 @@ namespace {
 
 Player::Player() : 
 	state(PlayerState::Real), 
+	action(PlayerAction::Idle),
 	jump_velocity(0.0f),
 	jump_strength(12.0f),
 	is_attacking(false),
 	invincible_timer(0),
 	attack_cooldown(0),
-	attack_cooldown_max(20),
+	attack_cooldown_max(40),
 	shadow_gauge(),
 	hp_gauge(),
 	attack_hitboxes()
@@ -79,36 +80,70 @@ void Player::Draw(Vector2D offset, double rate)
 	}
 
 	if (visible) {
-		if (state == PlayerState::Real)
-		{
-			// 実態の描画
-			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 0), FALSE);
-		}
-		else if (state == PlayerState::Shadow)
-		{
-			// 影状態の描画
-			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(180, 80, 255), FALSE);
+		const auto& frames = (state == PlayerState::Real) ? animation_real[action] : animation_shadow[action];
 
-			float offset_x = (flip_flg ? -100.0f : 100.0f);
-			DrawRotaGraphF(screen_pos.x + (box_size.x / 2) + offset_x, screen_pos.y + (box_size.y / 2) - 8, 3.0f, 0.0, image, TRUE, flip_flg);
+		// 描画位置の補正
+		float offset_x = 0.0f;
+		if (state == PlayerState::Shadow) {
+			offset_x = (flip_flg ? -100.0f : 100.0f);
+		}
+
+		// 画像がある場合は画像を描画
+		if (!frames.empty()) {
+			//int index = (animation_frame / 5) % frames.size();
+			DrawRotaGraphF(
+				screen_pos.x + (box_size.x / 2) + offset_x, 
+				screen_pos.y + (box_size.y / 2) - 16,
+				3.0,    // 拡大率
+				0.0,    // 回転角
+				image,
+				TRUE,   // 透過
+				flip_flg
+			);
+		}
+		else
+		{
+			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 0), FALSE);
 		}
 	}
 	
 	DrawUI();
 
 #ifdef _DEBUG
-	DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Player");
+	//DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Player");
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 
-	for (const auto& hitbox : attack_hitboxes)
+	/*for (const auto& hitbox : attack_hitboxes)
 	{
 		Vector2D draw_pos = hitbox.position - offset;
 		DrawBoxAA(draw_pos.x, draw_pos.y, draw_pos.x + hitbox.size.x, draw_pos.y + hitbox.size.y, GetColor(255, 255, 0), TRUE);
-	}
+	}*/
 
 	// Playerの位置
 	DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.2f, %.2f)", location.x, location.y);
+
+
+	switch (action)
+	{
+	case Player::PlayerAction::Idle:
+		DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Idle");
+		break;
+	case Player::PlayerAction::Walk:
+		DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Walk");
+		break;
+	case Player::PlayerAction::Jump:
+		DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Jump");
+		break;
+	case Player::PlayerAction::Attack:
+		DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Attack");
+		break;
+	case Player::PlayerAction::Death:
+		DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Death");
+		break;
+	default:
+		break;
+	}
 #endif // DEBUG
 
 }
@@ -136,12 +171,14 @@ void Player::OnHitCollision(GameObject* hit_object)
 				if (hp <= 0)
 				{
 					hp = 0;
-					if (object_manager)
-					{
-						object_manager->RequestDeleteObject(this); // HPが0になったら削除要求
-					}
+					action = PlayerAction::Death;
+					animation_frame = 0;
 				}
 			}
+		}
+		else if (state == PlayerState::Shadow)
+		{
+			action = PlayerAction::Death;
 		}
 
 	}
@@ -150,6 +187,18 @@ void Player::OnHitCollision(GameObject* hit_object)
 void Player::HandleInput()
 {
 	InputManager* input = InputManager::GetInstance();
+
+	// 死亡中は入力無効
+	if (action == PlayerAction::Death) {
+		velocity.x = 0.0f;
+		velocity.y = 0.0f;
+		return; // 入力無効
+	}
+	// 攻撃中は完全固定（移動・ジャンプ・向き変更禁止）
+	if (is_attacking) {
+		velocity.x = 0.0f;   // 移動停止
+		return;              // 入力処理をスキップ
+	}
 
 	// 水平移動（加速度あり）
 	float target_speed = 0.0f;
@@ -166,7 +215,7 @@ void Player::HandleInput()
 	velocity.x += (target_speed - velocity.x) * accel;
 
 	// 状態切替
-	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER))
+	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER) && on_ground)
 	{
 		// Aボタンで状態を切り替え
 		SwitchState();
@@ -179,6 +228,7 @@ void Player::HandleInput()
 		is_jumping = true;
 		on_ground = false;
 		velocity.y = -jump_strength;
+		action = PlayerAction::Jump;
 	}
 
 
@@ -201,11 +251,12 @@ void Player::HandleInput()
 		{
 			is_attacking = true;
 			attack_cooldown = attack_cooldown_max; // 攻撃クールダウンを設定
+			action = PlayerAction::Attack;
 
+			animation_frame = 0;
 
 			// 攻撃のヒットボックスを追加
 			AttackHitBox hitbox;
-
 			hitbox.frame = 0;
 			hitbox.size = Vector2D(70, 70); // サイズ設定
 
@@ -223,6 +274,21 @@ void Player::HandleInput()
 			hitbox.position.y = location.y + (box_size.y / 2) - (hitbox.size.y / 2);
 			attack_hitboxes.push_back(hitbox);
 		}
+	}
+
+	// Idle / Walk 切替
+	if (!is_jumping && !is_attacking)
+	{
+		if (fabs(velocity.x) > 0.1f)
+		{
+			action = PlayerAction::Walk;
+			animation_frame = 0;
+		}
+		else {
+			action = PlayerAction::Idle;
+			animation_frame = 0;
+		}
+
 	}
 }
 
@@ -290,10 +356,10 @@ void Player::UpdateAttack()
 		}
 	}
 
-	// frame > 10 のものを削除
+	// frame > のものを削除
 	attack_hitboxes.erase(
 		std::remove_if(attack_hitboxes.begin(), attack_hitboxes.end(),
-			[](const AttackHitBox& h) { return h.frame > 10; }),
+			[](const AttackHitBox& h) { return h.frame > 15; }),
 		attack_hitboxes.end()
 	);
 
@@ -305,20 +371,56 @@ void Player::UpdateAttack()
 
 void Player::UpdateAnimation()
 {
-	if (animation_data.empty()) return;
+	animation_frame++;
 
-	// フレームタイマーを進める
-	frame_timer++;
-	if (frame_timer >= frame_delay)
-	{
-		frame_timer = 0;
-		current_frame++;
-		if (current_frame >= animation_data.size())
-			current_frame = 0; // ループ
+	const auto& frames = (state == PlayerState::Real) ? animation_real[action] : animation_shadow[action];
+	if (frames.empty()) return;
 
-		// 表示用画像を更新
-		image = animation_data[current_frame];
+
+	int delay = 5; // デフォルト
+	switch (action) {
+	default:
+		delay = 5;
+		break;
 	}
+
+	int index = animation_frame / delay;
+
+	switch (action)
+	{
+	case PlayerAction::Attack:
+		if (index >= frames.size())
+		{
+			index = frames.size() - 1;
+			if (!is_attacking)
+			{
+				action = PlayerAction::Idle;
+				animation_frame = 0;
+			}
+		}
+		break;
+
+	case PlayerAction::Death:
+		// 最後のフレームで止める
+		if (index >= frames.size())
+		{
+			index = frames.size() - 1;
+		}
+
+		// 最後のフレームを描画した次のフレームで削除
+		if (index == frames.size() - 1 && animation_frame / delay > frames.size()) {
+			if (object_manager) {
+				object_manager->RequestDeleteObject(this);
+			}
+		}
+		break;
+
+	default:
+		index %= frames.size(); // ループさせる
+		break;
+	}
+
+	image = frames[index];
 }
 
 void Player::SwitchState()
@@ -388,17 +490,13 @@ void Player::LoadPlayerImage()
 	ResourceManager* rm = ResourceManager::GetInstance();
 
 	// 画像取得（単体画像の場合 all_num = 1 なので省略可能）
-	auto idle_image = rm->GetImages("Resource/Images/Character/Player/Player_idle.png", 7, 7, 1, 128, 70);
-	//auto idle_image = rm->GetImages("Resource/Images/Character/Player/Player_idle.png",1);
+	animation_shadow[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Player_idle.png", 7, 7, 1, 128, 64);
+	animation_shadow[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Player_walk.png", 4, 4, 1, 128, 64);
+	animation_shadow[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Player_attack.png", 3, 3, 1, 128, 64);
+	animation_shadow[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Player_death.png", 9, 9, 1, 128, 64);
 
-	// アニメーション用にコピー（今回は単体画像だけど配列扱い）
-	animation_data = idle_image;
+	//animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Player_real_idle.png", 2, 2, 1, 32, 32);
 
 	// 表示用画像に設定
-	image = animation_data[0];
-
-	// アニメーション関連変数初期化
-	current_frame = 0;
-	frame_timer = 0;
-	frame_delay = 5; // 5フレームごとに次の画像に切り替える
+	image = animation_shadow[PlayerAction::Idle][0];
 }
