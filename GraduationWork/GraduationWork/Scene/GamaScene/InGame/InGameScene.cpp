@@ -277,4 +277,9 @@ void InGameScene::DrawBackground()
 	{
 		DrawGraph(x, 0, background_handle, TRUE);
 	}
+
+	// ---- ”wŒi‚ğ­‚µˆÃ‚­‚·‚é ----
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);  // ƒ¿=100‚Å”¼“§–¾‚Ì•
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // ƒuƒŒƒ“ƒh‰ğœ
 }
