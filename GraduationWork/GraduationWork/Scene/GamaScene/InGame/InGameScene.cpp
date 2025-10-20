@@ -181,65 +181,79 @@ void InGameScene::LoadStage()
 
 void InGameScene::SetStage()
 {
-	plates.clear();
-	lights.clear();
-	const Vector2D block_size((float)BLOCK_SIZE);
+    plates.clear();
+    lights.clear();
 
-	for (int y = 0; y < stage_data.GetHeight(); ++y)
-	{
-		for (int x = 0; x < stage_data.GetWidth(); ++x)
-		{
-			// 左上原点で描画位置
-			Vector2D world_pos(x * static_cast<float>(BLOCK_SIZE), y * static_cast<float>(BLOCK_SIZE));
-			// オブジェクトレイヤー
-			int obj = stage_data.GetObj(x, y);
+    const Vector2D block_size((float)BLOCK_SIZE);
 
-			switch (obj)
-			{
-			case NONE:
-				break;
-			case BLOCK:
-				object_manager.CreateObject<Block>(world_pos, block_size);
-				break;
-			case PLAYER:
-				object_manager.CreateObject<Player>(world_pos, Vector2D(45.0f, 64.0f));
-				break;
-			case WALL:
-				object_manager.CreateObject<Wall>(world_pos, block_size);
-				break;
-			case LIGHT:
-			{
-				Light* light = object_manager.CreateObject<Light>(world_pos, Vector2D(30.0f, 100.0f));
-				lights.push_back(light);
-				break;
-			}
-			case INVISIBLEFLOOR:
-				object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
-				break;
-			case PUSHBLOCK:
-				object_manager.CreateObject<PushBlock>(world_pos, block_size);
-				break;
-			case ENEMY:
-				object_manager.CreateObject<Enemy>(world_pos, Vector2D(48.0f, 64.0f));
-				break;
-			case REALENEMY:
-				object_manager.CreateObject<RealEnemy>(world_pos, Vector2D(48.0f, 64.0f));
-				break;
-			case PLATE:
-			{
-				Plate* plate = object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f, 10.0f));
-				plates.push_back(plate);
-				break;
-			}
-			}
-		}
-	}
-	// 生成後に紐付け
-	for (size_t i = 0; i < plates.size() && i < lights.size(); ++i)
-	{
-		plates[i]->linked_light = lights[i];
-	}
+    // まずPlayerを生成
+    for (int y = 0; y < stage_data.GetHeight(); ++y)
+    {
+        for (int x = 0; x < stage_data.GetWidth(); ++x)
+        {
+            int obj = stage_data.GetObj(x, y);
+            if (obj == PLAYER)
+            {
+                Vector2D world_pos(x * (float)BLOCK_SIZE, y * (float)BLOCK_SIZE);
+                object_manager.CreateObject<Player>(world_pos, Vector2D(45.0f, 64.0f));
+            }
+        }
+    }
+
+    // 次にその他のオブジェクトを生成
+    for (int y = 0; y < stage_data.GetHeight(); ++y)
+    {
+        for (int x = 0; x < stage_data.GetWidth(); ++x)
+        {
+            Vector2D world_pos(x * (float)BLOCK_SIZE, y * (float)BLOCK_SIZE);
+            int obj = stage_data.GetObj(x, y);
+
+            switch (obj)
+            {
+            case NONE:
+            case PLAYER: // もう生成済みなのでスキップ
+                break;
+            case BLOCK:
+                object_manager.CreateObject<Block>(world_pos, block_size);
+                break;
+            case WALL:
+                object_manager.CreateObject<Wall>(world_pos, Vector2D(48.0f, 48.0f));
+                break;
+            case LIGHT:
+            {
+                Light* light = object_manager.CreateObject<Light>(world_pos, Vector2D(30.0f, 100.0f));
+                lights.push_back(light);
+                break;
+            }
+            case INVISIBLEFLOOR:
+                object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
+                break;
+            case PUSHBLOCK:
+                object_manager.CreateObject<PushBlock>(world_pos, Vector2D(48.0f, 48.0f));
+                break;
+            case ENEMY:
+                object_manager.CreateObject<Enemy>(world_pos, Vector2D(48.0f, 64.0f));
+                break;
+            case REALENEMY:
+                object_manager.CreateObject<RealEnemy>(world_pos, Vector2D(48.0f, 64.0f));
+                break;
+            case PLATE:
+            {
+                Plate* plate = object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f, 10.0f));
+                plates.push_back(plate);
+                break;
+            }
+            }
+        }
+    }
+
+    // 生成後に紐付け
+    for (size_t i = 0; i < plates.size() && i < lights.size(); ++i)
+    {
+        plates[i]->linked_light = lights[i];
+    }
 }
+
 
 void InGameScene::UpdateCamera()
 {
