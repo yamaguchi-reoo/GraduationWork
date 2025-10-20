@@ -102,13 +102,7 @@ void ObjectManager::Draw(Vector2D offset, double rate)
         }
     }
 
-    for (auto obj : objects)
-    {
-        if (obj->GetObjectType() == BLOCK && IsOnScreen(obj, offset))
-        {
-            obj->Draw(offset, rate);
-        }
-    }
+
 }
 
 void ObjectManager::Finalize()

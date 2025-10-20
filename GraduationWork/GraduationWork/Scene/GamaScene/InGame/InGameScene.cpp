@@ -205,7 +205,7 @@ void InGameScene::SetStage()
 				object_manager.CreateObject<Player>(world_pos, Vector2D(45.0f, 64.0f));
 				break;
 			case WALL:
-				object_manager.CreateObject<Wall>(world_pos, Vector2D(48.0f, 48.0f));
+				object_manager.CreateObject<Wall>(world_pos, block_size);
 				break;
 			case LIGHT:
 			{
@@ -217,7 +217,7 @@ void InGameScene::SetStage()
 				object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
 				break;
 			case PUSHBLOCK:
-				object_manager.CreateObject<PushBlock>(world_pos, Vector2D(48.0f, 48.0f));
+				object_manager.CreateObject<PushBlock>(world_pos, block_size);
 				break;
 			case ENEMY:
 				object_manager.CreateObject<Enemy>(world_pos, Vector2D(48.0f, 64.0f));
