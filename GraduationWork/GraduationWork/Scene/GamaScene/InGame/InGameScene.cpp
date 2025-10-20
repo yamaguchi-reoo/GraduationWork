@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 
-#include "../../../Object/ObjectList.h"
 #include "../../../Utility/InputManager.h"
 
 
@@ -16,6 +15,9 @@ edit_mode(false)
 {
 	// JSONÇ©ÇÁÉ^ÉCÉãÉZÉbÉgÇì«Ç›çûÇ›
 	tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
+
+	background_handle = LoadGraph("Resource/images/BackGround/background 1.png");
+
 }
 
 InGameScene::~InGameScene()
@@ -81,11 +83,15 @@ eSceneType InGameScene::Update()
 void InGameScene::Draw()
 {
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(185, 185, 185), TRUE); 
+	//îwåi
+	DrawBackground();
 	// í èÌï`âÊ
 	__super::Draw();
 	object_manager.Draw(camera_location, 1.0);
 
 	DrawTiles();
+
+
 
 	if (edit_mode)
 	{
@@ -105,6 +111,7 @@ void InGameScene::Draw()
 		DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
 	}
 
+
 	/*std::vector<int> favorite_tiles = { 0, 5, 12, 25, 31, 45, 62, 78, 89, 105 };
 	tile_set.DrawSelectedTiles(favorite_tiles, 10, 20, 5);*/	
 }
@@ -113,6 +120,8 @@ void InGameScene::Finalize()
 {
 	// èIóπéûèàóù
 	__super::Finalize();
+	plates.clear();
+	lights.clear();
 	object_manager.Finalize();
 	editor->Finalize();
 }
@@ -172,6 +181,8 @@ void InGameScene::LoadStage()
 
 void InGameScene::SetStage()
 {
+	plates.clear();
+	lights.clear();
 	const Vector2D block_size((float)BLOCK_SIZE);
 
 	for (int y = 0; y < stage_data.GetHeight(); ++y)
@@ -191,14 +202,17 @@ void InGameScene::SetStage()
 				object_manager.CreateObject<Block>(world_pos, block_size);
 				break;
 			case PLAYER:
-				object_manager.CreateObject<Player>(world_pos, Vector2D(48.0f, 64.0f));
+				object_manager.CreateObject<Player>(world_pos, Vector2D(45.0f, 64.0f));
 				break;
 			case WALL:
 				object_manager.CreateObject<Wall>(world_pos, Vector2D(48.0f, 48.0f));
 				break;
 			case LIGHT:
-				object_manager.CreateObject<Light>(world_pos, Vector2D(30.0f, 100.0f));
+			{
+				Light* light = object_manager.CreateObject<Light>(world_pos, Vector2D(30.0f, 100.0f));
+				lights.push_back(light);
 				break;
+			}
 			case INVISIBLEFLOOR:
 				object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
 				break;
@@ -212,10 +226,18 @@ void InGameScene::SetStage()
 				object_manager.CreateObject<RealEnemy>(world_pos, Vector2D(48.0f, 64.0f));
 				break;
 			case PLATE:
-				object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f,10.0f));
+			{
+				Plate* plate = object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f, 10.0f));
+				plates.push_back(plate);
 				break;
 			}
+			}
 		}
+	}
+	// ê∂ê¨å„Ç…ïRïtÇØ
+	for (size_t i = 0; i < plates.size() && i < lights.size(); ++i)
+	{
+		plates[i]->linked_light = lights[i];
 	}
 }
 
@@ -239,5 +261,20 @@ void InGameScene::UpdateCamera()
 
 		if (camera_location.x < stage_limit_left) camera_location.x = stage_limit_left;
 		if (camera_location.x > stage_limit_right) camera_location.x = stage_limit_right;
+	}
+}
+
+void InGameScene::DrawBackground()
+{
+	// îwåiâÊëúÇÃÉTÉCÉYÇéÊìæ
+	int bg_w, bg_h;
+	GetGraphSize(background_handle, &bg_w, &bg_h);
+
+	int offset_x = static_cast<int>(camera_location.x) % bg_w;
+	if (offset_x < 0) offset_x += bg_w;
+
+	for (int x = -offset_x; x < SCREEN_WIDTH; x += bg_w)
+	{
+		DrawGraph(x, 0, background_handle, TRUE);
 	}
 }

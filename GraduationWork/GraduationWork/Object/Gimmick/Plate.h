@@ -1,11 +1,13 @@
 #pragma once
 #include "../GameObject.h"
+#include "Light.h"
+
 class Plate :
     public GameObject
 {
 public:
-	bool TrapOn_flg = false;
-
+	bool TrapOn_flg = false;	
+	Light* linked_light = nullptr;
 
 public:
 

@@ -31,7 +31,7 @@ const std::vector<int>& ResourceManager::GetImages(std::string file_name, int al
 {
     if (images_container.count(file_name) == 0)
     {
-        if (num_x <= 0 || num_y <= 0)
+        if (num_x > 0 && num_y > 0)
             CreateImagesResource(file_name, all_num, num_x, num_y, size_x, size_y);
        else
             CreateImagesResourceSingle(file_name, all_num);
@@ -84,6 +84,10 @@ void ResourceManager::UnloadResourcesAll()
 
     images_container.clear();
     sounds_container.clear();
+}
+
+void ResourceManager::CreateImagesResource(std::string file_name)
+{
 }
 
 // •ªŠ„‰æ‘œì¬

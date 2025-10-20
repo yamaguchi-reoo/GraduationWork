@@ -14,8 +14,16 @@ void Wall::Update()
 
 void Wall::Draw(Vector2D offset, double rate)
 {
+
+
 	Vector2D screen_pos = location - offset;
+
+#ifdef _DEBUG
+	DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 125, 125), TRUE);
+#endif
 	__super::Draw(screen_pos, rate);
+
+
 }
 
 

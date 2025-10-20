@@ -17,8 +17,8 @@ void Light::Initialize(Vector2D _location, Vector2D _box_size)
 	light_data.angle = 90.0f;			// ‰ŠúŠp“xiãŒü‚«j
 	light_data.min_angle = 60.0f;		// Å¬Šp“x
 	light_data.max_angle = 120.0f;		// Å‘åŠp“x
-	light_data.rotate_speed = 30.0f;	// ‰ñ“]‘¬“xi“x/•bj
-	light_data.direction = 1;			// ³•ûŒü‰ñ“]
+	light_data.rotate_speed = 20.0f;	// ‰ñ“]‘¬“xi“x/•bj
+	light_data.direction = -1;			// ³•ûŒü‰ñ“]
 	light_data.moving = false;			// “®ì’†
 }
 
@@ -26,7 +26,7 @@ void Light::Update()
 {
 	__super::Update();
 
-	if (light_data.moving)
+	if (!light_data.moving)
 	{
 		light_data.angle += light_data.rotate_speed * (1.0f / 60.0f) * light_data.direction; 
 
