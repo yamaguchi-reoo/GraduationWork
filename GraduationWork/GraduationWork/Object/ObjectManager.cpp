@@ -101,6 +101,8 @@ void ObjectManager::Draw(Vector2D offset, double rate)
             obj->Draw(offset, rate);
         }
     }
+
+
 }
 
 void ObjectManager::Finalize()
