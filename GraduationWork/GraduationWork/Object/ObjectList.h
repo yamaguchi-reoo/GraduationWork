@@ -9,3 +9,5 @@
 #include "Character/Enemy/Enemy.h"
 #include "Character/Enemy/RealEnemy.h"
 #include "Gimmick/Plate.h"
+#include "Item/Heal.h"
+#include "Item/ShadowHeal.h"

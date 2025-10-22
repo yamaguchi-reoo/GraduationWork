@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Object\Item\Heal.cpp" />
     <ClCompile Include="Object\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp" />
     <ClCompile Include="Object\Gimmick\Invisiblefloor.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="Scene\SceneBase.cpp" />
     <ClCompile Include="Object\Stage\StageEditor.cpp" />
     <ClCompile Include="Object\Stage\StageData.cpp" />
+    <ClCompile Include="Object\Item\ShadowHeal.cpp" />
     <ClCompile Include="Utility\ResourceManager.cpp" />
     <ClCompile Include="Utility\TileSet.cpp" />
     <ClCompile Include="Utility\InputManager.cpp" />
@@ -171,6 +173,7 @@
     <ClCompile Include="Object\Gimmick\Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Object\Item\Heal.h" />
     <ClInclude Include="Object\Character\Enemy\Enemy.h" />
     <ClInclude Include="Object\Character\Enemy\EnemyBase.h" />
     <ClInclude Include="Object\Gimmick\Invisiblefloor.h" />
@@ -186,6 +189,7 @@
     <ClInclude Include="Object\Gimmick\PushBlock.h" />
     <ClInclude Include="Object\Character\Enemy\RealEnemy.h" />
     <ClInclude Include="Object\Gimmick\Plate.h" />
+    <ClInclude Include="Object\Item\ShadowHeal.h" />
     <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
     <ClInclude Include="Object\GameObject.h" />

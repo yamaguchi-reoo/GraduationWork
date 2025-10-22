@@ -243,6 +243,16 @@ void InGameScene::SetStage()
                 plates.push_back(plate);
                 break;
             }
+			case HEAL:
+			{
+				object_manager.CreateObject<Heal>(world_pos, Vector2D(48.0f, 48.0f));
+				break;
+			}
+			case SHADOWHEAL:
+			{
+				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(48.0f, 48.0f));
+				break;
+			}
             }
         }
     }

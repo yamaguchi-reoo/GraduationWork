@@ -3,7 +3,7 @@
 
 class ObjectManegaer;
 
-class Heal :
+class ShadowHeal :
 	public GameObject
 {
 public:

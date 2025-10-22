@@ -503,3 +503,15 @@ void Player::LoadPlayerImage()
 	// 表示用画像に設定
 	image = animation_shadow[PlayerAction::Idle][0];
 }
+
+void Player::AddHP(int num)
+{
+	hp += num;
+}
+
+// プレイヤーが内部で持つゲージオブジェクトへの参照を返す
+Gauge& Player::GetGauge()
+{
+	// 'gauge_' は Player クラスの private メンバにある Gauge オブジェクト名だと仮定
+	return shadow_gauge;
+}
