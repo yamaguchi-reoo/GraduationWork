@@ -85,7 +85,7 @@ void Player::Draw(Vector2D offset, double rate)
 		// •`‰æˆÊ’u‚Ì•â³
 		float offset_x = 0.0f;
 		if (state == PlayerState::Shadow) {
-			offset_x = (flip_flg ? -100.0f : 100.0f);
+			offset_x = (flip_flg ? -84.0f :84.0f);
 		}
 
 		// ‰æ‘œ‚ª‚ ‚éê‡‚Í‰æ‘œ‚ğ•`‰æ
@@ -93,13 +93,14 @@ void Player::Draw(Vector2D offset, double rate)
 			//int index = (animation_frame / 5) % frames.size();
 			DrawRotaGraphF(
 				screen_pos.x + (box_size.x / 2) + offset_x, 
-				screen_pos.y + (box_size.y / 2) - 16,
-				3.0,    // Šg‘å—¦
+				screen_pos.y + (box_size.y / 2) - 15,
+				2.5,    // Šg‘å—¦
 				0.0,    // ‰ñ“]Šp
 				image,
 				TRUE,   // “§‰ß
 				flip_flg
 			);
+
 		}
 		else
 		{
@@ -114,14 +115,14 @@ void Player::Draw(Vector2D offset, double rate)
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 
-	/*for (const auto& hitbox : attack_hitboxes)
+	for (const auto& hitbox : attack_hitboxes)
 	{
 		Vector2D draw_pos = hitbox.position - offset;
 		DrawBoxAA(draw_pos.x, draw_pos.y, draw_pos.x + hitbox.size.x, draw_pos.y + hitbox.size.y, GetColor(255, 255, 0), TRUE);
-	}*/
+	}
 
 	// Player‚ÌˆÊ’u
-	DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.2f, %.2f)", location.x, location.y);
+	//DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.15f)", location.x);
 
 
 	switch (action)
