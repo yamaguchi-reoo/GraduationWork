@@ -10,11 +10,12 @@
 
 
 InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(0, 0),
-tile_set("Resource/Images/Tiles/tile.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
+tile_set("Resource/Images/Tiles/tiles_spritesheet.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
 edit_mode(false)
 {
 	// JSONからタイルセットを読み込み
-	tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
+	//tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
+	tile_set.LoadFromXML("Resource/Images/Tiles/tiles_spritesheet.xml"); 
 
 	background_handle = LoadGraph("Resource/images/BackGround/background 1.png");
 
@@ -279,7 +280,7 @@ void InGameScene::UpdateCamera()
 }
 
 void InGameScene::DrawBackground()
-{
+{ 
 	// 背景画像のサイズを取得
 	int bg_w, bg_h;
 	GetGraphSize(background_handle, &bg_w, &bg_h);

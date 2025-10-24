@@ -167,6 +167,7 @@
     <ClCompile Include="Utility\InputManager.cpp" />
     <ClCompile Include="Utility\FpsControl.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Utility\tinyxml2.cpp" />
     <ClCompile Include="Utility\Vector2D.cpp" />
     <ClCompile Include="Object\Gimmick\Wall.cpp" />
   </ItemGroup>
@@ -198,6 +199,7 @@
     <ClInclude Include="Utility\TileSet.h" />
     <ClInclude Include="Utility\InputManager.h" />
     <ClInclude Include="Utility\FpsControl.h" />
+    <ClInclude Include="Utility\tinyxml2.h" />
     <ClInclude Include="Utility\UserTemplate.h" />
     <ClInclude Include="Utility\UtilityList.h" />
     <ClInclude Include="Utility\Vector2D.h" />

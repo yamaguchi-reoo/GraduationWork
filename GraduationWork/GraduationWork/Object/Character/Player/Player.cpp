@@ -285,15 +285,22 @@ void Player::HandleInput()
 	{
 		if (fabs(velocity.x) > 0.1f)
 		{
-			action = PlayerAction::Walk;
-			animation_frame = 0;
+			if (action != PlayerAction::Walk)
+			{
+				action = PlayerAction::Walk;
+				animation_frame = 0;
+			}
 		}
-		else {
-			action = PlayerAction::Idle;
-			animation_frame = 0;
+		else
+		{
+			if (action != PlayerAction::Idle)
+			{
+				action = PlayerAction::Idle;
+				animation_frame = 0;
+			}
 		}
-
 	}
+
 }
 
 void Player::UpdateJump()
