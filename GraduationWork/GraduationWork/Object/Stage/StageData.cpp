@@ -103,7 +103,11 @@ bool StageData::LoadCSVInternal(const std::string& filename, std::vector<std::ve
 			if (std::getline(ss, value, ','))
 			{
 				if (value.empty()) value = "-1";
-				layer[y][x] = std::stoi(value);
+				//layer[y][x] = std::stoi(value);
+
+				int id = std::stoi(value);
+				if (id == 0) id = -1;
+				layer[y][x] = id;
 			}
 			else
 			{

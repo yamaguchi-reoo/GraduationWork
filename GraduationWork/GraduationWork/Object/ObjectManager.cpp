@@ -93,10 +93,16 @@ void ObjectManager::Draw(Vector2D offset, double rate)
             obj->Draw(offset, rate);
         }
     }
-
     for (auto obj : objects)
     {
         if (obj->GetObjectType() == LIGHT && IsOnScreen(obj, offset))
+        {
+            obj->Draw(offset, rate);
+        }
+    }
+    for (auto obj : objects)
+    {
+        if (obj->GetObjectType() == PLAYER && IsOnScreen(obj, offset))
         {
             obj->Draw(offset, rate);
         }

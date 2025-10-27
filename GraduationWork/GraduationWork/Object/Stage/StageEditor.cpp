@@ -191,11 +191,13 @@ void StageEditor::HandleGridEditing(const Vector2D& mouse_pos, bool ui_handled)
         if (current_mode == EditMode::Tile && selected_tile_id >= 0) {
             // 左クリックで配置
             if (input->GetMouse(MOUSE_INPUT_LEFT)) {
-                stage_data->AddPlacedTile(selected_tile_id, grid_pos);
+                //stage_data->AddPlacedTile(selected_tile_id, grid_pos);
+                stage_data->SetTile(hovered_grid_x, hovered_grid_y, selected_tile_id);
             }
             // 右クリックで削除
             if (input->GetMouse(MOUSE_INPUT_RIGHT)) { 
-                stage_data->RemovePlacedTileNear(grid_pos, tile_set->GetTileWidth() / 2.0f); 
+                //stage_data->RemovePlacedTileNear(grid_pos, tile_set->GetTileWidth() / 2.0f); 
+                stage_data->SetTile(hovered_grid_x, hovered_grid_y, -1);
             }
 
             // プレビュー

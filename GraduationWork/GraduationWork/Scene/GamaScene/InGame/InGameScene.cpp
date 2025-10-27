@@ -124,8 +124,14 @@ void InGameScene::Finalize()
 	plates.clear();
 	lights.clear();
 	object_manager.Finalize();
-	editor->Finalize();
+	if (editor)
+	{
+		editor->Finalize();
+		delete editor;
+		editor = nullptr;
+	}
 }
+
 
 eSceneType InGameScene::GetNowSceneType() const
 {
