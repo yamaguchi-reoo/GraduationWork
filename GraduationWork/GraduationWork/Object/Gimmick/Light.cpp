@@ -20,6 +20,8 @@ void Light::Initialize(Vector2D _location, Vector2D _box_size)
 	light_data.rotate_speed = 20.0f;	// 回転速度（度/秒）
 	light_data.direction = -1;			// 正方向回転
 	light_data.moving = false;			// 動作中
+
+	draw_priority = 15;
 }
 
 void Light::Update()

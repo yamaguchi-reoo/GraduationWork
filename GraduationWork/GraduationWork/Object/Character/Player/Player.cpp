@@ -46,6 +46,8 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	shadow_gauge.Initialize(GaugeType::CircularFill, 1200, 1200, 0, GetColor(180, 80, 255));
 	hp_gauge.Initialize(GaugeType::CircularSection, 3, hp, 3, GetColor(255, 0, 0));
 
+	draw_priority = 20;
+
 	LoadPlayerImage();
 }
 
