@@ -40,6 +40,8 @@ private:
 	bool PointInTriangle(const Vector2D& p, const Vector2D& a, const Vector2D& b, const Vector2D& c);
 
 	bool CheckLightCollision(GameObject* obj);
+
+	//static bool RayAABBIntersect(const Vector2D& ray_origin, const Vector2D& ray_dir, const Vector2D& box_min, const Vector2D& box_max, float& out_t);
 	
 };
 

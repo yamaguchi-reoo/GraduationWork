@@ -5,6 +5,7 @@
 #include "Gauge.h"
 #include <map>
 
+
 struct AttackHitBox 
 {
     Vector2D position = { 0.0f };
@@ -19,6 +20,7 @@ private:
 
     enum class PlayerAction { Idle, Walk, Jump, Attack, Death };
     enum class PlayerState { Real, Shadow };
+
 	PlayerAction action; // プレイヤーの現在の行動
     PlayerState state; // プレイヤーの状態（実態か影か）
 
@@ -78,6 +80,7 @@ public:
 
     // プレイヤーの状態を取得
     PlayerState GetPlayerState() { return state; }
+    void SetPlayerActionDeath() { action = PlayerAction::Death; }
 
     bool IsPlayerShadow() const override { return state == PlayerState::Shadow; }
 
