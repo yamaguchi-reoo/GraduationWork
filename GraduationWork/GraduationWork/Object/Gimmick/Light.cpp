@@ -162,7 +162,7 @@ void Light::Draw(Vector2D offset, double rate)
 
 	// 描画
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 180);
-	int color_light = GetColor(255, 255, 180);
+	int color_light = GetColor(255, 255, 0);
 
 	// 三角形塗り（AA版だと逆に漏れるときがあるので非 AA 塗りで確実に重ねる）
 	for (int i = 0; i < ray_count; ++i) {
