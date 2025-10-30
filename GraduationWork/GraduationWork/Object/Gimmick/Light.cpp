@@ -116,7 +116,7 @@ void Light::Draw(Vector2D offset, double rate)
 	float light_height = height;
 	float light_width = width;
 
-	const int ray_count = 32;
+	const int ray_count = 16;
 	const float half_angle = atanf(light_width / light_height) * 0.98f; // 少し内側に
 
 	// 候補オブジェクト（block/wall）
