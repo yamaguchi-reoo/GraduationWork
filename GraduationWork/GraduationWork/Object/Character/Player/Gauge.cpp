@@ -50,6 +50,7 @@ void Gauge::Initialize(GaugeType _type, int max, int current, int sections, unsi
     fade_elapsed = 0.0f;
     fade_speed = 1.0f; 
     fade_alpha = 255;
+    switchSpeed = 30.0f; // ← 回転速度（1フレームあたりの角度）
 
 
 
@@ -76,6 +77,7 @@ void Gauge::Update(bool is_shadow, float delta)
         current_value += static_cast<int>(recovery);
     }
 
+
     // 範囲を0からmax_valueの間に制限
     current_value = Clamp(current_value, 0, max_value);
 
@@ -98,6 +100,37 @@ void Gauge::Update(bool is_shadow, float delta)
         // 影アニメは停止・先頭に戻す
         shadow_anim_elapsed = 0.0f;
         shadow_frame = 0;
+    }
+
+    // --- ゲージ残量が少ないときに点滅（300以下） ---
+    if (current_is_shadow && current_value <= 300)
+    {
+        blink_elapsed += delta;
+
+        // 点滅速度（1秒周期でON/OFF切替）
+        const float blink_interval = 1.0f;
+
+        if (blink_elapsed >= blink_interval)
+        {
+            blink_elapsed = 0.0f;
+            blink_visible = !blink_visible; // 表示・非表示を切替
+        }
+    }
+    else
+    {
+        blink_visible = true; // 通常は常に表示
+    }
+
+
+    //ゲージ回転して切り替え
+    if (isSwitching)
+    {
+        switchAngle += switchSpeed;
+        if (switchAngle >= 180.0f)
+        {
+            switchAngle = 0.0f;
+            isSwitching = false;
+        }
     }
 
     //UpdateShadowAnimation(delta);
@@ -129,6 +162,20 @@ void Gauge::DrawCircularFill(int cx, int cy, float scale) const
         }
         return;
     }
+
+    if (isSwitching)
+    {
+        float rad = switchAngle * DX_PI_F / 180.0f;
+
+        // 回転演出（基底画像を回転）
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 255);
+        DrawRotaGraph(cx, cy, scale, rad, circle_base, TRUE);
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)(255 - (switchAngle / 180.0f) * 255));
+        DrawRotaGraph(cx, cy, scale, rad + DX_PI_F, circle_base, TRUE);
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+        return; // 通常描画はスキップ
+    }
+
 
     int outer = static_cast<int>(BASE_RADIUS * scale);
     int inner = outer - static_cast<int>(BASE_THICKNESS * scale);
@@ -218,4 +265,17 @@ void Gauge::UpdateShadowAnimation(float delta)
         shadow_frame = (shadow_frame + 1) % 8;
         shadow_anim_elapsed -= frame_interval;
     }
+}
+
+void Gauge::StartSwitch(bool toShadow)
+{
+    if (isSwitching) return;
+    isSwitching = true;
+    switchAngle = 0.0f;
+    switchToShadow = toShadow;
+}
+
+bool Gauge::IsSwitching() const
+{
+    return isSwitching;
 }

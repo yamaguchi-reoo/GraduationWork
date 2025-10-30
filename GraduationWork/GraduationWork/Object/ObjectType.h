@@ -13,8 +13,8 @@ enum eObjectType
     ENEMY,
     REALENEMY,
 	PLATE,
+    TEXT,
 	OBJECTTYPE_COUNT // タイルの種類数（最後に追加）
-	
 };
 
 struct TypeInfo
@@ -35,7 +35,8 @@ static TypeInfo TYPE_INFO[OBJECTTYPE_COUNT] = {
     { PUSHBLOCK,     "Push",      static_cast<int>(GetColor(200, 100, 200)) },
     { ENEMY,         "Enemy",     static_cast<int>(GetColor(100, 100, 200)) },
     { REALENEMY,     "REnemy",    static_cast<int>(GetColor(50, 100, 200)) },
-    { PLATE,         "Plate",     static_cast<int>(GetColor(200, 0, 200)) }
+    { PLATE,         "Plate",     static_cast<int>(GetColor(200, 0, 200)) },
+    { TEXT,          "Text",      static_cast<int>(GetColor(200, 200, 255)) },
 };
 
 // ヘルパー関数

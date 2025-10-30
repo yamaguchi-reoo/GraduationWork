@@ -43,6 +43,7 @@ private:
     std::map<PlayerAction, int> animation_frame_count;
     int animation_frame = 0; //現在のアニメーションフレーム
 
+
 public:
     Player();
     ~Player();

@@ -145,6 +145,14 @@ void InGameScene::DrawTiles()
 
 			if (tile_set.HasTile(tile_id))
 				tile_set.DrawTile(tile_id, draw_x, draw_y);
+
+			int obj = stage_data.GetObj(x, y);
+			if (obj == static_cast<int>(eObjectType::TEXT))
+			{
+				int draw_x = x * BLOCK_SIZE - static_cast<int>(camera_location.x);
+				int draw_y = y * BLOCK_SIZE - static_cast<int>(camera_location.y);
+				DrawFormatString(draw_x, draw_y - 20, GetColor(255, 255, 255), "PUSH RB");
+			}
 		}
 	}
 

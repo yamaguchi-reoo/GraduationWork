@@ -31,6 +31,9 @@ private:
 	std::vector<Plate*> plates;
 
 	int background_handle;
+
+	int grid_size;         // グリッドサイズ（1マスのピクセル）
+
 public:
 	InGameScene();
 	~InGameScene();

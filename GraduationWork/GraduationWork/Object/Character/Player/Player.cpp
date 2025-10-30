@@ -428,14 +428,19 @@ void Player::UpdateAnimation()
 
 void Player::SwitchState()
 {
-	if (state == PlayerState::Real)
-	{
-		state = PlayerState::Shadow;
-	}
-	else if (state == PlayerState::Shadow)
-	{
-		state = PlayerState::Real;
-	}
+   bool switchingToShadow = (state == PlayerState::Real);
+
+    if (switchingToShadow)
+    {
+        state = PlayerState::Shadow;
+    }
+    else
+    {
+        state = PlayerState::Real;
+    }
+
+    // === UIââèoåƒÇ—èoÇµ ===
+    shadow_gauge.StartSwitch(switchingToShadow);
 }
 
 void Player::UpdateState()
