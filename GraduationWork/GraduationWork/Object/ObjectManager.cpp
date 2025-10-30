@@ -6,6 +6,7 @@
 #include "ObjectList.h"
 
 #include <Windows.h>
+#include <algorithm>
 
 
 ObjectManager::ObjectManager() {}
@@ -86,23 +87,28 @@ void ObjectManager::Update(Vector2D offset)
 
 void ObjectManager::Draw(Vector2D offset, double rate)
 {
+	std::vector<GameObject*> draw_list = objects;
+
+    //‰æ–Ê“à‚É‚ ‚éObject‚Ì‚Ý‚ð‘ÎÛ‚É
     for (auto obj : objects)
     {
         if (IsOnScreen(obj, offset))
         {
-            obj->Draw(offset, rate);
+            draw_list.push_back(obj);
         }
     }
 
-    for (auto obj : objects)
-    {
-        if (obj->GetObjectType() == LIGHT && IsOnScreen(obj, offset))
+    // •`‰æ—Dæ“x‡‚Éƒ\[ƒgi¬‚³‚¢‡‚É‰œ‚©‚çj
+    std::sort(draw_list.begin(), draw_list.end(), [](GameObject* a, GameObject* b)
         {
-            obj->Draw(offset, rate);
-        }
+            return a->GetDrawPriority() < b->GetDrawPriority();
+        });
+
+    // •`‰æ
+    for (auto obj : draw_list)
+    {
+        obj->Draw(offset, rate);
     }
-
-
 }
 
 void ObjectManager::Finalize()

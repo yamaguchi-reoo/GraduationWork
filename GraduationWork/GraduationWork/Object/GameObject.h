@@ -17,6 +17,8 @@ protected:
 
 	eObjectType object_type;		//オブジェクトの種類
 
+	int draw_priority = 0; // 描画優先度
+
 	int hp = 0;
 	bool is_delete = false;
 
@@ -33,6 +35,9 @@ public:
 	virtual void Draw(Vector2D offset, double rate);
 	//終了時処理
 	virtual void Finalize();
+
+	virtual int GetDrawPriority()const { return draw_priority; }
+	virtual void SetDrawPriority(int priority) { draw_priority = priority; }
 
 public:
 	//座標を設定

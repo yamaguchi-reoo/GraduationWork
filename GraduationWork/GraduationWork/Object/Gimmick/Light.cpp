@@ -1,25 +1,71 @@
-#include "Light.h"
+ï»¿#include "Light.h"
 #include "DxLib.h"
 #include "../../Object/ObjectManager.h"
 #include "../Character/Player/Player.h"
 
 #include <cmath>
+#include <algorithm>
+
+
+static bool RayAABBIntersect(const Vector2D& ray_origin, const Vector2D& ray_dir,
+	const Vector2D& box_min, const Vector2D& box_max, float& out_t)
+{
+	const float EPSILON = 1e-6f;
+	float tmin = 0.0f;
+	float tmax = FLT_MAX;
+
+	// Xè»¸æ–¹å‘
+	if (fabsf(ray_dir.x) > EPSILON)
+	{
+		float tx1 = (box_min.x - ray_origin.x) / ray_dir.x;
+		float tx2 = (box_max.x - ray_origin.x) / ray_dir.x;
+		if (tx1 > tx2) std::swap(tx1, tx2);
+		tmin = Max(tmin, tx1);
+		tmax = Min(tmax, tx2);
+		if (tmin > tmax) return false;
+	}
+	else if (ray_origin.x < box_min.x || ray_origin.x > box_max.x)
+	{
+		return false;
+	}
+
+	// Yè»¸æ–¹å‘
+	if (fabsf(ray_dir.y) > EPSILON)
+	{
+		float ty1 = (box_min.y - ray_origin.y) / ray_dir.y;
+		float ty2 = (box_max.y - ray_origin.y) / ray_dir.y;
+		if (ty1 > ty2) std::swap(ty1, ty2);
+		tmin = Max(tmin, ty1);
+		tmax = Min(tmax, ty2);
+		if (tmin > tmax) return false;
+	}
+	else if (ray_origin.y < box_min.y || ray_origin.y > box_max.y)
+	{
+		return false;
+	}
+
+	out_t = tmin; // æ­£æ–¹å‘ã®æœ€åˆã®äº¤å·®ç‚¹
+	return true;
+}
+
 
 void Light::Initialize(Vector2D _location, Vector2D _box_size)
 {
 	object_type = LIGHT;
 	__super::Initialize(_location, _box_size);
 
-	width = box_size.x * 5.0f;  // Œõ‚Ì•i‰e‹¿”ÍˆÍj
-	height = box_size.y * 5.0f; // Œõ‚Ì‚‚³i‰e‹¿”ÍˆÍj
+	width = box_size.x * 5.0f;  // å…‰ã®å¹…ï¼ˆå½±éŸ¿ç¯„å›²ï¼‰
+	height = box_size.y * 5.0f; // å…‰ã®é«˜ã•ï¼ˆå½±éŸ¿ç¯„å›²ï¼‰
 
 	light_data.origin = location;
-	light_data.angle = 90.0f;			// ‰ŠúŠp“xiãŒü‚«j
-	light_data.min_angle = 60.0f;		// Å¬Šp“x
-	light_data.max_angle = 120.0f;		// Å‘åŠp“x
-	light_data.rotate_speed = 20.0f;	// ‰ñ“]‘¬“xi“x/•bj
-	light_data.direction = -1;			// ³•ûŒü‰ñ“]
-	light_data.moving = false;			// “®ì’†
+	light_data.angle = 90.0f;			// åˆæœŸè§’åº¦ï¼ˆä¸Šå‘ãï¼‰
+	light_data.min_angle = 60.0f;		// æœ€å°è§’åº¦
+	light_data.max_angle = 120.0f;		// æœ€å¤§è§’åº¦
+	light_data.rotate_speed = 20.0f;	// å›è»¢é€Ÿåº¦ï¼ˆåº¦/ç§’ï¼‰
+	light_data.direction = -1;			// æ­£æ–¹å‘å›è»¢
+	light_data.moving = false;			// å‹•ä½œä¸­
+
+	draw_priority = 15;
 }
 
 void Light::Update()
@@ -33,51 +79,23 @@ void Light::Update()
 		if(light_data.angle >= light_data.max_angle)
 		{
 			light_data.angle = light_data.max_angle;
-			light_data.direction = -1; // ‹t•ûŒü‚É‰ñ“]
+			light_data.direction = -1; // é€†æ–¹å‘ã«å›è»¢
 		}
 		else if (light_data.angle <= light_data.min_angle)
 		{
 			light_data.angle = light_data.min_angle;
-			light_data.direction = 1; // ³•ûŒü‚É‰ñ“]
+			light_data.direction = 1; // æ­£æ–¹å‘ã«å›è»¢
 		}
 	}
 
-	// ObjectManager Œo—R‚Å Player ‚ğæ“¾
+	// ObjectManager çµŒç”±ã§ Player ã‚’å–å¾—
 	if (object_manager)
 	{
 		for (auto obj : object_manager->GetObjects(PLAYER))
 		{
 			if (CheckLightCollision(obj))
 			{
-				this->OnHitCollision(obj); // Œõ‚É‘Î‚·‚é”½‰iíœ‚È‚Çj
-			}
-		}
-	}
-
-	// °‚Æ‚Ì“–‚½‚è”»’è‚Å‚‚³‚ğ§ŒÀ
-	max_height = height; // ˆê’UŒ³‚Ì‚‚³‚ÉƒŠƒZƒbƒg
-	if (object_manager)
-	{
-		for (auto obj : object_manager->GetObjects(BLOCK)) // °ƒIƒuƒWƒFƒNƒg
-		{
-			Vector2D obj_pos = obj->GetLocation();
-			Vector2D obj_size = obj->GetBoxSize();
-
-			// tip ‚ÌÀ•WŒvZ
-			float rad = light_data.angle * DX_PI_F / 180.0f;
-			float base_half = width;
-			Vector2D tip = location;
-
-			float tip_x = tip.x + cos(rad) * height; // ‰¼‚Ìæ’[X
-			float tip_y = tip.y + sin(rad) * height; // ‰¼‚Ìæ’[Y
-
-			// Œõ‚Ìæ’[‚ª°‚É“Í‚­ê‡
-			if (tip_x >= obj_pos.x && tip_x <= obj_pos.x + obj_size.x &&
-				tip_y >= obj_pos.y)
-			{
-				float distance_to_floor = obj_pos.y - tip.y;
-				if (distance_to_floor < max_height)
-					max_height = distance_to_floor; // °‚Ü‚Å‚Ì‹——£‚É§ŒÀ
+				this->OnHitCollision(obj); // å…‰ã«å¯¾ã™ã‚‹åå¿œï¼ˆå‰Šé™¤ãªã©ï¼‰
 			}
 		}
 	}
@@ -85,67 +103,94 @@ void Light::Update()
 
 void Light::Draw(Vector2D offset, double rate)
 {
-	Vector2D tip = location - offset;
+	static const bool debug_draw_rays = true;
+	if (!debug_draw_rays) return;
+
+	const float tip_nudge = 1.4f;      
+	const float shrink = 1.0f;      
+
+	Vector2D world_tip = location;
+	Vector2D tip_screen = { world_tip.x - offset.x, world_tip.y - offset.y };
+
 	float rad = light_data.angle * DX_PI_F / 180.0f;
-	float half_width = width;
+	float light_height = height;
+	float light_width = width;
 
-	const int SEGMENTS = 20;
-	std::vector<Vector2D> base_points;
+	const int ray_count = 16;
+	const float half_angle = atanf(light_width / light_height) * 0.98f; // å°‘ã—å†…å´ã«
 
-	// Œõ‚Ìæ’[
-	float effective_height = height; // Å‘å‚‚³
-	Vector2D top = {
-		tip.x + cos(rad) * effective_height,
-		tip.y + sin(rad) * effective_height
-	};
+	// å€™è£œã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆï¼ˆblock/wallï¼‰
+	std::vector<GameObject*> candidate_objects;
+	if (object_manager) {
+		auto blocks = object_manager->GetObjects(BLOCK);
+		auto walls = object_manager->GetObjects(WALL);
+		candidate_objects.reserve(blocks.size() + walls.size());
+		candidate_objects.insert(candidate_objects.end(), blocks.begin(), blocks.end());
+		candidate_objects.insert(candidate_objects.end(), walls.begin(), walls.end());
+	}
 
-	// ¶‰E‚ÌŠî’ê“_itip ‚æ‚è­‚µ‰º‚Éİ’è‚µ‚Ä‚É‚¶‚İ‚ğ–h‚®j
-	Vector2D left_base = { top.x - half_width, top.y + 0.5f };
-	Vector2D right_base = { top.x + half_width, top.y + 0.5f };
+	// ãƒ¬ã‚¤çµ‚ç‚¹ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ï¼‰
+	std::vector<Vector2D> end_points;
+	end_points.reserve(ray_count + 1);
 
-	// SEGMENTS ‚Å•ªŠ„
-	for (int i = 0; i <= SEGMENTS; i++)
-	{
-		float t = (float)i / SEGMENTS;
-		Vector2D pt;
-		pt.x = left_base.x + (right_base.x - left_base.x) * t;
-		pt.y = left_base.y;
+	for (int i = 0; i <= ray_count; ++i) {
+		float t = (float)i / (float)ray_count;
+		float angle = rad - half_angle + t * (2.0f * half_angle);
+		Vector2D dir = { cosf(angle), sinf(angle) };
 
-		// °‚É‰ˆ‚í‚¹‚é
-		if (object_manager)
-		{
-			for (auto block : object_manager->GetObjects(BLOCK))
-			{
-				Vector2D bpos = block->GetLocation();
-				Vector2D bsize = block->GetBoxSize();
+		float best_t = light_height;
+		for (auto obj : candidate_objects) {
+			Vector2D pos = obj->GetLocation();
+			Vector2D size = obj->GetBoxSize();
+			Vector2D box_min = pos;
+			Vector2D box_max = { pos.x + size.x, pos.y + size.y };
 
-				if (pt.x >= bpos.x && pt.x <= bpos.x + bsize.x)
-				{
-					if (pt.y < bpos.y && bpos.y > tip.y)
-						pt.y = bpos.y;
-				}
+			float t_hit;
+			if (RayAABBIntersect(world_tip, dir, box_min, box_max, t_hit)) {
+				if (t_hit >= 0.0f && t_hit < best_t) best_t = t_hit;
 			}
 		}
 
-		base_points.push_back(pt);
+		// çµ‚ç‚¹ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰ï¼‰
+		end_points.push_back({ world_tip.x + dir.x * best_t, world_tip.y + dir.y * best_t });
 	}
 
-	SetDrawBlendMode(DX_BLENDMODE_ADD, 128);
+	// --- é ‚ç‚¹ã‚’å…‰è»¸æ–¹å‘ã«ã‚ãšã‹ã«å†…å´ã«ãšã‚‰ã™ï¼ˆãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ï¼‰ ---
+	Vector2D central_dir = { cosf(rad), sinf(rad) };
+	Vector2D p0_world = { world_tip.x + central_dir.x * tip_nudge, world_tip.y + central_dir.y * tip_nudge };
+	Vector2D p0_screen = { p0_world.x - offset.x, p0_world.y - offset.y };
 
-	// tip ‚Æ•ªŠ„“_‚ÅOŠpŒ`•`‰æiint ‚ÉƒLƒƒƒXƒgj
-	for (int i = 0; i < SEGMENTS; i++)
-	{
+	// æç”»
+	SetDrawBlendMode(DX_BLENDMODE_ADD, 180);
+	int color_light = GetColor(255, 255, 180);
+
+	// ä¸‰è§’å½¢å¡—ã‚Šï¼ˆAAç‰ˆã ã¨é€†ã«æ¼ã‚Œã‚‹ã¨ããŒã‚ã‚‹ã®ã§é AA å¡—ã‚Šã§ç¢ºå®Ÿã«é‡ã­ã‚‹ï¼‰
+	for (int i = 0; i < ray_count; ++i) {
+		Vector2D p1 = end_points[i] - offset;
+		Vector2D p2 = end_points[i + 1] - offset;
+
+		// å°‘ã— tip å´ã«å¯„ã›ã¦ã‚µãƒ–ãƒ”ã‚¯ã‚»ãƒ«éš™é–“ã‚’å¡ã
+		p1.x = p0_screen.x + (p1.x - p0_screen.x);
+		p1.y = p0_screen.y + (p1.y - p0_screen.y);
+		p2.x = p0_screen.x + (p2.x - p0_screen.x);
+		p2.y = p0_screen.y + (p2.y - p0_screen.y);
+
+		// é¢ç©ãŒã»ã¼ 0 ãªã‚‰ã‚¹ã‚­ãƒƒãƒ—
+		float cross = (p1.x - p0_screen.x) * (p2.y - p0_screen.y) - (p1.y - p0_screen.y) * (p2.x - p0_screen.x);
+		if (fabsf(cross) < 0.1f) continue;
+
 		DrawTriangle(
-			static_cast<int>(tip.x), static_cast<int>(tip.y),
-			static_cast<int>(base_points[i].x), static_cast<int>(base_points[i].y),
-			static_cast<int>(base_points[i + 1].x), static_cast<int>(base_points[i + 1].y),
-			GetColor(255, 255, 0),
+			static_cast<int>(p0_screen.x), static_cast<int>(p0_screen.y),
+			static_cast<int>(p1.x), static_cast<int>(p1.y),
+			static_cast<int>(p2.x), static_cast<int>(p2.y),
+			color_light,
 			TRUE
 		);
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
+
 
 void Light::Finalize()
 {
@@ -154,14 +199,15 @@ void Light::Finalize()
 
 void Light::OnHitCollision(GameObject* hit_object)
 {
-	 // hit_object ‚ª Player ‚©ƒ`ƒFƒbƒN
+	 // hit_object ãŒ Player ã‹ãƒã‚§ãƒƒã‚¯
 	Player* player = dynamic_cast<Player*>(hit_object);
 	if (player && player->IsPlayerShadow())
 	{
-		// ‰eó‘Ô‚ÌƒvƒŒƒCƒ„[‚É“–‚½‚Á‚½‚ç Light ‚ğíœ
+		// å½±çŠ¶æ…‹ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«å½“ãŸã£ãŸã‚‰ Light ã‚’å‰Šé™¤
 		if (object_manager)
 		{
-			object_manager->RequestDeleteObject(player);
+			//object_manager->RequestDeleteObject(player);
+			player->SetPlayerActionDeath();
 		}
 	}
 
@@ -183,7 +229,7 @@ bool Light::CheckLightCollision(GameObject* player)
 	Vector2D player_pos = player->GetLocation();
 	Vector2D player_size = player->GetBoxSize();
 
-	// Player ‚Ì4‹÷
+	// Player ã®4éš…
 	Vector2D corners[4] = {
 		player_pos,
 		{player_pos.x + player_size.x, player_pos.y},
@@ -191,10 +237,10 @@ bool Light::CheckLightCollision(GameObject* player)
 		{player_pos.x + player_size.x, player_pos.y + player_size.y}
 	};
 
-	// Œõ‚Ì“ñ“™•ÓOŠpŒ`’¸“_
+	// å…‰ã®äºŒç­‰è¾ºä¸‰è§’å½¢é ‚ç‚¹
 	float rad = light_data.angle * DX_PI_F / 180.0f;
-	float h = height;          // ‚‚³
-	float b = width;           // ’ê•Ó”¼•
+	float h = height;          // é«˜ã•
+	float b = width;           // åº•è¾ºåŠå¹…
 
 	Vector2D tip = location;
 	Vector2D base_left = {
@@ -206,7 +252,7 @@ bool Light::CheckLightCollision(GameObject* player)
 		tip.y + sin(rad) * h - cos(rad) * b
 	};
 
-	// Player ‚Ìl‹÷‚Ì‚Ç‚ê‚©‚ªOŠpŒ`“à‚É‚ ‚é‚©ƒ`ƒFƒbƒN
+	// Player ã®å››éš…ã®ã©ã‚Œã‹ãŒä¸‰è§’å½¢å†…ã«ã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 	for (int i = 0; i < 4; ++i)
 	{
 		if (PointInTriangle(corners[i], tip, base_left, base_right))
@@ -215,7 +261,7 @@ bool Light::CheckLightCollision(GameObject* player)
 		}
 	}
 
-	// OŠpŒ`‚Ì’¸“_‚ª Player ‹éŒ`“à‚É‚ ‚éê‡‚àÕ“Ë
+	// ä¸‰è§’å½¢ã®é ‚ç‚¹ãŒ Player çŸ©å½¢å†…ã«ã‚ã‚‹å ´åˆã‚‚è¡çª
 	Vector2D tri_vertices[3] = { tip, base_left, base_right };
 	for (int i = 0; i < 3; ++i)
 	{
@@ -228,3 +274,4 @@ bool Light::CheckLightCollision(GameObject* player)
 
 	return false;
 }
+

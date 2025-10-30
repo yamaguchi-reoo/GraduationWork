@@ -267,6 +267,20 @@ void Gauge::UpdateShadowAnimation(float delta)
     }
 }
 
+void Gauge::AddValue(int value)
+{
+    // 現在値に回復量を加算した新しい値を計算
+    int new_value = current_value + value;
+
+    // 既存の安全なSetValue()メソッドを使って値を更新
+    // SetValue()にはClamp(範囲制限)の処理が含まれているため安全。
+    SetValue(new_value);
+
+    //回復が行われたら一時停止フラグを立てる
+        is_item_healed = true;
+    heal_pause_timer = HEAL_PAUSE_DURATION;
+}
+
 void Gauge::StartSwitch(bool toShadow)
 {
     if (isSwitching) return;

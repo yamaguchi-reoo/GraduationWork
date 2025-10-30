@@ -50,6 +50,8 @@ public:
 	// JSON形式のタイル情報を読み込む関数
 	void LoadFromJson(const std::string& json_path);
 
+	// XLML形式のタイル情報を読み込む関数
+	void LoadFromXML(const std::string& xml_path);
 
 	// 指定したタイルIDの配列を描画
 	void DrawSelectedTiles(const std::vector<int>& tile_ids, int start_x, int start_y, int tiles_per_row = 10) const;

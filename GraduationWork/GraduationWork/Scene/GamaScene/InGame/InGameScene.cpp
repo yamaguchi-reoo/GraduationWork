@@ -10,11 +10,12 @@
 
 
 InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(0, 0),
-tile_set("Resource/Images/Tiles/tile.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
+tile_set("Resource/Images/Tiles/tiles_spritesheet.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
 edit_mode(false)
 {
 	// JSONからタイルセットを読み込み
-	tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
+	//tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
+	tile_set.LoadFromXML("Resource/Images/Tiles/tiles_spritesheet.xml"); 
 
 	background_handle = LoadGraph("Resource/images/BackGround/background 1.png");
 
@@ -123,8 +124,14 @@ void InGameScene::Finalize()
 	plates.clear();
 	lights.clear();
 	object_manager.Finalize();
-	editor->Finalize();
+	if (editor)
+	{
+		editor->Finalize();
+		delete editor;
+		editor = nullptr;
+	}
 }
+
 
 eSceneType InGameScene::GetNowSceneType() const
 {
@@ -203,7 +210,7 @@ void InGameScene::SetStage()
             if (obj == PLAYER)
             {
                 Vector2D world_pos(x * (float)BLOCK_SIZE, y * (float)BLOCK_SIZE);
-                object_manager.CreateObject<Player>(world_pos, Vector2D(45.0f, 64.0f));
+                object_manager.CreateObject<Player>(world_pos, Vector2D(block_size.x, 50.f));
             }
         }
     }
@@ -251,6 +258,16 @@ void InGameScene::SetStage()
                 plates.push_back(plate);
                 break;
             }
+			case HEAL:
+			{
+				object_manager.CreateObject<Heal>(world_pos, Vector2D(48.0f, 48.0f));
+				break;
+			}
+			case SHADOWHEAL:
+			{
+				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(48.0f, 48.0f));
+				break;
+			}
             }
         }
     }
@@ -287,7 +304,7 @@ void InGameScene::UpdateCamera()
 }
 
 void InGameScene::DrawBackground()
-{
+{ 
 	// 背景画像のサイズを取得
 	int bg_w, bg_h;
 	GetGraphSize(background_handle, &bg_w, &bg_h);

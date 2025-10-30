@@ -5,6 +5,7 @@
 #include "Gauge.h"
 #include <map>
 
+
 struct AttackHitBox 
 {
     Vector2D position = { 0.0f };
@@ -19,6 +20,7 @@ private:
 
     enum class PlayerAction { Idle, Walk, Jump, Attack, Death };
     enum class PlayerState { Real, Shadow };
+
 	PlayerAction action; // プレイヤーの現在の行動
     PlayerState state; // プレイヤーの状態（実態か影か）
 
@@ -35,6 +37,7 @@ private:
     Gauge shadow_gauge;     // 影化ゲージ
     Gauge hp_gauge;         // 実態のHPゲージ
     int invincible_timer;   // 無敵時間タイマー
+    
 
 	//アニメーション
     std::map<PlayerAction, std::vector<int>> animation_shadow;
@@ -47,6 +50,8 @@ private:
 public:
     Player();
     ~Player();
+
+    Gauge& GetGauge();
 
     //初期化処理
     void Initialize(Vector2D _location, Vector2D _box_size) override;
@@ -79,9 +84,12 @@ public:
 
     // プレイヤーの状態を取得
     PlayerState GetPlayerState() { return state; }
+    void SetPlayerActionDeath() { action = PlayerAction::Death; }
 
     bool IsPlayerShadow() const override { return state == PlayerState::Shadow; }
 
     void LoadPlayerImage();
+
+    void AddHP(int num);
 };
 

@@ -6,6 +6,9 @@
 
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include "tinyxml2.h"  
+using namespace tinyxml2;
+
 
 TileSet::TileSet(const std::string& file_path, int tile_width, int tile_height)
 	:tile_width(tile_width), tile_height(tile_height)
@@ -134,6 +137,31 @@ void TileSet::LoadFromJson(const std::string& json_path)
 	}
 }
 
+void TileSet::LoadFromXML(const std::string& xml_path)
+{
+	tinyxml2::XMLDocument doc;
+	if (doc.LoadFile(xml_path.c_str()) != XML_SUCCESS) {
+		std::cerr << "Failed to load XML file: " << xml_path << std::endl;
+		return;
+	}
+
+	XMLElement* root = doc.FirstChildElement("TextureAtlas");
+	if (!root) return;
+
+	int id = 0;
+	for (XMLElement* sub = root->FirstChildElement("SubTexture"); sub; sub = sub->NextSiblingElement("SubTexture"))
+	{
+		int x = sub->IntAttribute("x");
+		int y = sub->IntAttribute("y");
+		int w = sub->IntAttribute("width");
+		int h = sub->IntAttribute("height");
+
+
+		AddTile(id, x, y, false);
+		++id;
+	}
+}
+
 void TileSet::DrawSelectedTiles(const std::vector<int>& tile_ids, int start_x, int start_y, int tiles_per_row) const
 {
 	for (size_t i = 0; i < tile_ids.size(); ++i) {
@@ -167,7 +195,7 @@ void TileSet::DrawTileRange(int start_id, int end_id, int start_x, int start_y, 
 
 int TileSet::GetTileCount() const
 {
-	return tile_table.size();
+	return (int)tile_table.size();
 }
 
 bool TileSet::HasTile(int tile_id) const

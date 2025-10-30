@@ -46,6 +46,8 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	shadow_gauge.Initialize(GaugeType::CircularFill, 1200, 1200, 0, GetColor(180, 80, 255));
 	hp_gauge.Initialize(GaugeType::CircularSection, 3, hp, 3, GetColor(255, 0, 0));
 
+	draw_priority = 20;
+
 	LoadPlayerImage();
 }
 
@@ -85,7 +87,7 @@ void Player::Draw(Vector2D offset, double rate)
 		// 描画位置の補正
 		float offset_x = 0.0f;
 		if (state == PlayerState::Shadow) {
-			offset_x = (flip_flg ? -100.0f : 100.0f);
+			offset_x = (flip_flg ? -84.0f :84.0f);
 		}
 
 		// 画像がある場合は画像を描画
@@ -93,13 +95,14 @@ void Player::Draw(Vector2D offset, double rate)
 			//int index = (animation_frame / 5) % frames.size();
 			DrawRotaGraphF(
 				screen_pos.x + (box_size.x / 2) + offset_x, 
-				screen_pos.y + (box_size.y / 2) - 16,
-				3.0,    // 拡大率
+				screen_pos.y + (box_size.y / 2) - 15,
+				2.5,    // 拡大率
 				0.0,    // 回転角
 				image,
 				TRUE,   // 透過
 				flip_flg
 			);
+
 		}
 		else
 		{
@@ -114,14 +117,14 @@ void Player::Draw(Vector2D offset, double rate)
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 
-	/*for (const auto& hitbox : attack_hitboxes)
+	for (const auto& hitbox : attack_hitboxes)
 	{
 		Vector2D draw_pos = hitbox.position - offset;
 		DrawBoxAA(draw_pos.x, draw_pos.y, draw_pos.x + hitbox.size.x, draw_pos.y + hitbox.size.y, GetColor(255, 255, 0), TRUE);
-	}*/
+	}
 
 	// Playerの位置
-	DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.2f, %.2f)", location.x, location.y);
+	//DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.15f)", location.x);
 
 
 	switch (action)
@@ -284,15 +287,22 @@ void Player::HandleInput()
 	{
 		if (fabs(velocity.x) > 0.1f)
 		{
-			action = PlayerAction::Walk;
-			animation_frame = 0;
+			if (action != PlayerAction::Walk)
+			{
+				action = PlayerAction::Walk;
+				animation_frame = 0;
+			}
 		}
-		else {
-			action = PlayerAction::Idle;
-			animation_frame = 0;
+		else
+		{
+			if (action != PlayerAction::Idle)
+			{
+				action = PlayerAction::Idle;
+				animation_frame = 0;
+			}
 		}
-
 	}
+
 }
 
 void Player::UpdateJump()
@@ -507,4 +517,16 @@ void Player::LoadPlayerImage()
 
 	// 表示用画像に設定
 	image = animation_shadow[PlayerAction::Idle][0];
+}
+
+void Player::AddHP(int num)
+{
+	hp += num;
+}
+
+// プレイヤーが内部で持つゲージオブジェクトへの参照を返す
+Gauge& Player::GetGauge()
+{
+	// 'gauge_' は Player クラスの private メンバにある Gauge オブジェクト名だと仮定
+	return shadow_gauge;
 }
