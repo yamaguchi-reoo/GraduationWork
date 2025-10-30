@@ -37,6 +37,11 @@ private:
     float fade_speed;       // フェード速度（小さいほどゆっくり）
     int   fade_alpha;       // 現在のアルファ値（0?255）
 
+    //アイテム回復時の一時停止フラグ
+        bool is_item_healed = false;
+    //回復後のゲージ値保持時間（例: 0.1秒）
+        float heal_pause_timer = 0.0f;
+    const float HEAL_PAUSE_DURATION = 1.0f;
 
     // 現在の影状態を Draw 側で参照するために保持
     bool current_is_shadow;
@@ -65,6 +70,8 @@ public:
 
 	// ゲージの描画
     void Draw(int center_x, int center_y, float scale = 1.0f) const;
+
+    void AddValue(int value);
 
 private:
     // 影ゲージの円形ゲージ描画
