@@ -7,6 +7,7 @@
 #include <algorithm>
 
 
+// Ray（光線）と AABB（矩形）の交差判定
 static bool RayAABBIntersect(const Vector2D& ray_origin, const Vector2D& ray_dir,
 	const Vector2D& box_min, const Vector2D& box_max, float& out_t)
 {
@@ -14,7 +15,7 @@ static bool RayAABBIntersect(const Vector2D& ray_origin, const Vector2D& ray_dir
 	float tmin = 0.0f;
 	float tmax = FLT_MAX;
 
-	// X軸方向
+	// X軸方向の交差判定
 	if (fabsf(ray_dir.x) > EPSILON)
 	{
 		float tx1 = (box_min.x - ray_origin.x) / ray_dir.x;
@@ -26,7 +27,7 @@ static bool RayAABBIntersect(const Vector2D& ray_origin, const Vector2D& ray_dir
 	}
 	else if (ray_origin.x < box_min.x || ray_origin.x > box_max.x)
 	{
-		return false;
+		return false;// 光が矩形のX範囲外なら交差しない
 	}
 
 	// Y軸方向
@@ -54,8 +55,8 @@ void Light::Initialize(Vector2D _location, Vector2D _box_size)
 	object_type = LIGHT;
 	__super::Initialize(_location, _box_size);
 
-	width = box_size.x * 5.0f;  // 光の幅（影響範囲）
-	height = box_size.y * 5.0f; // 光の高さ（影響範囲）
+	width = box_size.x * 7.0f;  // 光の幅（影響範囲）
+	height = box_size.y * 7.0f; // 光の高さ（影響範囲）
 
 	light_data.origin = location;
 	light_data.angle = 90.0f;			// 初期角度（上向き）
@@ -72,6 +73,7 @@ void Light::Update()
 {
 	__super::Update();
 
+	// 光の自動回転処理
 	if (!light_data.moving)
 	{
 		light_data.angle += light_data.rotate_speed * (1.0f / 60.0f) * light_data.direction; 
@@ -95,7 +97,8 @@ void Light::Update()
 		{
 			if (CheckLightCollision(obj))
 			{
-				this->OnHitCollision(obj); // 光に対する反応（削除など）
+				// 光に当たった場合の処理
+				this->OnHitCollision(obj);
 			}
 		}
 	}
@@ -106,20 +109,25 @@ void Light::Draw(Vector2D offset, double rate)
 	static const bool debug_draw_rays = true;
 	if (!debug_draw_rays) return;
 
-	const float tip_nudge = 1.4f;      
-	const float shrink = 1.0f;      
+	const float tip_nudge = 1.4f;  // 光の先端を少し前に出すための微調整
+	const float shrink = 1.0f;     // 将来的に光を縮小したい場合に使用可能
 
-	Vector2D world_tip = location;
+	// 光の起点を中心座標に変更
+	Vector2D center = {
+	(location.x + box_size.x * 0.5f) + 10.0f,
+	(location.y + box_size.y * 0.5f) - 48.0f  // 少し上にオフセット
+	};
+	Vector2D world_tip = center;  // レイの起点も中心から
 	Vector2D tip_screen = { world_tip.x - offset.x, world_tip.y - offset.y };
 
-	float rad = light_data.angle * DX_PI_F / 180.0f;
+	float rad = light_data.angle * DX_PI_F / 180.0f; // ライトの角度をラジアンに変換
 	float light_height = height;
 	float light_width = width;
 
-	const int ray_count = 16;
-	const float half_angle = atanf(light_width / light_height) * 0.98f; // 少し内側に
+	const int ray_count = 16; // レイの本数
+	const float half_angle = atanf(light_width / light_height) * 0.98f; // 光の広がり角の半分
 
-	// 候補オブジェクト（block/wall）
+	// 候補オブジェクト（ブロックと壁）をまとめる
 	std::vector<GameObject*> candidate_objects;
 	if (object_manager) {
 		auto blocks = object_manager->GetObjects(BLOCK);
@@ -129,7 +137,7 @@ void Light::Draw(Vector2D offset, double rate)
 		candidate_objects.insert(candidate_objects.end(), walls.begin(), walls.end());
 	}
 
-	// レイ終点（ワールド座標）
+	// レイの終点を計算
 	std::vector<Vector2D> end_points;
 	end_points.reserve(ray_count + 1);
 
@@ -138,7 +146,10 @@ void Light::Draw(Vector2D offset, double rate)
 		float angle = rad - half_angle + t * (2.0f * half_angle);
 		Vector2D dir = { cosf(angle), sinf(angle) };
 
+		// レイの最大距離
 		float best_t = light_height;
+
+		// 各オブジェクトとの交差判定
 		for (auto obj : candidate_objects) {
 			Vector2D pos = obj->GetLocation();
 			Vector2D size = obj->GetBoxSize();
@@ -147,35 +158,36 @@ void Light::Draw(Vector2D offset, double rate)
 
 			float t_hit;
 			if (RayAABBIntersect(world_tip, dir, box_min, box_max, t_hit)) {
-				if (t_hit >= 0.0f && t_hit < best_t) best_t = t_hit;
+				if (t_hit >= 0.0f && t_hit < best_t)
+					best_t = t_hit; // 最も近い交点を採用
 			}
 		}
 
-		// 終点（ワールド）
+		// ワールド座標でのレイ終点
 		end_points.push_back({ world_tip.x + dir.x * best_t, world_tip.y + dir.y * best_t });
 	}
 
-	// --- 頂点を光軸方向にわずかに内側にずらす（ワールド座標） ---
+	// 光のtipを少し前に出す（ワールド座標）
 	Vector2D central_dir = { cosf(rad), sinf(rad) };
 	Vector2D p0_world = { world_tip.x + central_dir.x * tip_nudge, world_tip.y + central_dir.y * tip_nudge };
 	Vector2D p0_screen = { p0_world.x - offset.x, p0_world.y - offset.y };
 
-	// 描画
+	// 描画開始
 	SetDrawBlendMode(DX_BLENDMODE_ADD, 180);
-	int color_light = GetColor(255, 255, 180);
+	int color_light = GetColor(255, 255, 0);
 
-	// 三角形塗り（AA版だと逆に漏れるときがあるので非 AA 塗りで確実に重ねる）
+	// レイごとに三角形を描画
 	for (int i = 0; i < ray_count; ++i) {
 		Vector2D p1 = end_points[i] - offset;
 		Vector2D p2 = end_points[i + 1] - offset;
 
-		// 少し tip 側に寄せてサブピクセル隙間を塞ぐ
+		// tip に寄せてサブピクセルの隙間を塞ぐ
 		p1.x = p0_screen.x + (p1.x - p0_screen.x);
 		p1.y = p0_screen.y + (p1.y - p0_screen.y);
 		p2.x = p0_screen.x + (p2.x - p0_screen.x);
 		p2.y = p0_screen.y + (p2.y - p0_screen.y);
 
-		// 面積がほぼ 0 ならスキップ
+		// 面積がほぼ 0 の場合は描画をスキップ
 		float cross = (p1.x - p0_screen.x) * (p2.y - p0_screen.y) - (p1.y - p0_screen.y) * (p2.x - p0_screen.x);
 		if (fabsf(cross) < 0.1f) continue;
 
@@ -189,7 +201,11 @@ void Light::Draw(Vector2D offset, double rate)
 	}
 
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+	// 当たり判定用に最後のレイ終点を保存
+	last_ray_end_points = end_points;
 }
+
 
 
 void Light::Finalize()
@@ -223,13 +239,13 @@ bool Light::PointInTriangle(const Vector2D& p, const Vector2D& a, const Vector2D
 	return alpha >= 0 && beta >= 0 && gamma >= 0;
 }
 
-
 bool Light::CheckLightCollision(GameObject* player)
 {
+	if (last_ray_end_points.size() < 2) return false;
+
 	Vector2D player_pos = player->GetLocation();
 	Vector2D player_size = player->GetBoxSize();
 
-	// Player の4隅
 	Vector2D corners[4] = {
 		player_pos,
 		{player_pos.x + player_size.x, player_pos.y},
@@ -237,41 +253,31 @@ bool Light::CheckLightCollision(GameObject* player)
 		{player_pos.x + player_size.x, player_pos.y + player_size.y}
 	};
 
-	// 光の二等辺三角形頂点
-	float rad = light_data.angle * DX_PI_F / 180.0f;
-	float h = height;          // 高さ
-	float b = width;           // 底辺半幅
-
 	Vector2D tip = location;
-	Vector2D base_left = {
-		tip.x + cos(rad) * h - sin(rad) * b,
-		tip.y + sin(rad) * h + cos(rad) * b
-	};
-	Vector2D base_right = {
-		tip.x + cos(rad) * h + sin(rad) * b,
-		tip.y + sin(rad) * h - cos(rad) * b
-	};
 
-	// Player の四隅のどれかが三角形内にあるかチェック
-	for (int i = 0; i < 4; ++i)
+	for (size_t i = 0; i < last_ray_end_points.size() - 1; ++i)
 	{
-		if (PointInTriangle(corners[i], tip, base_left, base_right))
+		Vector2D base_left = last_ray_end_points[i];
+		Vector2D base_right = last_ray_end_points[i + 1];
+
+		// Player の四隅が三角形内にあるか
+		for (int c = 0; c < 4; ++c)
 		{
-			return true;
+			if (PointInTriangle(corners[c], tip, base_left, base_right))
+				return true;
 		}
-	}
 
-	// 三角形の頂点が Player 矩形内にある場合も衝突
-	Vector2D tri_vertices[3] = { tip, base_left, base_right };
-	for (int i = 0; i < 3; ++i)
-	{
-		if (player_pos.x <= tri_vertices[i].x && tri_vertices[i].x <= player_pos.x + player_size.x &&
-			player_pos.y <= tri_vertices[i].y && tri_vertices[i].y <= player_pos.y + player_size.y)
+		// 三角形の頂点が Player 矩形内にあるか
+		Vector2D tri[3] = { tip, base_left, base_right };
+		for (int t = 0; t < 3; ++t)
 		{
-			return true;
+			if (player_pos.x <= tri[t].x && tri[t].x <= player_pos.x + player_size.x &&
+				player_pos.y <= tri[t].y && tri[t].y <= player_pos.y + player_size.y)
+				return true;
 		}
 	}
 
 	return false;
 }
+
 

@@ -1,5 +1,6 @@
 #pragma once
 #include "../GameObject.h"
+#include <vector>
 
 struct LightData {
 	Vector2D origin = { 0.0f,0.0f };      // ’¸“_iŒÅ’èj
@@ -21,6 +22,7 @@ private:
 	float max_height = 0.0f;
 
 	LightData light_data;
+	std::vector<Vector2D> last_ray_end_points;
 
 public:
 	//‰Šú‰»ˆ—
