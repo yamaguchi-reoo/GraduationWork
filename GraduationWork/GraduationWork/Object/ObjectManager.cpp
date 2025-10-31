@@ -6,7 +6,6 @@
 #include "ObjectList.h"
 
 #include <Windows.h>
-#include <algorithm>
 
 
 ObjectManager::ObjectManager() {}
@@ -18,12 +17,19 @@ ObjectManager::~ObjectManager()
 
 void ObjectManager::Initialize()
 {
-	//CreateObject<Player>(Vector2D(640.0f, 300.0f), Vector2D(50.0f, 50.0f)); // プレイヤーオブジェクトを生成
-	//CreateObject<Block>(Vector2D(640.0f, 360.0f), Vector2D(BLOCK_SIZE)); // プレイヤーオブジェクトを生成
+	uniform_grid.Initialize(0.0f, 0.0f, static_cast<float>(BLOCK_SIZE * 87), static_cast<float>(BLOCK_SIZE * 15), static_cast<float>(BLOCK_SIZE));
 }
 
 void ObjectManager::Update(Vector2D offset)
 {
+	//Gridの更新
+	uniform_grid.Clear();
+    for(auto obj : objects)
+    {
+        uniform_grid.InsertObject(obj);
+	}
+
+	//画面内にあるObjectのみを対象にUpdate
     for (auto obj : objects)
     {
         if (IsOnScreen(obj, offset))
@@ -33,48 +39,71 @@ void ObjectManager::Update(Vector2D offset)
     }
 
      // 全オブジェクト同士の衝突判定（重複チェック回避のため片側ループ）
-    for (size_t i = 0; i < objects.size(); ++i)
-    {
-        for (size_t j = i + 1; j < objects.size(); ++j)
-        {
-            auto obj_a = objects[i];
-            auto obj_b = objects[j];
-            if (obj_a && obj_b)
-            {
-                // Player と Light の組み合わせはスキップ
-                if ((obj_a->GetObjectType() == PLAYER && obj_b->GetObjectType() == LIGHT) ||
-                    (obj_a->GetObjectType() == LIGHT && obj_b->GetObjectType() == PLAYER))
-                {
-                    continue;
-                }
+    //for (size_t i = 0; i < objects.size(); ++i)
+    //{
+    //    for (size_t j = i + 1; j < objects.size(); ++j)
+    //    {
+    //        auto obj_a = objects[i];
+    //        auto obj_b = objects[j];
+    //        if (obj_a && obj_b)
+    //        {
+    //            // Player と Light の組み合わせはスキップ
+    //            if ((obj_a->GetObjectType() == PLAYER && obj_b->GetObjectType() == LIGHT) ||
+    //                (obj_a->GetObjectType() == LIGHT && obj_b->GetObjectType() == PLAYER))
+    //            {
+    //                continue;
+    //            }
 
-                if (obj_a->CheckBoxCollision(obj_b))
-                {
-                    obj_a->OnHitCollision(obj_b);
-                    obj_b->OnHitCollision(obj_a);
-                }
+    //            if (obj_a->CheckBoxCollision(obj_b))
+    //            {
+    //                obj_a->OnHitCollision(obj_b);
+    //                obj_b->OnHitCollision(obj_a);
+    //            }
+    //        }
+    //    }
+    //}
+
+    //GameObject* enemy_f = FindObjectType(eObjectType::ENEMY);
+
+    //if (enemy_f)
+    //{
+    //    for (auto obj : objects)
+    //    {
+    //        if (obj && obj != enemy_f)
+    //        {
+    //            if (enemy_f->CheckBoxCollision(obj))
+    //            {
+    //                enemy_f->OnHitCollision(obj);
+    //                obj->OnHitCollision(enemy_f);
+    //            }
+    //        }
+    //    }
+    //}
+
+    for (auto obj : objects)
+    {
+        Vector2D loc = obj->GetLocation();
+        Vector2D size = obj->GetBoxSize();
+
+        std::vector<GameObject*> nearby;
+        uniform_grid.QueryArea(loc.x, loc.y, loc.x + size.x, loc.y + size.y, nearby);
+
+        for (auto other : nearby)
+        {
+            if (obj == other) continue;
+
+            // Player-Light 組み合わせスキップ
+            if ((obj->GetObjectType() == PLAYER && other->GetObjectType() == LIGHT) ||
+                (obj->GetObjectType() == LIGHT && other->GetObjectType() == PLAYER))
+                continue;
+
+            if (obj->CheckBoxCollision(other))
+            {
+                obj->OnHitCollision(other);
+                other->OnHitCollision(obj);
             }
         }
     }
-
-    GameObject* enemy_f = FindObjectType(eObjectType::ENEMY);
-
-    if (enemy_f)
-    {
-        for (auto obj : objects)
-        {
-            if (obj && obj != enemy_f)
-            {
-                if (enemy_f->CheckBoxCollision(obj))
-                {
-                    enemy_f->OnHitCollision(obj);
-                    obj->OnHitCollision(enemy_f);
-                }
-            }
-        }
-    }
-
-
 
 
     //Update後に削除を実行

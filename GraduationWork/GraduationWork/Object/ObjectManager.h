@@ -2,14 +2,16 @@
 #include <vector>
 #include "../Utility/Vector2D.h"
 #include "GameObject.h"
+#include "UniFormGrid.h"
 
 class ObjectManager
 {
 private:
 	std::vector<GameObject*> objects;
-
 	// オブジェクトの削除用
 	std::vector<GameObject*> delete_objects;
+
+	UniFormGrid uniform_grid;
 
 public:
     ObjectManager();
