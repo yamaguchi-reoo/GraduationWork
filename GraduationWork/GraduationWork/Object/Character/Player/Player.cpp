@@ -86,8 +86,14 @@ void Player::Draw(Vector2D offset, double rate)
 
 		// •`‰æˆÊ’u‚Ì•â³
 		float offset_x = 0.0f;
+		float offset_y = 0.0f;
 		if (state == PlayerState::Shadow) {
 			offset_x = (flip_flg ? -84.0f :84.0f);
+			offset_y = 15.0f;
+		}
+		else
+			{
+			offset_y = -2.0f;
 		}
 
 		// ‰æ‘œ‚ª‚ ‚éê‡‚Í‰æ‘œ‚ğ•`‰æ
@@ -95,7 +101,7 @@ void Player::Draw(Vector2D offset, double rate)
 			//int index = (animation_frame / 5) % frames.size();
 			DrawRotaGraphF(
 				screen_pos.x + (box_size.x / 2) + offset_x, 
-				screen_pos.y + (box_size.y / 2) - 15,
+				screen_pos.y + (box_size.y / 2) - offset_y,
 				2.5,    // Šg‘å—¦
 				0.0,    // ‰ñ“]Šp
 				image,
@@ -509,6 +515,8 @@ void Player::LoadPlayerImage()
 	animation_shadow[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Player_death.png", 9, 9, 1, 128, 64);
 
 	//animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Player_real_idle.png", 2, 2, 1, 32, 32);
+	animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Bunny/Idle.png", 2, 2, 1, 64, 64);
+	animation_real[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Bunny/Walk.png", 4, 4, 1, 64, 64);
 
 	// •\¦—p‰æ‘œ‚Éİ’è
 	image = animation_shadow[PlayerAction::Idle][0];
