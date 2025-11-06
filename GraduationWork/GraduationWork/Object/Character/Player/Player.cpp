@@ -68,7 +68,7 @@ void Player::Update()
 		invincible_timer--;
 	}
 
-	effect.Update();
+	effect.Update(location + (box_size / 2));
 	__super::Update();
 }
 
@@ -457,7 +457,7 @@ void Player::SwitchState()
 	}
 	else if (state == PlayerState::Shadow)
 	{
-		effect.Start(Vector2D(center.x, center.y - 8), false);; // 影 → 実体 への切り替え時エフェクト
+		effect.Start(Vector2D(center.x, center.y - 10), false); // 影 → 実体 への切り替え時エフェクト
 		state = PlayerState::Real;
 	}
 }
@@ -469,7 +469,7 @@ void Player::UpdateState()
 	if (state == PlayerState::Shadow)
 	{
 		// 影ゲージを消費
-		shadow_gauge.Update(true,8);
+		shadow_gauge.Update(true, 8);
 		if (shadow_gauge.IsEmpty()) 
 		{
 			SwitchState();
@@ -478,7 +478,7 @@ void Player::UpdateState()
 	else if (state == PlayerState::Real)
 	{
 		// 実態のときは影ゲージを回復
-		shadow_gauge.Update(false,8);
+		shadow_gauge.Update(false, 8);
 	}
 }
 

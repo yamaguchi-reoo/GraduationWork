@@ -18,7 +18,7 @@ private:
 
 public:
 	void Initialize();
-	void Update();
+	void Update(Vector2D player_center);
 	void Draw(Vector2D offset);
 	void Start(Vector2D pos, bool is_shadow);
 

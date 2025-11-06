@@ -16,9 +16,11 @@ void Effect::Initialize()
     current_image = nullptr;
 }
 
-void Effect::Update()
+void Effect::Update(Vector2D player_center)
 {
     if (!is_active || !current_image) return;
+
+	position = player_center;
 
     frame += speed;
     if (frame >= current_image->size()) {
