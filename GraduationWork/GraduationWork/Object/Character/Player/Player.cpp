@@ -49,6 +49,8 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	draw_priority = 20;
 
 	LoadPlayerImage();
+
+	effect.Initialize();
 }
 
 void Player::Update()
@@ -66,6 +68,7 @@ void Player::Update()
 		invincible_timer--;
 	}
 
+	effect.Update();
 	__super::Update();
 }
 
@@ -117,6 +120,7 @@ void Player::Draw(Vector2D offset, double rate)
 	}
 	
 	DrawUI();
+	effect.Draw(offset);
 
 #ifdef _DEBUG
 	//DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Player");
@@ -444,15 +448,20 @@ void Player::UpdateAnimation()
 
 void Player::SwitchState()
 {
+	Vector2D center = location + (box_size / 2);
+
 	if (state == PlayerState::Real)
 	{
+		effect.Start(center, true);   // 実体 → 影 への切り替え時エフェクト
 		state = PlayerState::Shadow;
 	}
 	else if (state == PlayerState::Shadow)
 	{
+		effect.Start(Vector2D(center.x, center.y - 8), false);; // 影 → 実体 への切り替え時エフェクト
 		state = PlayerState::Real;
 	}
 }
+
 
 void Player::UpdateState()
 {

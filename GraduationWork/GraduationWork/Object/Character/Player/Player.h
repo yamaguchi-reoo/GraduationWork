@@ -1,6 +1,7 @@
 #pragma once
 #include "../CharacterBase.h"
 #include "../../GameObject.h"
+#include "Effect/Effect.h"
 
 #include "Gauge.h"
 #include <map>
@@ -37,6 +38,8 @@ private:
     Gauge shadow_gauge;     // 影化ゲージ
     Gauge hp_gauge;         // 実態のHPゲージ
     int invincible_timer;   // 無敵時間タイマー
+
+	Effect effect; // エフェクト
     
 
 	//アニメーション
@@ -45,6 +48,8 @@ private:
 
     std::map<PlayerAction, int> animation_frame_count;
     int animation_frame = 0; //現在のアニメーションフレーム
+
+
 
 public:
     Player();
