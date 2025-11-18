@@ -1,4 +1,4 @@
-#include "InGameScene.h"
+ï»¿#include "InGameScene.h"
 #include <DxLib.h>
 
 #include <fstream>
@@ -13,7 +13,7 @@ InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(
 tile_set("Resource/Images/Tiles/tiles_spritesheet.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
 edit_mode(false)
 {
-	// JSON‚©‚çƒ^ƒCƒ‹ƒZƒbƒg‚ğ“Ç‚İ‚İ
+	// JSONã‹ã‚‰ã‚¿ã‚¤ãƒ«ã‚»ãƒƒãƒˆã‚’èª­ã¿è¾¼ã¿
 	//tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
 	tile_set.LoadFromXML("Resource/Images/Tiles/tiles_spritesheet.xml"); 
 
@@ -27,13 +27,13 @@ InGameScene::~InGameScene()
 
 void InGameScene::Initialize()
 {
-	camera_location = Vector2D(0.0f, 0.0f); // ƒJƒƒ‰‚Ì‰ŠúˆÊ’u‚ğİ’è
-	object_manager.Initialize(); // ƒIƒuƒWƒFƒNƒgŠÇ—ƒNƒ‰ƒX‚Ì‰Šú‰»
+	camera_location = Vector2D(0.0f, 0.0f); // ã‚«ãƒ¡ãƒ©ã®åˆæœŸä½ç½®ã‚’è¨­å®š
+	object_manager.Initialize(); // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç®¡ç†ã‚¯ãƒ©ã‚¹ã®åˆæœŸåŒ–
 
-	// ‰Šú‰»ˆ—
+	// åˆæœŸåŒ–å‡¦ç†
 	LoadStage();
 
-	// ƒXƒe[ƒWƒGƒfƒBƒ^[‚Ì‰Šú‰»
+	// ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¨ãƒ‡ã‚£ã‚¿ãƒ¼ã®åˆæœŸåŒ–
 	editor = new StageEditor(BLOCK_SIZE, &stage_data);
 }
 
@@ -42,21 +42,21 @@ eSceneType InGameScene::Update()
 	InputManager* input = InputManager::GetInstance();
 
 #ifdef _DEBUG
-	// F1‚Å•ÒWƒ‚[ƒhØ‚è‘Ö‚¦
+	// F1ã§ç·¨é›†ãƒ¢ãƒ¼ãƒ‰åˆ‡ã‚Šæ›¿ãˆ
 	if (input->GetKeyDown(KEY_INPUT_F1))
 	{
 		if (edit_mode)
 		{
-			// •ÒWƒ‚[ƒhI—¹ ¨ •Û‘¶‚µ‚ÄÄ“Ç‚İ‚İ
+			// ç·¨é›†ãƒ¢ãƒ¼ãƒ‰çµ‚äº† â†’ ä¿å­˜ã—ã¦å†èª­ã¿è¾¼ã¿
 			//editor->SaveStageData("stage.csv");
 			stage_data.SaveCSV("Resource/File/Stage.csv");
 			stage_data.SaveTileCSV("Resource/File/Tile.csv");
 
-			// ƒIƒuƒWƒFƒNƒg‚ğˆê’UƒNƒŠƒA
-			object_manager.Finalize();    // ƒIƒuƒWƒFƒNƒg‰ğ•úˆ—
-			object_manager.Initialize();  // ‰Šú‰»
+			// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¸€æ—¦ã‚¯ãƒªã‚¢
+			object_manager.Finalize();    // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆè§£æ”¾å‡¦ç†
+			object_manager.Initialize();  // åˆæœŸåŒ–
 
-			// ƒXƒe[ƒWƒf[ƒ^“Ç‚İ‚İ
+			// ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿èª­ã¿è¾¼ã¿
 			LoadStage();
 		}
 
@@ -66,16 +66,16 @@ eSceneType InGameScene::Update()
 
 	if (edit_mode)
 	{
-		// •ÒWƒ‚[ƒh’†FƒGƒfƒBƒ^[‚¾‚¯XV
+		// ç·¨é›†ãƒ¢ãƒ¼ãƒ‰ä¸­ï¼šã‚¨ãƒ‡ã‚£ã‚¿ãƒ¼ã ã‘æ›´æ–°
 		editor->Update(camera_location);
 	}
 	else
 	{
-		// ’Êíƒ‚[ƒhFƒIƒuƒWƒFƒNƒg‚ğXV
+		// é€šå¸¸ãƒ¢ãƒ¼ãƒ‰ï¼šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ›´æ–°
 		object_manager.Update(camera_location);
 	}
 
-	// ƒJƒƒ‰‚Í—¼ƒ‚[ƒh‚ÅXV
+	// ã‚«ãƒ¡ãƒ©ã¯ä¸¡ãƒ¢ãƒ¼ãƒ‰ã§æ›´æ–°
 	UpdateCamera();
 
 	return __super::Update();
@@ -83,43 +83,40 @@ eSceneType InGameScene::Update()
 
 void InGameScene::Draw()
 {
-	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(185, 185, 185), TRUE); 
-	//”wŒi
-	DrawBackground();
-	// ’Êí•`‰æ
-	__super::Draw();
-	object_manager.Draw(camera_location, 1.0);
+    DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(185, 185, 185), TRUE);
+    DrawBackground();
 
-	DrawTiles();
+    // é€šå¸¸æç”»
+    __super::Draw();
+    object_manager.Draw(camera_location, 1.0);
 
+    DrawTiles();
 
+    // --- Blendæ¼”å‡ºï¼ˆé—‡ãƒ»å…‰ã®åºƒãŒã‚Šï¼‰---
+    DirectionScreen();
 
-	if (edit_mode)
-	{
-		// ”wŒi‚ğ”¼“§–¾‚Å•‚­“h‚é
-		SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128); // 128 = 50%“§–¾
-		DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
-		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // ƒuƒŒƒ“ƒh‰ğœ
+    // --- Blendã®å½±éŸ¿ã‚’å—ã‘ãªã„ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å†æç”» ---
+    object_manager.DrawNoBlendObjects(camera_location, 1.0);
 
-		// ƒGƒfƒBƒ^[‚ÌƒOƒŠƒbƒh•`‰æ
-		editor->Draw(camera_location);
-
-		// •ÒWƒ‚[ƒh•\¦
-		DrawString(600, 10, "EDIT MODE", GetColor(255, 255, 0));
-	}
-	else
-	{
-		DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
-	}
-
-
-	/*std::vector<int> favorite_tiles = { 0, 5, 12, 25, 31, 45, 62, 78, 89, 105 };
-	tile_set.DrawSelectedTiles(favorite_tiles, 10, 20, 5);*/	
+    // --- ç·¨é›†ãƒ¢ãƒ¼ãƒ‰ã®è¡¨ç¤º ---
+    if (edit_mode)
+    {
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, 128);
+        DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+        editor->Draw(camera_location);
+        DrawString(600, 10, "EDIT MODE", GetColor(255, 255, 0));
+    }
+    else
+    {
+        DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
+    }
 }
+
 
 void InGameScene::Finalize()
 {
-	// I—¹ˆ—
+	// çµ‚äº†æ™‚å‡¦ç†
 	__super::Finalize();
 	plates.clear();
 	lights.clear();
@@ -155,7 +152,7 @@ void InGameScene::DrawTiles()
 		}
 	}
 
-	// ©—R”z’uƒ^ƒCƒ‹•`‰æ
+	// è‡ªç”±é…ç½®ã‚¿ã‚¤ãƒ«æç”»
 	for (const auto& tile : stage_data.GetFreeTiles())
 	{
 		int draw_x = static_cast<int>(tile.pos.x - camera_location.x);
@@ -169,21 +166,118 @@ void InGameScene::DrawTiles()
 	}*/
 }
 
+void InGameScene::DirectionScreen()
+{
+    static int dark_alpha = 0;     // é€šå¸¸ã®ã†ã£ã™ã‚‰æš—ãã™ã‚‹ç”¨
+    static int shock_alpha = 0;    // åˆ‡æ›¿ç›´å¾Œã®ã‚·ãƒ§ãƒƒã‚¯(å¼·èª¿)
+    static int ripple_frame = 0;   // æ³¢ç´‹å¯¿å‘½ 0 ãªã‚‰éè¡¨ç¤º
+    static bool ripple_is_dark = true;
+
+    static int pop_frame = 0;      // å°å††ãƒãƒƒãƒ—æ¼”å‡º
+    static bool pop_is_dark = true;
+
+    Player* player = (Player*)object_manager.FindObjectType(eObjectType::PLAYER);
+    if (!player) return;
+
+    static bool prev_shadow = false;
+    bool now_shadow = player->IsPlayerShadow();
+
+    // çŠ¶æ…‹ãŒå¤‰ã‚ã£ãŸç¬é–“
+    if (now_shadow != prev_shadow)
+    {
+        // æ³¢ç´‹ã‚¹ã‚¿ãƒ¼ãƒˆï¼ˆ8ã€œ10ãƒ•ãƒ¬ãƒ¼ãƒ ï¼‰
+        ripple_frame = 1;
+        ripple_is_dark = now_shadow; // å½±ãªã‚‰é»’ã€å®Ÿãªã‚‰ç™½
+
+        // å°å††ã‚¹ã‚¿ãƒ¼ãƒˆï¼ˆ3ãƒ•ãƒ¬ãƒ¼ãƒ ï¼‰
+        pop_frame = 1;
+        pop_is_dark = now_shadow;
+
+        // ã‚°ãƒ©ãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³ã‚’å¼·èª¿ï¼ˆç¬é–“çš„ãªã‚·ãƒ§ãƒƒã‚¯ï¼‰
+        shock_alpha = 40;
+
+        prev_shadow = now_shadow;
+    }
+
+    // æ—¢å­˜ã®å¸¸æ™‚ã†ã£ã™ã‚‰æš—ãã™ã‚‹å‡¦ç†
+    const int fade_speed = 8;
+    const int max_dark = 110;
+
+    if (now_shadow) dark_alpha = Min(dark_alpha + fade_speed, max_dark);
+    else            dark_alpha = Max(dark_alpha - fade_speed, 0);
+
+    // ã‚·ãƒ§ãƒƒã‚¯ Î± ã‚’æ¸›è¡°
+    shock_alpha = Max(shock_alpha - 8, 0);
+
+    int total_alpha = Clamp(dark_alpha + shock_alpha, 0, 255);
+
+    // ç”»é¢ã‚°ãƒ©ãƒ‡
+    if (total_alpha > 0)
+    {
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, total_alpha);
+        DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+    }
+
+    // æ³¢ç´‹
+    if (ripple_frame > 0)
+    {
+        int life = 10; // 10ãƒ•ãƒ¬ãƒ¼ãƒ ã§çµ‚äº†
+        float t = (float)ripple_frame / life;
+
+        // EaseOut
+        float eased = 1.0f - powf(1 - t, 3);
+
+        float radius = eased * 1400.0f; // ç”»é¢å¯¾è§’ã‚ˆã‚Šå°‘ã—å¤§ãã
+
+        int alpha = (int)(150 * (1.0f - t)); // ã ã‚“ã ã‚“è–„ã
+
+        Vector2D c = player->GetLocation() + (player->GetBoxSize() / 2.0f) - camera_location;
+
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+        int col = ripple_is_dark ? GetColor(0, 0, 0) : GetColor(255, 255, 255);
+        DrawCircle((int)c.x, (int)c.y, (int)radius, col, FALSE);
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+        ripple_frame++;
+        if (ripple_frame > life) ripple_frame = 0;
+    }
+
+	// å°å††ãƒãƒƒãƒ—
+    if (pop_frame > 0)
+    {
+        int life = 3; // 3ãƒ•ãƒ¬ãƒ¼ãƒ ã ã‘
+
+        float r = 50.0f * (1.0f + pop_frame * 0.2f); // å°‘ã—å¤§ãããªã‚‹
+        int alpha = 180 - pop_frame * 50;           // ã ã‚“ã ã‚“è–„ã
+
+        Vector2D c = player->GetLocation() + (player->GetBoxSize() / 2.0f) - camera_location;
+        int col = pop_is_dark ? GetColor(0, 0, 0) : GetColor(255, 255, 255);
+
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
+        DrawCircle((int)c.x, (int)c.y, (int)r, col, TRUE);
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+        pop_frame++;
+        if (pop_frame > life) pop_frame = 0;
+    }
+}
+
 void InGameScene::LoadStage()
 {
 	if (!stage_data.LoadCSV("Resource/File/Stage.csv"))
 	{
-		std::cerr << "ƒXƒe[ƒWƒtƒ@ƒCƒ‹‚ğŠJ‚¯‚Ü‚¹‚ñ‚Å‚µ‚½\n";
+		std::cerr << "ã‚¹ãƒ†ãƒ¼ã‚¸ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã‘ã¾ã›ã‚“ã§ã—ãŸ\n";
 		return;
 	}
 
 	if (!stage_data.LoadTileCSV("Resource/File/Tile.csv"))
 	{
-		std::cerr << "Tileƒtƒ@ƒCƒ‹‚ğŠJ‚¯‚Ü‚¹‚ñ‚Å‚µ‚½\n";
+		std::cerr << "Tileãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã‘ã¾ã›ã‚“ã§ã—ãŸ\n";
 		return;
 	}
 
-	SetStage(); // ƒf[ƒ^‚ğ‚à‚Æ‚ÉƒIƒuƒWƒFƒNƒg¶¬
+	SetStage(); // ãƒ‡ãƒ¼ã‚¿ã‚’ã‚‚ã¨ã«ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆç”Ÿæˆ
 }
 
 void InGameScene::SetStage()
@@ -193,7 +287,7 @@ void InGameScene::SetStage()
 
     const Vector2D block_size((float)BLOCK_SIZE);
 
-    // ‚Ü‚¸Player‚ğ¶¬
+    // ã¾ãšPlayerã‚’ç”Ÿæˆ
     for (int y = 0; y < stage_data.GetHeight(); ++y)
     {
         for (int x = 0; x < stage_data.GetWidth(); ++x)
@@ -207,7 +301,7 @@ void InGameScene::SetStage()
         }
     }
 
-    // Ÿ‚É‚»‚Ì‘¼‚ÌƒIƒuƒWƒFƒNƒg‚ğ¶¬
+    // æ¬¡ã«ãã®ä»–ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ç”Ÿæˆ
     for (int y = 0; y < stage_data.GetHeight(); ++y)
     {
         for (int x = 0; x < stage_data.GetWidth(); ++x)
@@ -218,7 +312,7 @@ void InGameScene::SetStage()
             switch (obj)
             {
             case NONE:
-            case PLAYER: // ‚à‚¤¶¬Ï‚İ‚È‚Ì‚ÅƒXƒLƒbƒv
+            case PLAYER: // ã‚‚ã†ç”Ÿæˆæ¸ˆã¿ãªã®ã§ã‚¹ã‚­ãƒƒãƒ—
                 break;
             case BLOCK:
                 object_manager.CreateObject<Block>(world_pos, block_size);
@@ -264,7 +358,7 @@ void InGameScene::SetStage()
         }
     }
 
-    // ¶¬Œã‚É•R•t‚¯
+    // ç”Ÿæˆå¾Œã«ç´ä»˜ã‘
     for (size_t i = 0; i < plates.size() && i < lights.size(); ++i)
     {
         plates[i]->linked_light = lights[i];
@@ -276,7 +370,7 @@ void InGameScene::UpdateCamera()
 {
 	if (edit_mode)
 	{
-		// •ÒWƒ‚[ƒh‚Å‚Í editor ‚ÌƒJƒƒ‰‚ğg—p
+		// ç·¨é›†ãƒ¢ãƒ¼ãƒ‰ã§ã¯ editor ã®ã‚«ãƒ¡ãƒ©ã‚’ä½¿ç”¨
 		camera_location = editor->GetCameraOffset();
 	}
 	else
@@ -297,7 +391,7 @@ void InGameScene::UpdateCamera()
 
 void InGameScene::DrawBackground()
 { 
-	// ”wŒi‰æ‘œ‚ÌƒTƒCƒY‚ğæ“¾
+	// èƒŒæ™¯ç”»åƒã®ã‚µã‚¤ã‚ºã‚’å–å¾—
 	int bg_w, bg_h;
 	GetGraphSize(background_handle, &bg_w, &bg_h);
 

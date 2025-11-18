@@ -457,7 +457,7 @@ void Player::SwitchState()
 	}
 	else if (state == PlayerState::Shadow)
 	{
-		effect.Start(Vector2D(center.x, center.y - 10), false); // 影 → 実体 への切り替え時エフェクト
+		//effect.Start(Vector2D(center.x, center.y - 10), false); // 影 → 実体 への切り替え時エフェクト
 		state = PlayerState::Real;
 	}
 }

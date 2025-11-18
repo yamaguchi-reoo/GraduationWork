@@ -44,6 +44,8 @@ public:
 	
 	void DrawTiles();
 
+	void DirectionScreen();
+
 	//ステージデータを読み込む
 	void LoadStage();
 
