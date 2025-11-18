@@ -83,6 +83,7 @@ private:
     void HandleUIInput(const Vector2D& mouse_pos, bool& out_ui_handled);
     void HandleGridEditing(const Vector2D& mouse_pos, bool ui_handled);
     void HandleCameraMovement(bool ui_handled);
+    void HandleChangeStageSize();
 
     void DrawGrid();
     void DrawUI();

@@ -6,8 +6,8 @@
 StageData::StageData(int _width, int _height)
 	: width(_width), height(_height)
 {
-	tile_layer.resize(height, std::vector<int>(width, 0));
-	object_layer.resize(height, std::vector<int>(width, 0));
+	tile_layer.resize(height, std::vector<int>(width, -1));
+	object_layer.resize(height, std::vector<int>(width, -1));
 }
 
 void StageData::Resize(int _width, int _height)
@@ -187,3 +187,4 @@ bool StageData::LoadFreeTilesCSV(const std::string& filename)
 
 	return true;
 }
+
