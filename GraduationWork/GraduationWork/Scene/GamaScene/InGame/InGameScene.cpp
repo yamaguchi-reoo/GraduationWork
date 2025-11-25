@@ -11,7 +11,7 @@
 
 InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(0, 0),
 tile_set("Resource/Images/Tiles/tiles_spritesheet.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
-edit_mode(false)
+edit_mode(false),stage_id(0)
 {
 	// JSONからタイルセットを読み込み
 	//tile_set.LoadFromJson("Resource/Images/Tiles/tile.json"); 
@@ -29,6 +29,8 @@ void InGameScene::Initialize()
 {
 	camera_location = Vector2D(0.0f, 0.0f); // カメラの初期位置を設定
 	object_manager.Initialize(); // オブジェクト管理クラスの初期化
+
+    stage_id = 1;
 
 	// 初期化処理
 	LoadStage();
@@ -49,8 +51,8 @@ eSceneType InGameScene::Update()
 		{
 			// 編集モード終了 → 保存して再読み込み
 			//editor->SaveStageData("stage.csv");
-			stage_data.SaveCSV("Resource/File/Stage.csv");
-			stage_data.SaveTileCSV("Resource/File/Tile.csv");
+			stage_data.SaveCSV(stage_name);
+			stage_data.SaveTileCSV(tile_name);
 
 			// オブジェクトを一旦クリア
 			object_manager.Finalize();    // オブジェクト解放処理
@@ -77,6 +79,18 @@ eSceneType InGameScene::Update()
 
 	// カメラは両モードで更新
 	UpdateCamera();
+
+	GoalPoint* goal = (GoalPoint*)object_manager.FindObjectType(eObjectType::GOALPOINT);
+    if(goal && goal->reached)
+    {
+        // ゴールに到達したら次のステージへ
+        stage_id++;
+        // オブジェクトを一旦クリア
+        object_manager.Finalize();    // オブジェクト解放処理
+        object_manager.Initialize();  // 初期化
+        // ステージデータ読み込み
+        LoadStage();
+	}
 
 	return __super::Update();
 }
@@ -265,13 +279,16 @@ void InGameScene::DirectionScreen()
 
 void InGameScene::LoadStage()
 {
-	if (!stage_data.LoadCSV("Resource/File/Stage.csv"))
+    stage_name = "Resource/File/Stage" + std::to_string(stage_id) + ".csv";
+    tile_name = "Resource/File/tile" + std::to_string(stage_id) + ".csv";
+
+	if (!stage_data.LoadCSV(stage_name))
 	{
 		std::cerr << "ステージファイルを開けませんでした\n";
 		return;
 	}
 
-	if (!stage_data.LoadTileCSV("Resource/File/Tile.csv"))
+	if (!stage_data.LoadTileCSV(tile_name))
 	{
 		std::cerr << "Tileファイルを開けませんでした\n";
 		return;
@@ -345,15 +362,14 @@ void InGameScene::SetStage()
                 break;
             }
 			case HEAL:
-			{
 				object_manager.CreateObject<Heal>(world_pos, Vector2D(48.0f, 48.0f));
 				break;
-			}
 			case SHADOWHEAL:
-			{
 				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(48.0f, 48.0f));
+                break;
+			case GOALPOINT:
+				object_manager.CreateObject<GoalPoint>(world_pos, Vector2D(48.0f, 96.0f));
 				break;
-			}
             }
         }
     }

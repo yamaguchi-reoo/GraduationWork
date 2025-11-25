@@ -31,6 +31,10 @@ private:
 	std::vector<Plate*> plates;
 
 	int background_handle;
+
+	std::string stage_name; // ステージ名
+	std::string tile_name;  // tileセット名
+	int stage_id; // 現在のステージID（将来のステージ切り替え用）
 public:
 	InGameScene();
 	~InGameScene();

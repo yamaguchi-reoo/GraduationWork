@@ -144,6 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Object\Character\Player\Effect\Effect.cpp" />
+    <ClCompile Include="Object\Gimmick\GoalPoint.cpp" />
     <ClCompile Include="Object\Item\Heal.cpp" />
     <ClCompile Include="Object\Character\Enemy\Enemy.cpp" />
     <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp" />
@@ -177,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Object\Character\Player\Effect\Effect.h" />
+    <ClInclude Include="Object\Gimmick\GoalPoint.h" />
     <ClInclude Include="Object\Item\Heal.h" />
     <ClInclude Include="Object\Character\Enemy\Enemy.h" />
     <ClInclude Include="Object\Character\Enemy\EnemyBase.h" />
