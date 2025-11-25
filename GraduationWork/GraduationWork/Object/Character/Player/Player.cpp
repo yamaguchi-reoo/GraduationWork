@@ -462,7 +462,6 @@ void Player::SwitchState()
 	}
 }
 
-
 void Player::UpdateState()
 {
 	// 影状態のときは影ゲージを更新
