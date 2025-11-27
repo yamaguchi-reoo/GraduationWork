@@ -226,4 +226,31 @@ bool ObjectManager::IsOnScreen(GameObject* obj, Vector2D offset)
         loc.y < screen_bottom;
 }
 
+void ObjectManager::DrawNoBlendObjects(Vector2D offset, double rate)
+{
+    std::vector<GameObject*> draw_list;
+
+    for (auto obj : objects)
+    {
+        if (!IsOnScreen(obj, offset)) continue;
+
+        eObjectType type = obj->GetObjectType();
+        // Blend演出を「受けない」オブジェクトを再描画対象に
+        if (type == PLAYER || type == LIGHT || type == ENEMY || type == INVISIBLEFLOOR)
+        {
+            draw_list.push_back(obj);
+        }
+    }
+
+    std::sort(draw_list.begin(), draw_list.end(), [](GameObject* a, GameObject* b)
+        {
+            return a->GetDrawPriority() < b->GetDrawPriority();
+        });
+
+    for (auto obj : draw_list)
+    {
+        obj->Draw(offset, rate);
+    }
+}
+
 

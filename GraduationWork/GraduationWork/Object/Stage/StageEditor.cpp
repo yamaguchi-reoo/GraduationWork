@@ -106,6 +106,9 @@ void StageEditor::Update(Vector2D& offset)
     // カメラ移動（UI の外でのみ）
     HandleCameraMovement(!ui_handled);
 
+    // ステージサイズ変更
+    HandleChangeStageSize();
+
     // 書き戻し（外部の camera offset を更新）
 
     offset = camera_offset;
@@ -118,6 +121,8 @@ void StageEditor::Draw(Vector2D /*offset*/)
     DrawUI();
     DrawTiles();
     DrawScrollBar();
+
+    DrawFormatString(20, 620, GetColor(255, 255, 255), "w :%d", stage_data->GetWidth());
 }
 
 void StageEditor::HandleUIInput(const Vector2D& mouse_pos, bool& out_ui_handled)
@@ -226,10 +231,25 @@ void StageEditor::HandleCameraMovement(bool allow)
     if (!allow) return;
     InputManager* input = InputManager::GetInstance();
     float cam_speed = 8.0f;
-    if (input->GetKey(KEY_INPUT_W)) camera_offset.y -= cam_speed;
-    if (input->GetKey(KEY_INPUT_S)) camera_offset.y += cam_speed;
     if (input->GetKey(KEY_INPUT_A)) camera_offset.x -= cam_speed;
     if (input->GetKey(KEY_INPUT_D)) camera_offset.x += cam_speed;
+}
+
+void StageEditor::HandleChangeStageSize()
+{
+    InputManager* input = InputManager::GetInstance();
+    if (input->GetKeyDown(KEY_INPUT_F4)) {  // 横幅+1
+        stage_data->Resize(stage_data->GetWidth() + 1, stage_data->GetHeight());
+        width = grid_width = stage_data->GetWidth();
+    }
+
+    if (input->GetKeyDown(KEY_INPUT_F3)) {  // 横幅-1
+        stage_data->Resize(stage_data->GetWidth() - 1, stage_data->GetHeight());
+        width = grid_width = stage_data->GetWidth();
+    }
+
+    camera_offset.x = Clamp(camera_offset.x, 0.0f, (float)(grid_width * grid_size - SCREEN_WIDTH)); 
+    camera_offset.y = Clamp(camera_offset.y, 0.0f, (float)(grid_height * grid_size - SCREEN_HEIGHT));
 }
 
 void StageEditor::DrawGrid()

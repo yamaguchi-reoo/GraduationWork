@@ -52,13 +52,16 @@ public:
 		return new_instance;
 	}
 
-
+	//特定のタイプのオブジェクトを探す関数
 	GameObject* FindObjectType(eObjectType type);
 
+	//特定のタイプのオブジェクトをすべて取得する関数
 	std::vector<GameObject*>GetObjects(eObjectType type);
 
+	//オブジェクトが画面内にあるかどうかを判定する関数
 	bool IsOnScreen(GameObject* obj, Vector2D offset);
 
+	void DrawNoBlendObjects(Vector2D offset, double rate);
 
 };
 

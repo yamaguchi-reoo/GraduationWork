@@ -49,6 +49,8 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	draw_priority = 20;
 
 	LoadPlayerImage();
+
+	effect.Initialize();
 }
 
 void Player::Update()
@@ -66,6 +68,7 @@ void Player::Update()
 		invincible_timer--;
 	}
 
+	effect.Update(location + (box_size / 2));
 	__super::Update();
 }
 
@@ -86,8 +89,14 @@ void Player::Draw(Vector2D offset, double rate)
 
 		// 描画位置の補正
 		float offset_x = 0.0f;
+		float offset_y = 0.0f;
 		if (state == PlayerState::Shadow) {
 			offset_x = (flip_flg ? -84.0f :84.0f);
+			offset_y = 15.0f;
+		}
+		else
+			{
+			offset_y = -2.0f;
 		}
 
 		// 画像がある場合は画像を描画
@@ -95,7 +104,7 @@ void Player::Draw(Vector2D offset, double rate)
 			//int index = (animation_frame / 5) % frames.size();
 			DrawRotaGraphF(
 				screen_pos.x + (box_size.x / 2) + offset_x, 
-				screen_pos.y + (box_size.y / 2) - 15,
+				screen_pos.y + (box_size.y / 2) - offset_y,
 				2.5,    // 拡大率
 				0.0,    // 回転角
 				image,
@@ -111,6 +120,7 @@ void Player::Draw(Vector2D offset, double rate)
 	}
 	
 	DrawUI();
+	effect.Draw(offset);
 
 #ifdef _DEBUG
 	//DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Player");
@@ -438,20 +448,22 @@ void Player::UpdateAnimation()
 
 void Player::SwitchState()
 {
-   bool switchingToShadow = (state == PlayerState::Real);
+	Vector2D center = location + (box_size / 2);
 
-    if (switchingToShadow)
-    {
-        state = PlayerState::Shadow;
-    }
-    else
-    {
-        state = PlayerState::Real;
-    }
-
-    // === UI演出呼び出し ===
-    shadow_gauge.StartSwitch(switchingToShadow);
+	if (state == PlayerState::Real)
+	{
+		effect.Start(center, true);   // 実体 → 影 への切り替え時エフェクト
+		state = PlayerState::Shadow;
+	}
+	else if (state == PlayerState::Shadow)
+	{
+		//effect.Start(Vector2D(center.x, center.y - 10), false); // 影 → 実体 への切り替え時エフェクト
+		state = PlayerState::Real;
+	}
+	// === UI演出呼び出し ===
+	shadow_gauge.StartSwitch(switchingToShadow);
 }
+
 
 void Player::UpdateState()
 {
@@ -459,7 +471,7 @@ void Player::UpdateState()
 	if (state == PlayerState::Shadow)
 	{
 		// 影ゲージを消費
-		shadow_gauge.Update(true,8);
+		shadow_gauge.Update(true, 8);
 		if (shadow_gauge.IsEmpty()) 
 		{
 			SwitchState();
@@ -468,7 +480,7 @@ void Player::UpdateState()
 	else if (state == PlayerState::Real)
 	{
 		// 実態のときは影ゲージを回復
-		shadow_gauge.Update(false,8);
+		shadow_gauge.Update(false, 8);
 	}
 }
 
@@ -514,6 +526,8 @@ void Player::LoadPlayerImage()
 	animation_shadow[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Player_death.png", 9, 9, 1, 128, 64);
 
 	//animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Player_real_idle.png", 2, 2, 1, 32, 32);
+	animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Bunny/Idle.png", 2, 2, 1, 64, 64);
+	animation_real[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Bunny/Walk.png", 4, 4, 1, 64, 64);
 
 	// 表示用画像に設定
 	image = animation_shadow[PlayerAction::Idle][0];

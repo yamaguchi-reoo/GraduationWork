@@ -11,3 +11,4 @@
 #include "Gimmick/Plate.h"
 #include "Item/Heal.h"
 #include "Item/ShadowHeal.h"
+#include "Gimmick/GoalPoint.h"
