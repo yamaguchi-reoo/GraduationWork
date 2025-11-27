@@ -116,9 +116,9 @@ void ObjectManager::Update(Vector2D offset)
 
 void ObjectManager::Draw(Vector2D offset, double rate)
 {
-	std::vector<GameObject*> draw_list = objects;
+    std::vector<GameObject*> draw_list;
 
-    //‰æ–Ê“à‚É‚ ‚éObject‚Ì‚Ý‚ð‘ÎÛ‚É
+    // ‰æ–Ê“à‚Ì‚Ý‚ð•`‰æ‘ÎÛ‚É
     for (auto obj : objects)
     {
         if (IsOnScreen(obj, offset))
@@ -127,8 +127,9 @@ void ObjectManager::Draw(Vector2D offset, double rate)
         }
     }
 
-    // •`‰æ—Dæ“x‡‚Éƒ\[ƒgi¬‚³‚¢‡‚É‰œ‚©‚çj
-    std::sort(draw_list.begin(), draw_list.end(), [](GameObject* a, GameObject* b)
+    // •`‰æ—Dæ“x‚Åƒ\[ƒg
+    std::sort(draw_list.begin(), draw_list.end(),
+        [](GameObject* a, GameObject* b)
         {
             return a->GetDrawPriority() < b->GetDrawPriority();
         });
@@ -139,6 +140,7 @@ void ObjectManager::Draw(Vector2D offset, double rate)
         obj->Draw(offset, rate);
     }
 }
+
 
 void ObjectManager::Finalize()
 {
