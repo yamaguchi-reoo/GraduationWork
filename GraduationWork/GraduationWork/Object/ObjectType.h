@@ -15,8 +15,8 @@ enum eObjectType
 	PLATE,
     HEAL,
     SHADOWHEAL,
-    GOALPOINT,
     TEXT,
+    GOALPOINT,
 	OBJECTTYPE_COUNT // タイルの種類数（最後に追加）
 };
 

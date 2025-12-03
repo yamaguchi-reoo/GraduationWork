@@ -124,6 +124,10 @@ void InGameScene::Draw()
     else
     {
         DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
+
+        // --- è¿½åŠ è¡¨ç¤º ---
+        std::string stage_label = "Stage " + std::to_string(stage_id);
+        DrawString(600, 40, stage_label.c_str(), GetColor(255, 255, 255));
     }
 }
 
@@ -375,6 +379,9 @@ void InGameScene::SetStage()
 			case SHADOWHEAL:
 				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(48.0f, 48.0f));
                 break;
+                case TEXT:
+                object_manager.CreateObject<TextObject>(world_pos, Vector2D(48.0f, 96.0f));
+                break;
 			case GOALPOINT:
 				object_manager.CreateObject<GoalPoint>(world_pos, Vector2D(48.0f, 96.0f));
 				break;
@@ -427,8 +434,8 @@ void InGameScene::DrawBackground()
 		DrawGraph(x, 0, background_handle, TRUE);
 	}
 
-	// ---- ”wŒi‚ğ­‚µˆÃ‚­‚·‚é ----
-	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);  // ƒ¿=100‚Å”¼“§–¾‚Ì•
+	// ---- ï¿½wï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã‚ï¿½ï¿½ï¿½ï¿½ï¿½ ----
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);  // ï¿½ï¿½=100ï¿½Å”ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½
 	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
-	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // ƒuƒŒƒ“ƒh‰ğœ
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // ï¿½uï¿½ï¿½ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½
 }

@@ -461,7 +461,7 @@ void Player::SwitchState()
 		state = PlayerState::Real;
 	}
 	// === UI‰‰oŒÄ‚Ño‚µ ===
-	shadow_gauge.StartSwitch(switchingToShadow);
+	//shadow_gauge.StartSwitch(switchingToShadow);
 }
 
 
