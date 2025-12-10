@@ -130,18 +130,22 @@ void InGameScene::Draw()
 
 void InGameScene::Finalize()
 {
-	// 終了時処理
-	__super::Finalize();
-	plates.clear();
-	lights.clear();
-	object_manager.Finalize();
-	if (editor)
-	{
-		editor->Finalize();
-		delete editor;
-		editor = nullptr;
-	}
+    __super::Finalize();
+    plates.clear();
+    lights.clear();
+    object_manager.Finalize(); // ← OK
+
+    if (editor)
+    {
+        editor->Finalize();
+        delete editor;
+        editor = nullptr;
+    }
+
+    DeleteGraph(background_handle);    
+	tile_set.Unload();
 }
+
 
 
 eSceneType InGameScene::GetNowSceneType() const
@@ -215,7 +219,7 @@ void InGameScene::DirectionScreen()
 
     // 既存の常時うっすら暗くする処理
     const int fade_speed = 8;
-    const int max_dark = 110;
+    const int max_dark = 150;
 
     if (now_shadow) dark_alpha = Min(dark_alpha + fade_speed, max_dark);
     else            dark_alpha = Max(dark_alpha - fade_speed, 0);
@@ -344,7 +348,7 @@ void InGameScene::SetStage()
                 break;
             }
             case INVISIBLEFLOOR:
-                object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
+                object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(48.0f, 14.0f));
                 break;
             case PUSHBLOCK:
                 object_manager.CreateObject<PushBlock>(world_pos, Vector2D(48.0f, 48.0f));

@@ -64,5 +64,7 @@ public:
 
 	// タイルIDが存在するかチェック
 	bool HasTile(int tile_id) const;
+
+	void Unload();
 };
 

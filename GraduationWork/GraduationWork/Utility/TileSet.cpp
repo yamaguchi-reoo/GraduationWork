@@ -29,7 +29,7 @@ TileSet::TileSet(const std::string& file_path, int tile_width, int tile_height)
 
 TileSet::~TileSet()
 {
-	DeleteGraph(sprite_handle);
+	Unload();
 }
 
 void TileSet::AddTile(int id, int sprite_x, int sprite_y, bool is_collision)
@@ -201,5 +201,14 @@ int TileSet::GetTileCount() const
 bool TileSet::HasTile(int tile_id) const
 {
 	return tile_table.find(tile_id) != tile_table.end();
+}
+
+void TileSet::Unload()
+{
+	if (sprite_handle != -1) {
+		DeleteGraph(sprite_handle);
+		sprite_handle = -1;
+	}
+	tile_table.clear(); 
 }
 

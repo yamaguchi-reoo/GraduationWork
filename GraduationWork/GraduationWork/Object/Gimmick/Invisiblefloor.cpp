@@ -25,7 +25,7 @@ void Invisiblefloor::Draw(Vector2D offset, double rate)
 	{
 		if (player->IsPlayerShadow())
 		{
-			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 255), FALSE);
+			DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 255), TRUE);
 
 		}
 	}

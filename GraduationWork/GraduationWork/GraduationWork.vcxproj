@@ -167,6 +167,7 @@
     <ClCompile Include="Object\Stage\StageData.cpp" />
     <ClCompile Include="Object\Item\ShadowHeal.cpp" />
     <ClCompile Include="Object\UniFormGrid.cpp" />
+    <ClCompile Include="Object\Character\Player\PlayerSoundManager.cpp" />
     <ClCompile Include="Utility\ResourceManager.cpp" />
     <ClCompile Include="Utility\TileSet.cpp" />
     <ClCompile Include="Utility\InputManager.cpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="Object\Gimmick\Plate.h" />
     <ClInclude Include="Object\Item\ShadowHeal.h" />
     <ClInclude Include="Object\UniFormGrid.h" />
+    <ClInclude Include="Object\Character\Player\PlayerSoundManager.h" />
     <ClInclude Include="Utility\ResourceManager.h" />
     <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
     <ClInclude Include="Object\GameObject.h" />

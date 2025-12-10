@@ -26,8 +26,15 @@ class ResourceManager
 private:
     static ResourceManager* instance;
 
-    std::map<std::string, std::vector<int>> images_container;
-    std::map<std::string, std::vector<int>> sounds_container;
+    //==== リソースコンテナ ====
+    std::map<std::string, std::vector<int>> images_container; //画像
+    std::map<std::string, int> se_container;                  //SE
+    std::map<std::string, int> bgm_container;                 //BGM
+
+	// ====　音量管理　=====
+    int master_volume = 255; //全体の音量
+	int se_volume = 255;     //SEの音量
+	int bgm_volume = 255;    //BGMの音量
 
 private:
     ResourceManager() = default;
@@ -46,11 +53,24 @@ public:
     const std::vector<int>& GetImages(MaterialParam element);
 
     // 音源取得
-    const std::vector<int>& GetSound(std::string file_name);
-    const std::vector<int>& GetSound(const char* file_name);
-    const std::vector<int>& GetSound(SoundParam element);
+    int GetSE(const std::string& file);
+    int GetBGM(const std::string& file);
+
+    // アンロード機能
+    void UnloadImage(const std::string& file);
+    void UnloadSE(const std::string& file);
+    void UnloadBGM(const std::string& file);
 
     void UnloadResourcesAll();
+
+    //音量制御API
+    void SetMasterVolume(int vol); // 全体ボリューム
+    void SetSEVolume(int vol);     // SEのみ
+    void SetBGMVolume(int vol);    // BGMのみ
+
+    int GetMasterVolume() const { return master_volume; }
+    int GetSEVolume() const { return se_volume; }
+    int GetBGMVolume() const { return bgm_volume; }
 
 private:
     // 画像リソース作成
@@ -59,6 +79,7 @@ private:
     void CreateImagesResourceSingle(std::string file_name, int all_num);
 
     // 音源リソース作成
-    void CreateSoundResource(std::string file_name);
+    void CreateSEResource(std::string file);
+    void CreateBGMResource(std::string file);
 
 };

@@ -54,6 +54,8 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	LoadPlayerImage();
 
 	effect.Initialize();
+
+	sound_manager.LoadSounds();
 }
 
 void Player::Update()
@@ -99,7 +101,8 @@ void Player::Draw(Vector2D offset, double rate)
 			offset_y = 15.0f;
 		}
 		else
-			{
+		{
+			offset_x = (flip_flg ? 6.0f : -6.f);
 			offset_y = -2.0f;
 		}
 
@@ -241,7 +244,6 @@ bool Player::IsOverlapingWall()
 
 	return false;
 }
-
 
 void Player::HandleInput()
 {
@@ -491,6 +493,7 @@ void Player::UpdateAnimation()
 
 void Player::SwitchState()
 {
+	sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
 	Vector2D center = location + (box_size / 2);
 
 	if (state == PlayerState::Real)
