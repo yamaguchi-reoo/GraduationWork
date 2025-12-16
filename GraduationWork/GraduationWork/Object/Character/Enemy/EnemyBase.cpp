@@ -3,6 +3,10 @@
 #include "../../../Utility/UtilityList.h"
 #include "../../../common.h"
 
+#include "../../Object/ObjectManager.h"
+#include "../Character/Player/Player.h"
+
+
 EnemyBase::EnemyBase()
     : max_hp(3), damage(1), is_dead(false), is_alive(true),
     move_speed(2.0f), moving_right(true),
@@ -62,6 +66,9 @@ void EnemyBase::Draw(Vector2D offset, double rate)
         screen_pos.y + box_size.y,
         color, TRUE
     );
+    #ifdef _DEBUG // ŒŸ’m”ÍˆÍ•`‰æ 
+    DrawBoxAA( screen_pos.x - detect_range, screen_pos.y - 10, screen_pos.x + box_size.x + detect_range, screen_pos.y + box_size.y + 10, GetColor(255, 255, 0), FALSE ); 
+    #endif
 }
 
 void EnemyBase::OnHitCollision(GameObject* hit_object)
