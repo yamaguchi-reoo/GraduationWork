@@ -15,6 +15,7 @@ enum eObjectType
 	PLATE,
     HEAL,
     SHADOWHEAL,
+    GOALPOINT,
 	OBJECTTYPE_COUNT // タイルの種類数（最後に追加）
 	
 };
@@ -39,7 +40,8 @@ static TypeInfo TYPE_INFO[OBJECTTYPE_COUNT] = {
     { REALENEMY,     "REnemy",    static_cast<int>(GetColor(50, 100, 200)) },
     { PLATE,         "Plate",     static_cast<int>(GetColor(200, 0, 200)) },
     { HEAL,          "Heal",      static_cast<int>(GetColor(0, 255, 0)) },
-    { SHADOWHEAL,    "ShadowHeal",static_cast<int>(GetColor(0, 255, 100)) }
+    { SHADOWHEAL,    "ShadowHeal",static_cast<int>(GetColor(0, 255, 100)) },
+	{ GOALPOINT,     "GoalPoint", static_cast<int>(GetColor(255, 165, 0)) }
 };
 
 // ヘルパー関数
