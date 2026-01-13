@@ -58,6 +58,12 @@ public:
 	//特定のタイプのオブジェクトをすべて取得する関数
 	std::vector<GameObject*>GetObjects(eObjectType type);
 
+	//すべてのオブジェクトを取得する関数
+	std::vector<GameObject*> GetAllObjects() const { return objects; }
+
+	//特定範囲内のオブジェクトを取得する関数
+	std::vector<GameObject*> GetNearbyObjects(Vector2D _location, Vector2D _box_size, int _type);
+
 	//オブジェクトが画面内にあるかどうかを判定する関数
 	bool IsOnScreen(GameObject* obj, Vector2D offset);
 

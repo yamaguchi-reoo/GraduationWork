@@ -208,6 +208,28 @@ std::vector<GameObject*> ObjectManager::GetObjects(eObjectType type)
     return result;
 }
 
+std::vector<GameObject*> ObjectManager::GetNearbyObjects(Vector2D _location, Vector2D _box_size, int _type)
+{
+    std::vector<GameObject*> nearby;
+    std::vector<GameObject*> result;
+
+    // uniform_grid を使って範囲内のオブジェクトを取得
+    uniform_grid.QueryArea(_location.x, _location.y, _location.x + _box_size.x, _location.y + _box_size.y, nearby);
+
+    for (auto obj : nearby)
+    {
+        if (!obj) continue;
+
+        int type = obj->GetObjectType();
+        if ((_type & type) == 0) continue; 
+
+        result.push_back(obj);
+    }
+
+    return result;
+}
+
+
 bool ObjectManager::IsOnScreen(GameObject* obj, Vector2D offset)
 {
     if (!obj) return false;

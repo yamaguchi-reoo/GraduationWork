@@ -325,7 +325,7 @@ void InGameScene::SetStage()
             if (obj == PLAYER)
             {
                 Vector2D world_pos(x * (float)BLOCK_SIZE, y * (float)BLOCK_SIZE);
-                object_manager.CreateObject<Player>(world_pos, Vector2D(block_size.x, 50.f));
+                object_manager.CreateObject<Player>(world_pos, Vector2D(block_size.x - 10, 50.f));
             }
         }
     }

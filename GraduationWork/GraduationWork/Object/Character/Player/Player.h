@@ -69,6 +69,8 @@ public:
     //“–‚½‚Á‚½Žž‚Ì‹““®
     void OnHitCollision(GameObject* hit_object)override;
 
+	bool IsOverlapingWall(); 
+
 public:
     //“ü—Í
     void HandleInput();

@@ -8,6 +8,9 @@
 
 #include <algorithm>
 
+#include <sstream>
+#include <windows.h>
+
 
 namespace {
 	constexpr int BASE_RADIUS = 60;
@@ -84,6 +87,7 @@ void Player::Draw(Vector2D offset, double rate)
 		visible = (invincible_timer / 5) % 2 == 0; // 点滅効果
 	}
 
+	DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 0), FALSE);
 	if (visible) {
 		const auto& frames = (state == PlayerState::Real) ? animation_real[action] : animation_shadow[action];
 
@@ -199,6 +203,45 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	}
 }
+
+bool Player::IsOverlapingWall()
+{
+	if (!object_manager) return false;
+
+	constexpr float SHRINK = 0.5f;
+
+	float lx = location.x + SHRINK;
+	float ly = location.y + SHRINK;
+	float rx = location.x + box_size.x - SHRINK;
+	float ry = location.y + box_size.y - SHRINK;
+
+	//std::vector<GameObject*> objects = object_manager->GetNearbyObjects(location, box_size, WALL);
+	std::vector<GameObject*> objects = object_manager->GetAllObjects();
+
+	// 壁だけ抽出 
+	std::vector<GameObject*> walls;
+	for (auto obj : objects) {
+		if (!obj) continue;
+		if (obj->GetObjectType() == WALL || obj->GetObjectType() == PUSHBLOCK)
+			walls.push_back(obj);
+	}
+
+	// 重なりチェック
+	for (auto wall : walls)
+	{
+		auto p = wall->GetLocation();
+		auto s = wall->GetBoxSize();
+
+		if (rx > p.x && lx < p.x + s.x &&
+			ry > p.y && ly < p.y + s.y)
+		{
+			return true; // 壁と重なっている
+		}
+	}
+
+	return false;
+}
+
 
 void Player::HandleInput()
 {
@@ -452,18 +495,27 @@ void Player::SwitchState()
 
 	if (state == PlayerState::Real)
 	{
-		effect.Start(center, true);   // 実体 → 影 への切り替え時エフェクト
+		// 実体 → 影
+		effect.Start(center, true);
 		state = PlayerState::Shadow;
 	}
 	else if (state == PlayerState::Shadow)
 	{
-		//effect.Start(Vector2D(center.x, center.y - 10), false); // 影 → 実体 への切り替え時エフェクト
-		state = PlayerState::Real;
+		// 壁と重なっていたら戻れない（床は無視）
+		if (!IsOverlapingWall())
+		{
+			state = PlayerState::Real;
+			effect.Start(center, false);
+		}
+		else
+		{
+			// 戻れないことを音や小エフェクトで伝えたいならここで鳴らす
+			// PlaySoundMem(sound_cannot_switch, DX_PLAYTYPE_BACK);
+		}
 	}
 	// === UI演出呼び出し ===
 	//shadow_gauge.StartSwitch(switchingToShadow);
 }
-
 
 void Player::UpdateState()
 {
