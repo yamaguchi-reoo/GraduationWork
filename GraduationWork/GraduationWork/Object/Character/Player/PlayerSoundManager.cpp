@@ -6,13 +6,15 @@ void SoundManager::LoadSounds()
 {
 	auto* rm = ResourceManager::GetInstance();
 
-	//sound_map[SoundType::ATTACK] = { rm->GetSE("") };
-	//sound_map[SoundType::JUMP] = { rm->GetSE("") };
-	//sound_map[SoundType::DAMAGE] = { rm->GetSE("") };
+	sound_map[SoundType::SHADOW_ATTACK] = { rm->GetSE("Resource/Sounds/SE/Player/AS_1620462__“‚ðU‚é‰¹_Žã.wav") };
+	//sound_map[SoundType::REAL_ATTACK] = { rm->GetSE("Resource/Sounds/SE/Player/AS_1620462__“‚ðU‚é‰¹_Žã.wav") };
+	sound_map[SoundType::JUMP] = { rm->GetSE("Resource/Sounds/SE/Player/AS_952655_ƒWƒƒƒ“ƒv‰¹A‚O‚V.wav") };
+	sound_map[SoundType::DAMAGE] = { rm->GetSE("Resource/Sounds/SE/Player/AS_1155632_ƒ_ƒ[ƒW‰¹.wav") };
 	//sound_map[SoundType::WALK] = { rm->GetSE("") };
-	//sound_map[SoundType::LAND] = { rm->GetSE("") };
+	sound_map[SoundType::LAND] = { rm->GetSE("Resource/Sounds/SE/Player/AS_22106_‘I‘ði8bit•—j.wav") };
 	//sound_map[SoundType::DEATH] = { rm->GetSE("") };
-	sound_map[SoundType::STATE_CHANGE] = { rm->GetSE("Resource/Sounds/AS_1383683.wav") };
+	sound_map[SoundType::HEAL] = { rm->GetSE("Resource/Sounds/SE/Player/AS_968862_Šð‚µ‚¢Š´î‚Ì‚æ‚¤‚Èã¸‰¹‚Q^ƒn[ƒg^‰ñ•œ.wav") };
+	sound_map[SoundType::STATE_CHANGE] = { rm->GetSE("Resource/Sounds/SE/Player/AS_1383683.wav") };
 }
 
 void SoundManager::PlaySoundSE(SoundType sound_type, int volume, bool flg)

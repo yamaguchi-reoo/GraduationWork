@@ -186,6 +186,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 		{
 			if (object_manager)
 			{
+				if (state == PlayerState::Real)sound_manager.PlaySoundSE(SoundType::DAMAGE, 60, true);
 				hp--;
 				invincible_timer = 60;
 				if (hp <= 0)
@@ -204,6 +205,11 @@ void Player::OnHitCollision(GameObject* hit_object)
 			action = PlayerAction::Death;
 		}
 
+	}
+
+	if (type == HEAL || type == SHADOWHEAL)
+	{
+		sound_manager.PlaySoundSE(SoundType::HEAL, 80, true);
 	}
 }
 
@@ -278,10 +284,8 @@ void Player::HandleInput()
 	// 状態切替
 	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER) && on_ground)
 	{
-		// Aボタンで状態を切り替え
 		SwitchState();
 	}
-
 
 	// ジャンプ
 	if (input->GetButtonDown(XINPUT_BUTTON_A) && !is_jumping && state == PlayerState::Real)
@@ -290,6 +294,7 @@ void Player::HandleInput()
 		on_ground = false;
 		velocity.y = -jump_strength;
 		action = PlayerAction::Jump;
+		sound_manager.PlaySoundSE(SoundType::JUMP, 60, true);
 	}
 
 
@@ -310,6 +315,14 @@ void Player::HandleInput()
 	{
 		if (!is_attacking && attack_cooldown <= 0)
 		{
+			if(state == PlayerState::Shadow)
+			{
+				sound_manager.PlaySoundSE(SoundType::SHADOW_ATTACK, 90, true);
+			}
+			else
+			{
+
+			}
 			is_attacking = true;
 			attack_cooldown = attack_cooldown_max; // 攻撃クールダウンを設定
 			action = PlayerAction::Attack;
@@ -493,11 +506,11 @@ void Player::UpdateAnimation()
 
 void Player::SwitchState()
 {
-	sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
 	Vector2D center = location + (box_size / 2);
 
 	if (state == PlayerState::Real)
 	{
+		sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
 		// 実体 → 影
 		effect.Start(center, true);
 		state = PlayerState::Shadow;
@@ -509,6 +522,7 @@ void Player::SwitchState()
 		{
 			state = PlayerState::Real;
 			effect.Start(center, false);
+			sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
 		}
 		else
 		{

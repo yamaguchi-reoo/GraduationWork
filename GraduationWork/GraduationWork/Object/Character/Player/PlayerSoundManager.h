@@ -6,12 +6,14 @@
 enum class SoundType
 {
 	// SE
-	ATTACK,
+	SHADOW_ATTACK,
+	REAL_ATTACK,
 	JUMP,
 	DAMAGE,
 	WALK,
 	LAND,
 	DEATH,
+	HEAL,
 	STATE_CHANGE,
 };
 
