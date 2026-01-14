@@ -111,7 +111,7 @@
     <ClCompile Include="Object\Gimmick\GoalPoint.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Scene\GamaScene\InGame\GameOver.cpp">
+    <ClCompile Include="Scene\GamaScene\InGame\GameOveScener.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -227,7 +227,7 @@
     <ClInclude Include="Object\Gimmick\GoalPoint.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Scene\GamaScene\InGame\GameOver.h">
+    <ClInclude Include="Scene\GamaScene\InGame\GameOverScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
