@@ -143,6 +143,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\GamaScene\InGame\GameOver.cpp" />
     <ClCompile Include="Object\Character\Player\Effect\Effect.cpp" />
     <ClCompile Include="Object\Gimmick\GoalPoint.cpp" />
     <ClCompile Include="Object\Item\Heal.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="Object\Gimmick\Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scene\GamaScene\InGame\GameOver.h" />
     <ClInclude Include="Object\Character\Player\Effect\Effect.h" />
     <ClInclude Include="Object\Gimmick\GoalPoint.h" />
     <ClInclude Include="Object\Item\Heal.h" />
