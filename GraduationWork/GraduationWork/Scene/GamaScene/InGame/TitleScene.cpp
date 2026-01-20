@@ -8,6 +8,7 @@ TitleScene::TitleScene()
 	//初期化
     MENU_COUNT = 3;
     cursorIndex = 0;
+    Title_Img = LoadGraph("Resource/Images/Title/Title.png");
 }
 
 TitleScene::~TitleScene()
@@ -27,22 +28,94 @@ eSceneType TitleScene::Update()
 
 void TitleScene::Draw()
 {
-	DrawString(0, 0, "Title", GetColor(255, 255, 255), SceneManager::font);
+    //タイトル画像
+    DrawGraph(0, 0, Title_Img, TRUE);
 
-    const char* menu[] = { "START", "OPTION", "EXIT" };
+    // 画面全体を少し暗くする
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, 120); // 0?255（数値が大きいほど暗くなる）
+    DrawBox(0, 0, 1280, 720, GetColor(0, 0, 0), TRUE);
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+
+    const int SCREEN_W = 1280;
+    const int SCREEN_H = 720;
+
+    int centerX = SCREEN_W / 2;
+    int centerY = SCREEN_H / 2;
+
+    // ===== タイトル文字分割 =====
+    const char* shadowText = "SHADOW";
+    const char* boundText = " UNBOUND";
+
+    int shadowColor = GetColor(120, 120, 120); // 暗め
+    int boundColor = GetColor(255, 255, 255); // 明るめ
+
+    // 文字幅取得
+    int shadowWidth = GetDrawStringWidthToHandle(
+        shadowText,
+        strlen(shadowText),
+        SceneManager::titleFont
+    );
+
+    int boundWidth = GetDrawStringWidthToHandle(
+        boundText,
+        strlen(boundText),
+        SceneManager::titleFont
+    );
+
+    int totalWidth = shadowWidth + boundWidth;
+
+    int startX = centerX - totalWidth / 2;
+    int y = centerY - 200;
+
+    // ===== 描画 =====
+    DrawStringToHandle(
+        startX,
+        y,
+        shadowText,
+        shadowColor,
+        SceneManager::titleFont
+    );
+
+    DrawStringToHandle(
+        startX + shadowWidth,
+        y,
+        boundText,
+        boundColor,
+        SceneManager::titleFont
+    );
+
+    // ===== メニュー =====
+    const char* menu[] = { "START", "HELP", "EXIT" };
 
     for (int i = 0; i < MENU_COUNT; i++)
     {
+        int x = centerX - 120;
+        int menuY = centerY - 10 + i * 50;
+
         if (i == cursorIndex)
         {
-            DrawFormatStringToHandle(100, 100 + i * 40, GetColor(255, 255, 0), SceneManager::font, "> %s", menu[i]);
+            DrawFormatStringToHandle(
+                x - 40, menuY,
+                GetColor(255, 255, 0),
+                SceneManager::menuFont,
+                "> %s",
+                menu[i]
+            );
         }
         else
         {
-            DrawFormatStringToHandle(120, 100 + i * 40, GetColor(255, 255, 255), SceneManager::font, "%s", menu[i]);
+            DrawFormatStringToHandle(
+                x, menuY,
+                GetColor(255, 255, 255),
+                SceneManager::menuFont,
+                "%s",
+                menu[i]
+            );
         }
     }
 }
+
+
 
 eSceneType TitleScene::Title_Select()
 {

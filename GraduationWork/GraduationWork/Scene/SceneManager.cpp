@@ -9,6 +9,8 @@
 #include "../Utility/UtilityList.h"
 
 int SceneManager::font = -1;
+int SceneManager::titleFont = -1;
+int SceneManager::menuFont = -1;
 
 SceneManager::SceneManager() :current_scene(nullptr), fps_control()
 {
@@ -42,6 +44,20 @@ void SceneManager::Initialize()
 	// “o˜^‚µ‚½ƒtƒHƒ“ƒg‚ðƒnƒ“ƒhƒ‹‰»
 	font = CreateFontToHandle("Party Bold", 32, 6, DX_FONTTYPE_ANTIALIASING_4X4);
 
+	titleFont = CreateFontToHandle(
+		"Party Bold",
+		52,
+		3,
+		DX_FONTTYPE_ANTIALIASING_4X4
+	);
+
+	menuFont = CreateFontToHandle(
+		"Party Bold",
+		32,
+		2,
+		DX_FONTTYPE_ANTIALIASING_4X4
+	);
+
 	//— ‰æ–Ê‚©‚ç•`‰æ‚ðŽn‚ß‚é
 	SetDrawScreen(DX_SCREEN_BACK);
 
@@ -49,6 +65,9 @@ void SceneManager::Initialize()
 	ChangeScene(eSceneType::TITLE/*GAME_MAIN*/);
 
 	fps_control.Initialize();;
+
+
+
 }
 
 void SceneManager::Update()
