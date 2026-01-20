@@ -28,7 +28,8 @@ Player::Player() :
 	attack_cooldown_max(40),
 	shadow_gauge(),
 	hp_gauge(),
-	attack_hitboxes()
+	attack_hitboxes(),
+	death_flg(false)
 {
 }
 
@@ -43,6 +44,9 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	object_type = PLAYER;
 
 	hp = 3;
+
+	death_flg = false;
+	death_timer = 0;
 
 	is_jumping = false;
 
@@ -71,6 +75,11 @@ void Player::Update()
 	// 無敵タイマー減少
 	if (invincible_timer > 0) {
 		invincible_timer--;
+	}
+
+	if(death_flg)
+	{
+		death_timer++;
 	}
 
 	effect.Update(location + (box_size / 2));
@@ -195,18 +204,16 @@ void Player::OnHitCollision(GameObject* hit_object)
 				invincible_timer = 60;
 				if (hp <= 0)
 				{
-					/*hp = 0;
+					//hp = 0;
 					action = PlayerAction::Death;
-					animation_frame = 0;*/
-					if (object_manager) {
-						object_manager->RequestDeleteObject(this);
-					}
+					animation_frame = 0;
 				}
 			}
 		}
 		else if (state == PlayerState::Shadow)
 		{
 			action = PlayerAction::Death;
+			animation_frame = 0;
 		}
 
 	}
@@ -301,19 +308,6 @@ void Player::HandleInput()
 		sound_manager.PlaySoundSE(SoundType::JUMP, 60, true);
 	}
 
-
-	if(input->GetKeyDown(KEY_INPUT_Z) && state == PlayerState::Real)
-	{
-		hp--;
-		if (hp <= 0)
-		{
-			hp = 0;
-			if (object_manager)
-			{
-				object_manager->RequestDeleteObject(this); // HPが0になったら削除要求
-			}
-		}
-	}
 
 	if (input->GetButtonDown(XINPUT_BUTTON_B))
 	{
@@ -494,9 +488,10 @@ void Player::UpdateAnimation()
 
 		// 最後のフレームを描画した次のフレームで削除
 		if (index == frames.size() - 1 && animation_frame / delay > frames.size()) {
-			if (object_manager) {
+			/*if (object_manager) {
 				object_manager->RequestDeleteObject(this);
-			}
+			}*/
+			death_flg = true;
 		}
 		break;
 
@@ -510,6 +505,8 @@ void Player::UpdateAnimation()
 
 void Player::SwitchState()
 {
+
+	if (action == PlayerAction::Death) return;
 	Vector2D center = location + (box_size / 2);
 
 	if (state == PlayerState::Real)
@@ -602,7 +599,7 @@ void Player::LoadPlayerImage()
 	animation_real[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Bunny/Walk.png", 4, 4, 1, 64, 64);
 	animation_real[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 1, 1, 64, 64);
 	animation_real[PlayerAction::Jump] = rm->GetImages("Resource/Images/Character/Player/Bunny/Jump.png", 1, 1, 1, 64, 64);
-	animation_real[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 1, 1, 64, 64);
+	animation_real[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Bunny/Death.png", 1, 1, 1, 64, 64);
 	
 	// 表示用画像に設定
 	image = animation_shadow[PlayerAction::Idle][0];

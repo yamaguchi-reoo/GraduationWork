@@ -75,6 +75,16 @@ eSceneType InGameScene::Update()
 	{
 		// 通常モード：オブジェクトを更新
 		object_manager.Update(camera_location);
+
+		Player* player = static_cast<Player*>(object_manager.FindObjectType(eObjectType::PLAYER));
+        if (player && player->IsDead())
+        {
+            if (player->GetDeathTimer() >= 30)
+            {
+				object_manager.RequestDeleteObject(player);
+                return eSceneType::GAMEOVER;
+            }
+        }
 	}
 
 	// カメラは両モードで更新
@@ -91,6 +101,7 @@ eSceneType InGameScene::Update()
         // ステージデータ読み込み
         LoadStage();
 	}
+
 
 	return __super::Update();
 }
