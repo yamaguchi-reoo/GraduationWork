@@ -2,7 +2,7 @@
 #include "../CharacterBase.h"
 #include "../../GameObject.h"
 #include "Effect/Effect.h"
-#include "PlayerSoundManager.h"
+#include "../../../Utility/SoundManager.h"
 
 #include "Gauge.h"
 #include <map>

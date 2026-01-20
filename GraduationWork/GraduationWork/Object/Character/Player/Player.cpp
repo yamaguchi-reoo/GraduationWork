@@ -197,7 +197,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	{
 		if (state == PlayerState::Real && invincible_timer <= 0)
 		{
-			sound_manager.PlaySoundSE(SoundType::DAMAGE, 60, true);
+			sound_manager.Play(SoundID::DAMAGE);
 			hp--;
 			invincible_timer = 60;
 
@@ -215,7 +215,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	if (type == HEAL || type == SHADOWHEAL)
 	{
-		sound_manager.PlaySoundSE(SoundType::HEAL, 80, true);
+		sound_manager.Play(SoundID::HEAL);
 	}
 }
 
@@ -300,7 +300,7 @@ void Player::HandleInput()
 		on_ground = false;
 		velocity.y = -jump_strength;
 		action = PlayerAction::Jump;
-		sound_manager.PlaySoundSE(SoundType::JUMP, 60, true);
+		sound_manager.Play(SoundID::JUMP);
 	}
 
 
@@ -310,7 +310,7 @@ void Player::HandleInput()
 		{
 			if(state == PlayerState::Shadow)
 			{
-				sound_manager.PlaySoundSE(SoundType::SHADOW_ATTACK, 90, true);
+				sound_manager.Play(SoundID::SHADOW_ATTACK);
 			}
 			else
 			{
@@ -503,7 +503,7 @@ void Player::SwitchState()
 
 	if (state == PlayerState::Real)
 	{
-		sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
+		sound_manager.Play(SoundID::STATE_CHANGE);
 		// ŽÀ‘Ì ¨ ‰e
 		effect.Start(center, true);
 		state = PlayerState::Shadow;
@@ -515,7 +515,7 @@ void Player::SwitchState()
 		{
 			state = PlayerState::Real;
 			effect.Start(center, false);
-			sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
+			sound_manager.Play(SoundID::STATE_CHANGE);
 		}
 		else
 		{
