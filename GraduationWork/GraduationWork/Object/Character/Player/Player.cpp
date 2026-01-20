@@ -600,6 +600,7 @@ void Player::LoadPlayerImage()
 	animation_real[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Bunny/Walk.png", 4, 4, 1, 64, 64);
 	animation_real[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 64, 64);
 	animation_real[PlayerAction::Jump] = rm->GetImages("Resource/Images/Character/Player/Bunny/Jump.png", 1, 1, 1, 64, 64);
+	animation_real[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 1, 1, 64, 64);
 	
 	// •\¦—p‰æ‘œ‚Éİ’è
 	image = animation_shadow[PlayerAction::Idle][0];
