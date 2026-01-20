@@ -104,6 +104,10 @@ void Player::Draw(Vector2D offset, double rate)
 		{
 			offset_x = (flip_flg ? 6.0f : -6.f);
 			offset_y = -2.0f;
+			if( action == PlayerAction::Attack)
+			{
+				offset_x += (flip_flg ? -40.0f : 40.f);
+			}
 		}
 
 		// ‰æ‘œ‚ª‚ ‚éê‡‚Í‰æ‘œ‚ğ•`‰æ
@@ -134,11 +138,11 @@ void Player::Draw(Vector2D offset, double rate)
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 
-	for (const auto& hitbox : attack_hitboxes)
+	/*for (const auto& hitbox : attack_hitboxes)
 	{
 		Vector2D draw_pos = hitbox.position - offset;
 		DrawBoxAA(draw_pos.x, draw_pos.y, draw_pos.x + hitbox.size.x, draw_pos.y + hitbox.size.y, GetColor(255, 255, 0), TRUE);
-	}
+	}*/
 
 	// Player‚ÌˆÊ’u
 	//DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.15f)", location.x);
@@ -592,10 +596,11 @@ void Player::LoadPlayerImage()
 	animation_shadow[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Player_attack.png", 3, 3, 1, 128, 64);
 	animation_shadow[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Player_death.png", 9, 9, 1, 128, 64);
 
-	//animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Player_real_idle.png", 2, 2, 1, 32, 32);
 	animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Bunny/Idle.png", 2, 2, 1, 64, 64);
 	animation_real[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Bunny/Walk.png", 4, 4, 1, 64, 64);
-
+	animation_real[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 64, 64);
+	animation_real[PlayerAction::Jump] = rm->GetImages("Resource/Images/Character/Player/Bunny/Jump.png", 1, 1, 1, 64, 64);
+	
 	// •\¦—p‰æ‘œ‚Éİ’è
 	image = animation_shadow[PlayerAction::Idle][0];
 }
