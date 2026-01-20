@@ -54,6 +54,8 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	LoadPlayerImage();
 
 	effect.Initialize();
+
+	sound_manager.LoadSounds();
 }
 
 void Player::Update()
@@ -99,8 +101,13 @@ void Player::Draw(Vector2D offset, double rate)
 			offset_y = 15.0f;
 		}
 		else
-			{
+		{
+			offset_x = (flip_flg ? 6.0f : -6.f);
 			offset_y = -2.0f;
+			if( action == PlayerAction::Attack)
+			{
+				offset_x += (flip_flg ? -40.0f : 40.f);
+			}
 		}
 
 		// 画像がある場合は画像を描画
@@ -131,11 +138,11 @@ void Player::Draw(Vector2D offset, double rate)
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 
-	for (const auto& hitbox : attack_hitboxes)
+	/*for (const auto& hitbox : attack_hitboxes)
 	{
 		Vector2D draw_pos = hitbox.position - offset;
 		DrawBoxAA(draw_pos.x, draw_pos.y, draw_pos.x + hitbox.size.x, draw_pos.y + hitbox.size.y, GetColor(255, 255, 0), TRUE);
-	}
+	}*/
 
 	// Playerの位置
 	//DrawFormatString(10, 190, GetColor(255, 255, 255), "Player: (%.15f)", location.x);
@@ -183,6 +190,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 		{
 			if (object_manager)
 			{
+				if (state == PlayerState::Real)sound_manager.PlaySoundSE(SoundType::DAMAGE, 60, true);
 				hp--;
 				invincible_timer = 60;
 				if (hp <= 0)
@@ -201,6 +209,11 @@ void Player::OnHitCollision(GameObject* hit_object)
 			action = PlayerAction::Death;
 		}
 
+	}
+
+	if (type == HEAL || type == SHADOWHEAL)
+	{
+		sound_manager.PlaySoundSE(SoundType::HEAL, 80, true);
 	}
 }
 
@@ -242,7 +255,6 @@ bool Player::IsOverlapingWall()
 	return false;
 }
 
-
 void Player::HandleInput()
 {
 	InputManager* input = InputManager::GetInstance();
@@ -276,10 +288,8 @@ void Player::HandleInput()
 	// 状態切替
 	if (input->GetButtonDown(XINPUT_BUTTON_RIGHT_SHOULDER) && on_ground)
 	{
-		// Aボタンで状態を切り替え
 		SwitchState();
 	}
-
 
 	// ジャンプ
 	if (input->GetButtonDown(XINPUT_BUTTON_A) && !is_jumping && state == PlayerState::Real)
@@ -288,6 +298,7 @@ void Player::HandleInput()
 		on_ground = false;
 		velocity.y = -jump_strength;
 		action = PlayerAction::Jump;
+		sound_manager.PlaySoundSE(SoundType::JUMP, 60, true);
 	}
 
 
@@ -308,6 +319,14 @@ void Player::HandleInput()
 	{
 		if (!is_attacking && attack_cooldown <= 0)
 		{
+			if(state == PlayerState::Shadow)
+			{
+				sound_manager.PlaySoundSE(SoundType::SHADOW_ATTACK, 90, true);
+			}
+			else
+			{
+
+			}
 			is_attacking = true;
 			attack_cooldown = attack_cooldown_max; // 攻撃クールダウンを設定
 			action = PlayerAction::Attack;
@@ -495,6 +514,7 @@ void Player::SwitchState()
 
 	if (state == PlayerState::Real)
 	{
+		sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
 		// 実体 → 影
 		effect.Start(center, true);
 		state = PlayerState::Shadow;
@@ -506,6 +526,7 @@ void Player::SwitchState()
 		{
 			state = PlayerState::Real;
 			effect.Start(center, false);
+			sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
 		}
 		else
 		{
@@ -577,10 +598,12 @@ void Player::LoadPlayerImage()
 	animation_shadow[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Player_attack.png", 3, 3, 1, 128, 64);
 	animation_shadow[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Player_death.png", 9, 9, 1, 128, 64);
 
-	//animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Player_real_idle.png", 2, 2, 1, 32, 32);
 	animation_real[PlayerAction::Idle] = rm->GetImages("Resource/Images/Character/Player/Bunny/Idle.png", 2, 2, 1, 64, 64);
 	animation_real[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Bunny/Walk.png", 4, 4, 1, 64, 64);
-
+	animation_real[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 64, 64);
+	animation_real[PlayerAction::Jump] = rm->GetImages("Resource/Images/Character/Player/Bunny/Jump.png", 1, 1, 1, 64, 64);
+	animation_real[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 1, 1, 64, 64);
+	
 	// 表示用画像に設定
 	image = animation_shadow[PlayerAction::Idle][0];
 }

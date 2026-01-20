@@ -2,11 +2,12 @@
 #include "../CharacterBase.h"
 #include "../../GameObject.h"
 #include "Effect/Effect.h"
+#include "PlayerSoundManager.h"
 
 #include "Gauge.h"
 #include <map>
 
-
+// 攻撃判定
 struct AttackHitBox 
 {
     Vector2D position = { 0.0f };
@@ -19,11 +20,13 @@ class Player :
 {
 private:
 
+    // 内部状態
     enum class PlayerAction { Idle, Walk, Jump, Attack, Death };
     enum class PlayerState { Real, Shadow };
 
 	PlayerAction action; // プレイヤーの現在の行動
     PlayerState state; // プレイヤーの状態（実態か影か）
+
 
     //ジャンプ
     float jump_velocity;
@@ -35,11 +38,13 @@ private:
     int attack_cooldown;
     const int attack_cooldown_max;
 
+    // ゲージ・耐久
     Gauge shadow_gauge;     // 影化ゲージ
     Gauge hp_gauge;         // 実態のHPゲージ
     int invincible_timer;   // 無敵時間タイマー
 
-	Effect effect; // エフェクト
+    // エフェクト
+	Effect effect; 
     
 
 	//アニメーション
@@ -49,7 +54,8 @@ private:
     std::map<PlayerAction, int> animation_frame_count;
     int animation_frame = 0; //現在のアニメーションフレーム
 
-
+	// サウンドマネージャー
+	SoundManager sound_manager;
 
 public:
     Player();
@@ -68,13 +74,11 @@ public:
 
     //当たった時の挙動
     void OnHitCollision(GameObject* hit_object)override;
-
 	bool IsOverlapingWall(); 
 
 public:
     //入力
     void HandleInput();
-
     void UpdateJump();
     void UpdateAttack();
 	void UpdateAnimation();
@@ -87,6 +91,8 @@ public:
 
     // UIの描画
     void DrawUI();
+    void LoadPlayerImage();
+    void AddHP(int num);
 
     // プレイヤーの状態を取得
     PlayerState GetPlayerState() { return state; }
@@ -94,8 +100,5 @@ public:
 
     bool IsPlayerShadow() const override { return state == PlayerState::Shadow; }
 
-    void LoadPlayerImage();
-
-    void AddHP(int num);
 };
 
