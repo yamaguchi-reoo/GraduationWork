@@ -79,7 +79,7 @@ eSceneType InGameScene::Update()
 		Player* player = static_cast<Player*>(object_manager.FindObjectType(eObjectType::PLAYER));
         if (player && player->IsDead())
         {
-            if (player->GetDeathTimer() >= 30)
+            if (player->GetDeathTimer() >= 25)
             {
 				object_manager.RequestDeleteObject(player);
                 return eSceneType::GAMEOVER;

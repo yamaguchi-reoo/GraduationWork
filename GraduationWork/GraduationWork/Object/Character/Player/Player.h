@@ -100,7 +100,7 @@ public:
 
     // ƒvƒŒƒCƒ„[‚Ìó‘Ô‚ğæ“¾
     PlayerState GetPlayerState() { return state; }
-    void SetPlayerActionDeath() { action = PlayerAction::Death; }
+    void SetPlayerActionDeath();
 
     bool IsPlayerShadow() const override { return state == PlayerState::Shadow; }
 

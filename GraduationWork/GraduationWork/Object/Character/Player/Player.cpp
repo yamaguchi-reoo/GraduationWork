@@ -145,6 +145,7 @@ void Player::Draw(Vector2D offset, double rate)
 #ifdef _DEBUG
 	//DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Player");
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
+	DrawFormatString(0, 50, GetColor(255, 255, 255), "Death: %d", death_flg);
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 
 	/*for (const auto& hitbox : attack_hitboxes)
@@ -194,29 +195,23 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	if (type == ENEMY || type == REALENEMY)
 	{
-		// 敵に当たったらダメージ
 		if (state == PlayerState::Real && invincible_timer <= 0)
 		{
-			if (object_manager)
+			sound_manager.PlaySoundSE(SoundType::DAMAGE, 60, true);
+			hp--;
+			invincible_timer = 60;
+
+			if (hp <= 0)
 			{
-				if (state == PlayerState::Real)sound_manager.PlaySoundSE(SoundType::DAMAGE, 60, true);
-				hp--;
-				invincible_timer = 60;
-				if (hp <= 0)
-				{
-					//hp = 0;
-					action = PlayerAction::Death;
-					animation_frame = 0;
-				}
+				SetPlayerActionDeath();
 			}
 		}
 		else if (state == PlayerState::Shadow)
 		{
-			action = PlayerAction::Death;
-			animation_frame = 0;
+			SetPlayerActionDeath();
 		}
-
 	}
+
 
 	if (type == HEAL || type == SHADOWHEAL)
 	{
@@ -488,9 +483,6 @@ void Player::UpdateAnimation()
 
 		// 最後のフレームを描画した次のフレームで削除
 		if (index == frames.size() - 1 && animation_frame / delay > frames.size()) {
-			/*if (object_manager) {
-				object_manager->RequestDeleteObject(this);
-			}*/
 			death_flg = true;
 		}
 		break;
@@ -609,6 +601,15 @@ void Player::AddHP(int num)
 {
 	hp += num;
 }
+
+void Player::SetPlayerActionDeath()
+{
+	if (action == PlayerAction::Death) return;
+
+	action = PlayerAction::Death;
+	animation_frame = 0;
+}
+
 
 // プレイヤーが内部で持つゲージオブジェクトへの参照を返す
 Gauge& Player::GetGauge()
