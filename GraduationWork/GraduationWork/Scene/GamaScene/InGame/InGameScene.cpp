@@ -124,24 +124,32 @@ void InGameScene::Draw()
     else
     {
         DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
+
+        // --- 追加表示 ---
+        std::string stage_label = "Stage " + std::to_string(stage_id);
+        DrawString(600, 40, stage_label.c_str(), GetColor(255, 255, 255));
     }
 }
 
 
 void InGameScene::Finalize()
 {
-	// 終了時処理
-	__super::Finalize();
-	plates.clear();
-	lights.clear();
-	object_manager.Finalize();
-	if (editor)
-	{
-		editor->Finalize();
-		delete editor;
-		editor = nullptr;
-	}
+    __super::Finalize();
+    plates.clear();
+    lights.clear();
+    object_manager.Finalize(); // ← OK
+
+    if (editor)
+    {
+        editor->Finalize();
+        delete editor;
+        editor = nullptr;
+    }
+
+    DeleteGraph(background_handle);    
+	tile_set.Unload();
 }
+
 
 
 eSceneType InGameScene::GetNowSceneType() const
@@ -163,6 +171,14 @@ void InGameScene::DrawTiles()
 
 			if (tile_set.HasTile(tile_id))
 				tile_set.DrawTile(tile_id, draw_x, draw_y);
+
+			int obj = stage_data.GetObj(x, y);
+			if (obj == static_cast<int>(eObjectType::TEXT))
+			{
+				int draw_x = x * BLOCK_SIZE - static_cast<int>(camera_location.x);
+				int draw_y = y * BLOCK_SIZE - static_cast<int>(camera_location.y);
+				DrawFormatString(draw_x, draw_y - 20, GetColor(255, 255, 255), "PUSH RB");
+			}
 		}
 	}
 
@@ -215,7 +231,7 @@ void InGameScene::DirectionScreen()
 
     // 既存の常時うっすら暗くする処理
     const int fade_speed = 8;
-    const int max_dark = 110;
+    const int max_dark = 150;
 
     if (now_shadow) dark_alpha = Min(dark_alpha + fade_speed, max_dark);
     else            dark_alpha = Max(dark_alpha - fade_speed, 0);
@@ -344,7 +360,7 @@ void InGameScene::SetStage()
                 break;
             }
             case INVISIBLEFLOOR:
-                object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(96.0f, 14.0f));
+                object_manager.CreateObject<Invisiblefloor>(world_pos, Vector2D(48.0f, 14.0f));
                 break;
             case PUSHBLOCK:
                 object_manager.CreateObject<PushBlock>(world_pos, Vector2D(48.0f, 48.0f));
@@ -366,6 +382,9 @@ void InGameScene::SetStage()
 				break;
 			case SHADOWHEAL:
 				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(48.0f, 48.0f));
+                break;
+                case TEXT:
+                object_manager.CreateObject<TextObject>(world_pos, Vector2D(48.0f, 96.0f));
                 break;
 			case GOALPOINT:
 				object_manager.CreateObject<GoalPoint>(world_pos, Vector2D(48.0f, 96.0f));
@@ -418,4 +437,9 @@ void InGameScene::DrawBackground()
 	{
 		DrawGraph(x, 0, background_handle, TRUE);
 	}
+
+	// ---- �w�i������Â����� ----
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);  // ��=100�Ŕ������̍�
+	DrawBox(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, GetColor(0, 0, 0), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0); // �u�����h���
 }

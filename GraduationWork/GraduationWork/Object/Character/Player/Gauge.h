@@ -52,7 +52,10 @@ private:
     static const int OX = FLAME_W / 2; // ピボットX（画像内）
     static const int OY = FLAME_H / 2; // ピボットY（画像内）
 
-
+    bool isSwitching = false;    // 回転切り替え中かどうか
+    float switchAngle = 0.0f;    // 現在の回転角（度）
+    float switchSpeed = 12.0f;   // 回転速度（度/フレーム）
+    bool switchToShadow = false; // 切り替え先（true=shadow）
 public:
     Gauge();
 
@@ -73,6 +76,10 @@ public:
 
     void AddValue(int value);
 
+    void StartSwitch(bool toShadow);
+
+    bool IsSwitching() const;
+
 private:
     // 影ゲージの円形ゲージ描画
     void DrawCircularFill(int center_x, int center_y, float scale) const;
@@ -84,5 +91,6 @@ private:
     void DrawArc(int cx, int cy, int inner_r, int outer_r, float start_deg, float end_deg, int col) const;
 
     void UpdateShadowAnimation(float delta);
+
 };
 

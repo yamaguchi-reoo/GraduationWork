@@ -12,6 +12,7 @@ private:
 
 	int MENU_COUNT;
 	int cursorIndex;
+	int Title_Img;
 
 public:
 

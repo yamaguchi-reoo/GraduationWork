@@ -49,22 +49,50 @@ const std::vector<int>& ResourceManager::GetImages(MaterialParam element)
     return GetImages(element.file_path, element.all_num, element.num_x, element.num_y, element.size_x, element.size_y);
 }
 
-// ‰¹Œ¹æ“¾
-const std::vector<int>& ResourceManager::GetSound(std::string file_name)
+int ResourceManager::GetSE(const std::string& file)
 {
-    if (sounds_container.count(file_name) == 0)
-        CreateSoundResource(file_name);
-    return sounds_container[file_name];
+    if (!se_container.count(file))
+    {
+		CreateSEResource(file);
+    }
+    return se_container[file];
 }
 
-const std::vector<int>& ResourceManager::GetSound(const char* file_name)
+int ResourceManager::GetBGM(const std::string& file)
 {
-    return GetSound(std::string(file_name));
+    if(!bgm_container.count(file))
+    {
+        CreateBGMResource(file);
+	}
+    return bgm_container[file];
 }
 
-const std::vector<int>& ResourceManager::GetSound(SoundParam element)
+void ResourceManager::UnloadImage(const std::string& file)
 {
-    return GetSound(element.file_path);
+    if (images_container.count(file))
+    {
+        for(auto h : images_container[file])DeleteGraph(h);
+		images_container.erase(file);
+    }
+}
+
+void ResourceManager::UnloadSE(const std::string& file)
+{
+    if (se_container.count(file))
+    {
+        DeleteSoundMem(se_container[file]);
+        se_container.erase(file);
+    }
+}
+
+void ResourceManager::UnloadBGM(const std::string& file)
+{
+    if (bgm_container.count(file))
+    {
+        DeleteSoundMem(bgm_container[file]);
+        bgm_container.erase(file);
+    }
+
 }
 
 // ‚·‚×‚Ä‚ÌƒŠƒ\[ƒX‰ğ•ú
@@ -76,14 +104,34 @@ void ResourceManager::UnloadResourcesAll()
         pair.second.clear();
     }
 
-    for (auto& pair : sounds_container)
+    for(auto& pair : se_container)
     {
-        for (auto h : pair.second) DeleteSoundMem(h);
-        pair.second.clear();
+        DeleteSoundMem(pair.second);
+	}
+
+    for (auto& pair : bgm_container)
+    {
+        DeleteSoundMem(pair.second);
     }
 
     images_container.clear();
-    sounds_container.clear();
+    se_container.clear();
+	bgm_container.clear();
+}
+
+void ResourceManager::SetMasterVolume(int vol)
+{
+    SetVolumeSoundMem(vol, DX_PLAYTYPE_BACK);
+}
+
+void ResourceManager::SetSEVolume(int vol)
+{
+    se_volume = vol;
+}
+
+void ResourceManager::SetBGMVolume(int vol)
+{
+    bgm_volume = vol;
 }
 
 void ResourceManager::CreateImagesResource(std::string file_name)
@@ -125,11 +173,20 @@ void ResourceManager::CreateImagesResourceSingle(std::string file_name, int all_
     images_container[file_name] = handles;
 }
 
-// ‰¹Œ¹ì¬
-void ResourceManager::CreateSoundResource(std::string file_name)
+void ResourceManager::CreateSEResource(std::string file)
 {
-    int handle = LoadSoundMem(file_name.c_str());
-    if (handle == -1) throw std::runtime_error(file_name + " ‚ª‚ ‚è‚Ü‚¹‚ñ");
-    sounds_container[file_name].push_back(handle);
+    int h = LoadSoundMem(file.c_str());
+    if (h == -1) throw std::runtime_error(file + " ‚ª‚ ‚è‚Ü‚¹‚ñ");
+    ChangeVolumeSoundMem(se_volume, h);
+    se_container[file] = h;
 }
+
+void ResourceManager::CreateBGMResource(std::string file)
+{
+    int h = LoadSoundMem(file.c_str()); // BGM ‚à SoundMem‚ÅŠÇ—
+    if (h == -1) throw std::runtime_error(file + " ‚ª‚ ‚è‚Ü‚¹‚ñ");
+    ChangeVolumeSoundMem(bgm_volume, h);
+    bgm_container[file] = h;
+}
+
 

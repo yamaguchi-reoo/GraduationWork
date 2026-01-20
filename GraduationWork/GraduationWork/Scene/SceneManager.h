@@ -21,6 +21,10 @@ public:
     void Draw();  //•`‰æˆ—
     static int font;
 
+    static int titleFont;
+    static int menuFont;
+
+
 private:
     //ƒV[ƒ“Ø‘Öˆ—
     void ChangeScene(eSceneType type);

@@ -289,6 +289,13 @@ void StageEditor::DrawGrid()
                 auto info = GetTypeInfo(type);
                 DrawBox(draw_x, draw_y, draw_x + grid_size, draw_y + grid_size, info.color, TRUE);
                 DrawString(draw_x + 2, draw_y + 2, info.name, GetColor(0, 0, 0));
+
+                // === 看板（文字表示）専用処理 ===
+                if (type == eObjectType::TEXT)
+                {
+                    // 文字を少し上に表示
+                    DrawFormatString(draw_x, draw_y - 20, GetColor(255, 255, 255), "PUSH RB");
+                }
             }
         }
         // ホバー表示は残す
