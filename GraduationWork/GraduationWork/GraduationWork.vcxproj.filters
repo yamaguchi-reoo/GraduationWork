@@ -112,6 +112,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Object\Character\Player\PlayerSoundManager.cpp">
+		<Filter>ソース ファイル</Filter>
+	</ClCompile>
+    <ClCompile Include="Scene\GamaScene\InGame\GameOveScener.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -228,6 +231,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Object\Character\Player\PlayerSoundManager.h">
+		<Filter>ヘッダー ファイル</Filter>
+	</ClInclude>
+    <ClInclude Include="Scene\GamaScene\InGame\GameOverScene.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
