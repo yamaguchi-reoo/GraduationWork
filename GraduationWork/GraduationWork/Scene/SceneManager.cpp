@@ -47,7 +47,7 @@ void SceneManager::Initialize()
 	SetDrawScreen(DX_SCREEN_BACK);
 
 	//タイトル画面シーンから開始する
-	ChangeScene(eSceneType::GAMEOVER/*GAME_MAIN*/);
+	ChangeScene(eSceneType::TITLE/*GAME_MAIN*/);
 
 	fps_control.Initialize();;
 }

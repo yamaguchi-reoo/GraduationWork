@@ -65,7 +65,7 @@ void GameOverScene::Draw()
 	// ‘Ò‚¿ŽžŠÔ’†‚Í‘€ì•s‰Â•\Ž¦
 	if (wait_timer > 0)
 	{
-		SetFontSize(48);
+		//SetFontSize(48);
 		DrawString(100, 200, ".....", GetColor(255, 255, 255), SceneManager::font);
 		return;
 	}
