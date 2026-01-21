@@ -37,6 +37,8 @@ void InGameScene::Initialize()
 
 	// ステージエディターの初期化
 	editor = new StageEditor(BLOCK_SIZE, &stage_data);
+
+    SoundManager::GetInstance()->Play(SoundID::GAME_MAIN_BGM);
 }
 
 eSceneType InGameScene::Update()
@@ -159,6 +161,9 @@ void InGameScene::Finalize()
 
     DeleteGraph(background_handle);    
 	tile_set.Unload();
+
+    //音源停止
+    SoundManager::GetInstance() -> StopByCategory(SoundCategory::BGM);
 }
 
 
@@ -410,7 +415,6 @@ void InGameScene::SetStage()
         plates[i]->linked_light = lights[i];
     }
 }
-
 
 void InGameScene::UpdateCamera()
 {

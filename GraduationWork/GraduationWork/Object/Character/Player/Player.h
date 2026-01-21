@@ -55,7 +55,7 @@ private:
     int animation_frame = 0; //現在のアニメーションフレーム
 
 	// サウンドマネージャー
-	SoundManager sound_manager;
+	//SoundManager sound_manager;
 
 	bool death_flg = false; // 死亡フラグ
     int death_timer = 0;

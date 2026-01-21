@@ -10,6 +10,7 @@
 #include "../../../Object/Stage/StageEditor.h"
 #include "../../../Object/Stage/StageData.h"
 
+
 class InGameScene :
     public SceneBase
 {
