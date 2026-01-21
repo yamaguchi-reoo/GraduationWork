@@ -18,7 +18,7 @@ enum class SoundID
 	DAMAGE,
 	WALK,
 	LAND,
-	DEATH,
+	SHADOW_DEATH,
 	HEAL,
 	STATE_CHANGE,
 

@@ -81,6 +81,12 @@ void Player::Update()
 	}
 
 	effect.Update(location + (box_size / 2));
+
+	// 着地した瞬間
+	if (!prev_on_ground && on_ground)
+	{
+		SoundManager::GetInstance()->Play(SoundID::LAND);
+	}
 	__super::Update();
 }
 
@@ -182,6 +188,7 @@ void Player::Draw(Vector2D offset, double rate)
 
 void Player::Finalize()
 {
+	SoundManager::GetInstance()->StopByCategory(SoundCategory::BGM);
 	__super::Finalize();
 }
 
@@ -312,7 +319,7 @@ void Player::HandleInput()
 			}
 			else
 			{
-
+				SoundManager::GetInstance()->Play(SoundID::REAL_ATTACK);
 			}
 			is_attacking = true;
 			attack_cooldown = attack_cooldown_max; // 攻撃クールダウンを設定
@@ -471,6 +478,16 @@ void Player::UpdateAnimation()
 			}
 		}
 		break;
+	case PlayerAction::Walk:
+		index %= frames.size();
+		if (on_ground && fabs(velocity.x) > 0.1f)
+		{
+			if ((index == 1 || index == 3) && index != prev_anim_index && state == PlayerState::Real)
+			{
+				SoundManager::GetInstance()->Play(SoundID::WALK);
+			}
+		}
+		break;
 
 	case PlayerAction::Death:
 		// 最後のフレームで止める
@@ -478,7 +495,6 @@ void Player::UpdateAnimation()
 		{
 			index = frames.size() - 1;
 		}
-
 		// 最後のフレームを描画した次のフレームで削除
 		if (index == frames.size() - 1 && animation_frame / delay > frames.size()) {
 			death_flg = true;
@@ -491,6 +507,8 @@ void Player::UpdateAnimation()
 	}
 
 	image = frames[index];
+
+	prev_anim_index = index;
 }
 
 void Player::SwitchState()
@@ -606,6 +624,14 @@ void Player::SetPlayerActionDeath()
 
 	action = PlayerAction::Death;
 	animation_frame = 0;
+	if (state == PlayerState::Shadow)
+	{
+		SoundManager::GetInstance()->Play(SoundID::SHADOW_DEATH);
+	}
+	else
+	{
+		//SoundManager::GetInstance()->Play(SoundID::REAL_DEATH);
+	}
 }
 
 
