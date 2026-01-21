@@ -2,7 +2,7 @@
 #include "../CharacterBase.h"
 #include "../../GameObject.h"
 #include "Effect/Effect.h"
-#include "PlayerSoundManager.h"
+#include "../../../Utility/SoundManager.h"
 
 #include "Gauge.h"
 #include <map>
@@ -57,6 +57,8 @@ private:
 	// サウンドマネージャー
 	SoundManager sound_manager;
 
+	bool death_flg = false; // 死亡フラグ
+    int death_timer = 0;
 public:
     Player();
     ~Player();
@@ -93,10 +95,12 @@ public:
     void DrawUI();
     void LoadPlayerImage();
     void AddHP(int num);
+	bool IsDead() const { return death_flg; }
+	int GetDeathTimer() const { return death_timer; }
 
     // プレイヤーの状態を取得
     PlayerState GetPlayerState() { return state; }
-    void SetPlayerActionDeath() { action = PlayerAction::Death; }
+    void SetPlayerActionDeath();
 
     bool IsPlayerShadow() const override { return state == PlayerState::Shadow; }
 

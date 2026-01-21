@@ -28,7 +28,8 @@ Player::Player() :
 	attack_cooldown_max(40),
 	shadow_gauge(),
 	hp_gauge(),
-	attack_hitboxes()
+	attack_hitboxes(),
+	death_flg(false)
 {
 }
 
@@ -43,6 +44,9 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	object_type = PLAYER;
 
 	hp = 3;
+
+	death_flg = false;
+	death_timer = 0;
 
 	is_jumping = false;
 
@@ -71,6 +75,11 @@ void Player::Update()
 	// 無敵タイマー減少
 	if (invincible_timer > 0) {
 		invincible_timer--;
+	}
+
+	if(death_flg)
+	{
+		death_timer++;
 	}
 
 	effect.Update(location + (box_size / 2));
@@ -136,6 +145,7 @@ void Player::Draw(Vector2D offset, double rate)
 #ifdef _DEBUG
 	//DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Player");
 	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
+	DrawFormatString(0, 50, GetColor(255, 255, 255), "Death: %d", death_flg);
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 
 	/*for (const auto& hitbox : attack_hitboxes)
@@ -185,35 +195,27 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	if (type == ENEMY || type == REALENEMY)
 	{
-		// 敵に当たったらダメージ
 		if (state == PlayerState::Real && invincible_timer <= 0)
 		{
-			if (object_manager)
+			sound_manager.Play(SoundID::DAMAGE);
+			hp--;
+			invincible_timer = 60;
+
+			if (hp <= 0)
 			{
-				if (state == PlayerState::Real)sound_manager.PlaySoundSE(SoundType::DAMAGE, 60, true);
-				hp--;
-				invincible_timer = 60;
-				if (hp <= 0)
-				{
-					/*hp = 0;
-					action = PlayerAction::Death;
-					animation_frame = 0;*/
-					if (object_manager) {
-						object_manager->RequestDeleteObject(this);
-					}
-				}
+				SetPlayerActionDeath();
 			}
 		}
 		else if (state == PlayerState::Shadow)
 		{
-			action = PlayerAction::Death;
+			SetPlayerActionDeath();
 		}
-
 	}
+
 
 	if (type == HEAL || type == SHADOWHEAL)
 	{
-		sound_manager.PlaySoundSE(SoundType::HEAL, 80, true);
+		sound_manager.Play(SoundID::HEAL);
 	}
 }
 
@@ -298,22 +300,9 @@ void Player::HandleInput()
 		on_ground = false;
 		velocity.y = -jump_strength;
 		action = PlayerAction::Jump;
-		sound_manager.PlaySoundSE(SoundType::JUMP, 60, true);
+		sound_manager.Play(SoundID::JUMP);
 	}
 
-
-	if(input->GetKeyDown(KEY_INPUT_Z) && state == PlayerState::Real)
-	{
-		hp--;
-		if (hp <= 0)
-		{
-			hp = 0;
-			if (object_manager)
-			{
-				object_manager->RequestDeleteObject(this); // HPが0になったら削除要求
-			}
-		}
-	}
 
 	if (input->GetButtonDown(XINPUT_BUTTON_B))
 	{
@@ -321,7 +310,7 @@ void Player::HandleInput()
 		{
 			if(state == PlayerState::Shadow)
 			{
-				sound_manager.PlaySoundSE(SoundType::SHADOW_ATTACK, 90, true);
+				sound_manager.Play(SoundID::SHADOW_ATTACK);
 			}
 			else
 			{
@@ -494,9 +483,7 @@ void Player::UpdateAnimation()
 
 		// 最後のフレームを描画した次のフレームで削除
 		if (index == frames.size() - 1 && animation_frame / delay > frames.size()) {
-			if (object_manager) {
-				object_manager->RequestDeleteObject(this);
-			}
+			death_flg = true;
 		}
 		break;
 
@@ -510,11 +497,13 @@ void Player::UpdateAnimation()
 
 void Player::SwitchState()
 {
+
+	if (action == PlayerAction::Death) return;
 	Vector2D center = location + (box_size / 2);
 
 	if (state == PlayerState::Real)
 	{
-		sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
+		sound_manager.Play(SoundID::STATE_CHANGE);
 		// 実体 → 影
 		effect.Start(center, true);
 		state = PlayerState::Shadow;
@@ -526,7 +515,7 @@ void Player::SwitchState()
 		{
 			state = PlayerState::Real;
 			effect.Start(center, false);
-			sound_manager.PlaySoundSE(SoundType::STATE_CHANGE, 90, true);
+			sound_manager.Play(SoundID::STATE_CHANGE);
 		}
 		else
 		{
@@ -602,7 +591,7 @@ void Player::LoadPlayerImage()
 	animation_real[PlayerAction::Walk] = rm->GetImages("Resource/Images/Character/Player/Bunny/Walk.png", 4, 4, 1, 64, 64);
 	animation_real[PlayerAction::Attack] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 1, 1, 64, 64);
 	animation_real[PlayerAction::Jump] = rm->GetImages("Resource/Images/Character/Player/Bunny/Jump.png", 1, 1, 1, 64, 64);
-	animation_real[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Bunny/Attack.png", 1, 1, 1, 64, 64);
+	animation_real[PlayerAction::Death] = rm->GetImages("Resource/Images/Character/Player/Bunny/Death.png", 1, 1, 1, 64, 64);
 	
 	// 表示用画像に設定
 	image = animation_shadow[PlayerAction::Idle][0];
@@ -612,6 +601,15 @@ void Player::AddHP(int num)
 {
 	hp += num;
 }
+
+void Player::SetPlayerActionDeath()
+{
+	if (action == PlayerAction::Death) return;
+
+	action = PlayerAction::Death;
+	animation_frame = 0;
+}
+
 
 // プレイヤーが内部で持つゲージオブジェクトへの参照を返す
 Gauge& Player::GetGauge()
