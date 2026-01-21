@@ -2,13 +2,18 @@
 #include "SceneBase.h"
 #include "../Utility/FpsControl.h"
 #include "../Utility/InputManager.h"
+#include "../Utility/SoundManager.h"
+#include "../Utility/ResourceManager.h"
 
 class SceneManager
 {
 private:
-    SceneBase* current_scene;   //現在シーン情報のポインタ
+    //現在シーン情報のポインタ
+    SceneBase* current_scene;   
 
-	FpsControl fps_control;     //フレームレート制御クラス
+    //フレームレート制御クラス
+	FpsControl fps_control;     
+
 
 public:
     SceneManager();
@@ -27,10 +32,10 @@ public:
 
 private:
     //シーン切替処理
-    void ChangeScene(eSceneType type);
+    void ChangeScene(eSceneType category);
 
     //シーン生成処理
-    SceneBase* CreateScene(eSceneType type);
+    SceneBase* CreateScene(eSceneType category);
 
 };
 

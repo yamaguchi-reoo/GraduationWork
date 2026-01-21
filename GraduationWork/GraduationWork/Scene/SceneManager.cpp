@@ -65,10 +65,11 @@ void SceneManager::Initialize()
 	//タイトル画面シーンから開始する
 	ChangeScene(eSceneType::TITLE/*GAME_MAIN*/);
 
-	fps_control.Initialize();;
+	fps_control.Initialize();
 
-
-
+	InputManager::GetInstance();
+	ResourceManager::GetInstance();
+	SoundManager::GetInstance()->LoadSounds();
 }
 
 void SceneManager::Update()
@@ -106,8 +107,9 @@ void SceneManager::Finalize()
 {
 	//入力機能のインスタンスを削除
 	InputManager::DeleteInstance();
-	//終了処理
 	ResourceManager::DeleteInstance();
+	SoundManager::DeleteInstance();
+
 	//DXライブラリの終了処理
 	DxLib_End();
 }
@@ -126,9 +128,9 @@ void SceneManager::Draw()
 	ScreenFlip();
 }
 
-void SceneManager::ChangeScene(eSceneType type)
+void SceneManager::ChangeScene(eSceneType category)
 {
-	SceneBase* new_scene = CreateScene(type);
+	SceneBase* new_scene = CreateScene(category);
 
 	//エラーチェック
 	if (new_scene == nullptr)
@@ -155,9 +157,9 @@ void SceneManager::ChangeScene(eSceneType type)
 	current_scene = new_scene;
 }
 
-SceneBase* SceneManager::CreateScene(eSceneType type)
+SceneBase* SceneManager::CreateScene(eSceneType category)
 {
-	switch (type)
+	switch (category)
 	{
 	case eSceneType::TITLE:
 		return dynamic_cast<SceneBase*>(new TitleScene()); // タイトルシーンの生成

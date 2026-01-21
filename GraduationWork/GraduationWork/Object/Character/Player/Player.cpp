@@ -58,8 +58,6 @@ void Player::Initialize(Vector2D _location, Vector2D _box_size)
 	LoadPlayerImage();
 
 	effect.Initialize();
-
-	sound_manager.LoadSounds();
 }
 
 void Player::Update()
@@ -83,6 +81,12 @@ void Player::Update()
 	}
 
 	effect.Update(location + (box_size / 2));
+
+	// 着地した瞬間
+	if (!prev_on_ground && on_ground)
+	{
+		SoundManager::GetInstance()->Play(SoundID::LAND);
+	}
 	__super::Update();
 }
 
@@ -184,6 +188,7 @@ void Player::Draw(Vector2D offset, double rate)
 
 void Player::Finalize()
 {
+	SoundManager::GetInstance()->StopByCategory(SoundCategory::BGM);
 	__super::Finalize();
 }
 
@@ -197,7 +202,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 	{
 		if (state == PlayerState::Real && invincible_timer <= 0)
 		{
-			sound_manager.Play(SoundID::DAMAGE);
+			SoundManager::GetInstance()->Play(SoundID::DAMAGE);
 			hp--;
 			invincible_timer = 60;
 
@@ -215,7 +220,7 @@ void Player::OnHitCollision(GameObject* hit_object)
 
 	if (type == HEAL || type == SHADOWHEAL)
 	{
-		sound_manager.Play(SoundID::HEAL);
+		SoundManager::GetInstance()->Play(SoundID::HEAL);
 	}
 }
 
@@ -300,7 +305,7 @@ void Player::HandleInput()
 		on_ground = false;
 		velocity.y = -jump_strength;
 		action = PlayerAction::Jump;
-		sound_manager.Play(SoundID::JUMP);
+		SoundManager::GetInstance()->Play(SoundID::JUMP);
 	}
 
 
@@ -310,11 +315,11 @@ void Player::HandleInput()
 		{
 			if(state == PlayerState::Shadow)
 			{
-				sound_manager.Play(SoundID::SHADOW_ATTACK);
+				SoundManager::GetInstance()->Play(SoundID::SHADOW_ATTACK);
 			}
 			else
 			{
-
+				SoundManager::GetInstance()->Play(SoundID::REAL_ATTACK);
 			}
 			is_attacking = true;
 			attack_cooldown = attack_cooldown_max; // 攻撃クールダウンを設定
@@ -473,6 +478,16 @@ void Player::UpdateAnimation()
 			}
 		}
 		break;
+	case PlayerAction::Walk:
+		index %= frames.size();
+		if (on_ground && fabs(velocity.x) > 0.1f)
+		{
+			if ((index == 1 || index == 3) && index != prev_anim_index && state == PlayerState::Real)
+			{
+				SoundManager::GetInstance()->Play(SoundID::WALK);
+			}
+		}
+		break;
 
 	case PlayerAction::Death:
 		// 最後のフレームで止める
@@ -480,7 +495,6 @@ void Player::UpdateAnimation()
 		{
 			index = frames.size() - 1;
 		}
-
 		// 最後のフレームを描画した次のフレームで削除
 		if (index == frames.size() - 1 && animation_frame / delay > frames.size()) {
 			death_flg = true;
@@ -493,6 +507,8 @@ void Player::UpdateAnimation()
 	}
 
 	image = frames[index];
+
+	prev_anim_index = index;
 }
 
 void Player::SwitchState()
@@ -503,7 +519,7 @@ void Player::SwitchState()
 
 	if (state == PlayerState::Real)
 	{
-		sound_manager.Play(SoundID::STATE_CHANGE);
+		SoundManager::GetInstance()->Play(SoundID::STATE_CHANGE);
 		// 実体 → 影
 		effect.Start(center, true);
 		state = PlayerState::Shadow;
@@ -515,7 +531,7 @@ void Player::SwitchState()
 		{
 			state = PlayerState::Real;
 			effect.Start(center, false);
-			sound_manager.Play(SoundID::STATE_CHANGE);
+			SoundManager::GetInstance()->Play(SoundID::STATE_CHANGE);
 		}
 		else
 		{
@@ -608,6 +624,14 @@ void Player::SetPlayerActionDeath()
 
 	action = PlayerAction::Death;
 	animation_frame = 0;
+	if (state == PlayerState::Shadow)
+	{
+		SoundManager::GetInstance()->Play(SoundID::SHADOW_DEATH);
+	}
+	else
+	{
+		//SoundManager::GetInstance()->Play(SoundID::REAL_DEATH);
+	}
 }
 
 

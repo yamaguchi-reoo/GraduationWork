@@ -3,7 +3,7 @@
 #include <string> 
 #include <vector>
 
-enum class SoundType
+enum class SoundCategory
 {
 	SE,
 	BGM,
@@ -18,14 +18,21 @@ enum class SoundID
 	DAMAGE,
 	WALK,
 	LAND,
-	DEATH,
+	SHADOW_DEATH,
 	HEAL,
 	STATE_CHANGE,
+
+	// --- Enemy ---
+
+	// --- GameMain ---
+	GAME_MAIN_BGM,
+
+
 };
 struct SoundData
 {
 	int handle;
-	SoundType type;
+	SoundCategory category;
 	int default_volume;
 	bool loop;
 };
@@ -36,12 +43,20 @@ private:
 	// 音声データを管理するマップ
 	std::map<SoundID, SoundData> sounds;
 
+	static SoundManager* instance;
+
+	SoundManager() = default;
+	~SoundManager() = default;
+
 public:
+	static SoundManager* GetInstance();
+	static void DeleteInstance();
+
 	void LoadSounds();
 
 	void Play(SoundID id);
 	void Stop(SoundID id);
 
-	void SetVolume(SoundID id, int volume);
+	void StopByCategory(SoundCategory category);
 };
 

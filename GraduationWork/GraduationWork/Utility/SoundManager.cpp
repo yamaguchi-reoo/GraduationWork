@@ -2,53 +2,112 @@
 #include "ResourceManager.h"
 #include <DxLib.h>
 
+SoundManager* SoundManager::instance = nullptr;
+SoundManager* SoundManager::GetInstance()
+{
+	if (instance == nullptr)
+	{
+		instance = new SoundManager();
+		instance->LoadSounds();
+	}
+	return instance;
+}
+
+void SoundManager::DeleteInstance()
+{
+	if (instance != nullptr)
+	{
+		delete instance;
+		instance = nullptr;
+	}
+}
+
 void SoundManager::LoadSounds()
 {
 	auto* rm = ResourceManager::GetInstance();
-	// プレイヤー関連の音声読み込み
+
+	// --- プレイヤー関連の音声読み込み --- 
+
+	//影状態での攻撃音
 	sounds[SoundID::SHADOW_ATTACK] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_1620462__刀を振る音_弱.wav"),
-		SoundType::SE,
+		SoundCategory::SE,
+		70,
+		false
+	};
+	//実状態での攻撃音
+	sounds[SoundID::REAL_ATTACK] = {
+		rm->GetSE("Resource/Sounds/SE/Player/AS_372332__風切り音.wav"),
+		SoundCategory::SE,
 		90,
 		false
 	};
 
-	//sound_map[SoundType::REAL_ATTACK] = { rm->GetSE("Resource/Sounds/SE/Player/AS_1620462__刀を振る音_弱.wav") };
+	//ジャンプ音
 	sounds[SoundID::JUMP] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_952655_ジャンプ音A０７.wav"),
-		SoundType::SE,
-		60,
+		SoundCategory::SE,
+		40,
 		false
 	};
-
+	//ダメージ音
 	sounds[SoundID::DAMAGE] = { 
-		rm->GetSE("Resource/Sounds/SE/Player/AS_1155632_ダメージ音.wav"),
-		SoundType::SE,
+		rm->GetSE("Resource/Sounds/SE/Player/AS_109147_ぽよん_選択_ジャンプ_踏む_アクション.wav"),
+		SoundCategory::SE,
 		60,
 		false
 	};
-	//sound_map[SoundType::WALK] = { rm->GetSE("") };
-
+	//歩行音
+	sounds[SoundID::WALK] = { 
+		rm->GetSE("Resource/Sounds/SE/Player/AS_115562_かわいい足音_動作.wav"),
+		SoundCategory::SE,
+		20,
+		false
+	};
+	 
+	//着地音
 	sounds[SoundID::LAND] = { 
-		rm->GetSE("Resource/Sounds/SE/Player/AS_22106_選択（8bit風）.wav"),
-		SoundType::SE,
-		60,
+		rm->GetSE("Resource/Sounds/SE/Player/AS_172804_ピョイ（ジャンプ・アクション・攻撃回避）.wav"),
+		SoundCategory::SE,
+		30,
 		false
 	};
-	//sound_map[SoundType::DEATH] = { rm->GetSE("") };
+
+	//影状態での死亡音
+	sounds[SoundID::SHADOW_DEATH] = { 
+		rm->GetSE("Resource/Sounds/SE/Player/AS_1090444_倒した敵・魔物が消える音.wav"),
+		SoundCategory::SE,
+		35,
+		false
+	};
+
+	//回復音
 	sounds[SoundID::HEAL] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_968862_嬉しい感情のような上昇音２／ハート／回復.wav"),
-		SoundType::SE,
+		SoundCategory::SE,
 		80,
 		false
 	};
-
+	//状態変化音
 	sounds[SoundID::STATE_CHANGE] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_1383683.wav"),
-		SoundType::SE,
-		90,
+		SoundCategory::SE,
+		70,
 		false
 	};
+
+	// --- エネミー関連の音声読み込み ---
+
+
+	// --- ゲームメイン関連の音声読み込み ---
+	// ゲームメインBGM
+	sounds[SoundID::GAME_MAIN_BGM] = {
+		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_69632_悲しげのある洞窟イメージのチップチューン.wav"),
+		SoundCategory::BGM,
+		70,
+		true
+	};
+
 }
 
 void SoundManager::Play(SoundID id)
@@ -58,8 +117,11 @@ void SoundManager::Play(SoundID id)
 
 	auto& s = it->second;
 
+	// すでに再生中なら何もしない（ループ音用）
+	if (s.loop && CheckSoundMem(s.handle) == 1)
+		return;
+
 	ChangeVolumeSoundMem(s.default_volume, s.handle);
-	StopSoundMem(s.handle);
 
 	PlaySoundMem(
 		s.handle,
@@ -67,10 +129,22 @@ void SoundManager::Play(SoundID id)
 	);
 }
 
+
 void SoundManager::Stop(SoundID id)
 {
 	auto it = sounds.find(id);
 	if (it == sounds.end()) return;
 
 	StopSoundMem(it->second.handle);
+}
+
+void SoundManager::StopByCategory(SoundCategory category)
+{
+	for (auto& pair : sounds)
+	{
+		if (pair.second.category == category)
+		{
+			StopSoundMem(pair.second.handle);
+		}
+	}
 }

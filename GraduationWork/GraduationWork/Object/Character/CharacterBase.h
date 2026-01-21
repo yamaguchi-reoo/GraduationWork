@@ -11,6 +11,7 @@ protected:
 	int hp = 0;                // ヒットポイント（任意の値で調整可能）
 
 	bool on_ground = false;           //地面にいるかどうか
+	bool prev_on_ground = false;
 	bool is_jumping = false;
 
 
