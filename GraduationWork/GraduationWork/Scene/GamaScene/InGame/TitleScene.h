@@ -14,6 +14,19 @@ private:
 	int cursorIndex;
 	int Title_Img;
 
+	float blinkAlpha;   
+	bool blinkUp;       
+
+	bool isFading;
+	float fadeAlpha;
+	eSceneType nextScene;
+
+	int fadeDelayTimer;   // 待機用タイマー（フレーム）
+	const int FADE_DELAY = 60; // 60FPS想定で1秒
+
+
+
+
 public:
 
 	TitleScene();

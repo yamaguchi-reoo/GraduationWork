@@ -9,6 +9,16 @@ TitleScene::TitleScene()
     MENU_COUNT = 3;
     cursorIndex = 0;
     Title_Img = LoadGraph("Resource/Images/Title/Title.png");
+
+    blinkAlpha = 255.0f;
+    blinkUp = false;
+
+    isFading = false;
+    fadeAlpha = 0.0f;
+    nextScene = eSceneType::TITLE;
+
+    fadeDelayTimer = 0;
+
 }
 
 TitleScene::~TitleScene()
@@ -22,9 +32,48 @@ eSceneType TitleScene::GetNowSceneType() const
 
 eSceneType TitleScene::Update()
 {
+    // 点滅処理（既存）
+    const float blinkSpeed = 2.0f;
+    if (blinkUp)
+    {
+        blinkAlpha += blinkSpeed;
+        if (blinkAlpha >= 255.0f) {
+            blinkAlpha = 255.0f;
+            blinkUp = false;
+        }
+    }
+    else
+    {
+        blinkAlpha -= blinkSpeed;
+        if (blinkAlpha <= 100.0f) {
+            blinkAlpha = 100.0f;
+            blinkUp = true;
+        }
+    }
+
+    // 待機タイマー処理
+    if (fadeDelayTimer > 0)
+    {
+        fadeDelayTimer--;
+        return eSceneType::TITLE;
+    }
+
+    // フェード処理
+    if (nextScene != eSceneType::TITLE)
+    {
+        isFading = true;
+        fadeAlpha += 1.5f; // フェード速度（調整可）
+        if (fadeAlpha >= 255.0f)
+        {
+            fadeAlpha = 255.0f;
+            return nextScene; // 完全に暗くなったら遷移
+        }
+    }
 
     return Title_Select();
 }
+
+
 
 void TitleScene::Draw()
 {
@@ -94,6 +143,7 @@ void TitleScene::Draw()
 
         if (i == cursorIndex)
         {
+            SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)blinkAlpha);
             DrawFormatStringToHandle(
                 x - 40, menuY,
                 GetColor(255, 255, 0),
@@ -101,6 +151,7 @@ void TitleScene::Draw()
                 "> %s",
                 menu[i]
             );
+            SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
         }
         else
         {
@@ -113,22 +164,33 @@ void TitleScene::Draw()
             );
         }
     }
+
+    if (isFading)
+    {
+        SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)fadeAlpha);
+        DrawBox(0, 0, 1280, 720, GetColor(0, 0, 0), TRUE);
+        SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+    }
+
 }
 
 
 
 eSceneType TitleScene::Title_Select()
 {
-
     InputManager* input = InputManager::GetInstance();
-    // ↓キーで1つ下へ
+
+    // フェード中 or 待機中は入力を無視
+    if (isFading || fadeDelayTimer > 0) {
+        return eSceneType::TITLE;
+    }
+
     if (input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
     {
         cursorIndex++;
-        if (cursorIndex >= MENU_COUNT) cursorIndex = 0; // ループさせる
+        if (cursorIndex >= MENU_COUNT) cursorIndex = 0;
     }
 
-    // ↑キーで1つ上へ
     if (input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
     {
         cursorIndex--;
@@ -137,10 +199,21 @@ eSceneType TitleScene::Title_Select()
 
     if (input->GetButtonDown(XINPUT_BUTTON_A)) {
         switch (cursorIndex) {
-        case 0: return eSceneType::GAME_MAIN;
-        case 1: /* HELP 未実装 */ break;
-        case 2: return eSceneType::EXIT;   
+        case 0:
+            nextScene = eSceneType::GAME_MAIN;
+            fadeDelayTimer = FADE_DELAY; // 1秒待つ
+            break;
+        case 1:
+            // HELP 未実装
+            break;
+        case 2:
+            nextScene = eSceneType::EXIT;
+            fadeDelayTimer = FADE_DELAY;
+            break;
         }
     }
-    return eSceneType::TITLE; // 変更なし
+
+    return eSceneType::TITLE;
 }
+
+
