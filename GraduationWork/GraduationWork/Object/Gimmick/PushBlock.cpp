@@ -43,8 +43,6 @@ void PushBlock::Update()
 
 void PushBlock::Draw(Vector2D offset, double rate)
 {
-
-
 	Vector2D screen_pos = location - offset;
 	__super::Draw(screen_pos, rate);
 

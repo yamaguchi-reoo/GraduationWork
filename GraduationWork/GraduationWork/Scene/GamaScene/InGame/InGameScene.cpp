@@ -394,10 +394,10 @@ void InGameScene::SetStage()
                 break;
             }
 			case HEAL:
-				object_manager.CreateObject<Heal>(world_pos, Vector2D(48.0f, 48.0f));
+				object_manager.CreateObject<Heal>(world_pos, Vector2D(32.0f, 48.0f));
 				break;
 			case SHADOWHEAL:
-				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(48.0f, 48.0f));
+				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(32.0f, 48.0f));
                 break;
                 case TEXT:
                 object_manager.CreateObject<TextObject>(world_pos, Vector2D(48.0f, 96.0f));
