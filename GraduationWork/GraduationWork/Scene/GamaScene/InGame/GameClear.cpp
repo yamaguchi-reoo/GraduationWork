@@ -249,7 +249,7 @@ eSceneType GameClear::GameClear_Select()
     if (input->GetButtonDown(XINPUT_BUTTON_A))
     {
         SoundManager::GetInstance()->Stop(SoundID::GAME_CLEAR_BGM);
-        SoundManager::GetInstance()->Play(SoundID::PUSH);
+        SoundManager::GetInstance()->Play(SoundID::GAME_CLEAR_SE);
         switch ((GameClear_MENU)cursorIndex)
         {
         case GameClear_MENU::START:

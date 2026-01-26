@@ -32,6 +32,7 @@ enum class SoundID
 	GAME_MAIN_BGM,
 	GAME_OVER_BGM,
 	GAME_CLEAR_BGM,
+	GAME_CLEAR_SE,
 
 	// --- Title ---
 	TITLE_BGM,

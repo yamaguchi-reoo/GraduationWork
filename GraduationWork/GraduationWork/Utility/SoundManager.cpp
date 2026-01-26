@@ -141,6 +141,15 @@ void SoundManager::LoadSounds()
 		true
 	};
 
+
+	//ゲームクリア決定SE
+	sounds[SoundID::GAME_CLEAR_SE] = {
+	rm->GetSE("Resource/Sounds/BGM/GameMain/AS_778955_時計、クロック、カチ、アンティーク、残響.wav"),
+		SoundCategory::BGM,
+		100,
+		false
+	};
+
 	// タイトルBGM
 	sounds[SoundID::TITLE_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/Title/Title.wav"),
@@ -164,7 +173,6 @@ void SoundManager::LoadSounds()
 		100,
 		false
 	};
-
 }
 
 void SoundManager::Play(SoundID id)
