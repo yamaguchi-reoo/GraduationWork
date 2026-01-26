@@ -1,5 +1,6 @@
 #include "GameClear.h"
 #include "../../../Utility/InputManager.h"
+#include "../../../Utility/SoundManager.h"
 #include "../../SceneManager.h"
 #include <cmath>
 
@@ -44,6 +45,7 @@ GameClear::GameClear()
         particles[i].y = rand() % 720;
         particles[i].vy = 2 + rand() % 4;
     }
+    SoundManager::GetInstance()->Play(SoundID::GAME_CLEAR_BGM);
 }
 
 GameClear::~GameClear()
@@ -244,6 +246,7 @@ eSceneType GameClear::GameClear_Select()
 
     if (input->GetButtonDown(XINPUT_BUTTON_A))
     {
+        SoundManager::GetInstance()->Stop(SoundID::GAME_CLEAR_BGM);
         switch ((GameClear_MENU)cursorIndex)
         {
         case GameClear_MENU::START:
@@ -253,6 +256,8 @@ eSceneType GameClear::GameClear_Select()
         case GameClear_MENU::END:
             return eSceneType::EXIT;
         }
+
+        
     }
 
     return eSceneType::GAMECLEAR;
