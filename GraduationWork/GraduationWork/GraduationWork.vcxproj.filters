@@ -1,241 +1,83 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="ソース ファイル">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="ヘッダー ファイル">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="リソース ファイル">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="Scene\GamaScene\InGame\GameOveScener.cpp" />
+    <ClCompile Include="Object\Character\Player\Effect\Effect.cpp" />
+    <ClCompile Include="Object\Gimmick\GoalPoint.cpp" />
+    <ClCompile Include="Object\Item\Heal.cpp" />
+    <ClCompile Include="Object\Character\Enemy\Enemy.cpp" />
+    <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp" />
+    <ClCompile Include="Object\Gimmick\Invisiblefloor.cpp" />
+    <ClCompile Include="Object\Gimmick\Light.cpp" />
+    <ClCompile Include="Object\Character\Player\Gauge.cpp" />
+    <ClCompile Include="Object\Stage\Block\Block.cpp" />
+    <ClCompile Include="Object\Character\CharacterBase.cpp" />
+    <ClCompile Include="Object\ObjectManager.cpp" />
+    <ClCompile Include="Object\Character\Player\Player.cpp" />
+    <ClCompile Include="Object\Gimmick\PushBlock.cpp" />
+    <ClCompile Include="Object\Character\Enemy\RealEnemy.cpp" />
+    <ClCompile Include="Object\Gimmick\Plate.cpp" />
+    <ClCompile Include="Scene\GamaScene\InGame\InGameScene.cpp" />
+    <ClCompile Include="Object\GameObject.cpp" />
+    <ClCompile Include="Scene\GamaScene\InGame\TitleScene.cpp" />
+    <ClCompile Include="Scene\SceneManager.cpp" />
+    <ClCompile Include="Scene\SceneBase.cpp" />
+    <ClCompile Include="Object\Stage\StageEditor.cpp" />
+    <ClCompile Include="Object\Stage\StageData.cpp" />
+    <ClCompile Include="Object\Item\ShadowHeal.cpp" />
+    <ClCompile Include="Object\UniFormGrid.cpp" />
+    <ClCompile Include="Utility\SoundManager.cpp" />
+    <ClCompile Include="Utility\ResourceManager.cpp" />
+    <ClCompile Include="Utility\TileSet.cpp" />
+    <ClCompile Include="Utility\InputManager.cpp" />
+    <ClCompile Include="Utility\FpsControl.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Utility\tinyxml2.cpp" />
+    <ClCompile Include="Utility\Vector2D.cpp" />
+    <ClCompile Include="Object\Gimmick\Wall.cpp" />
+    <ClCompile Include="Scene\GamaScene\InGame\GameClear.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\FpsControl.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\Vector2D.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\InputManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\SceneManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\GameObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\GamaScene\InGame\InGameScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\ObjectManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Character\Player\Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Character\CharacterBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\TileSet.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Character\Player\Gauge.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Stage\Block\Block.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Stage\StageEditor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Gimmick\Wall.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Gimmick\Light.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Gimmick\Invisiblefloor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Gimmick\PushBlock.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Scene\GamaScene\InGame\TitleScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Stage\StageData.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Character\Enemy\Enemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Character\Enemy\EnemyBase.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Character\Enemy\RealEnemy.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Gimmick\Plate.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\ResourceManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Item\Heal.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Item\ShadowHeal.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Utility\tinyxml2.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\UniFormGrid.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Character\Player\Effect\Effect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Gimmick\GoalPoint.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Object\Character\Player\PlayerSoundManager.cpp">
-		<Filter>ソース ファイル</Filter>
-	</ClCompile>
-    <ClCompile Include="Scene\GamaScene\InGame\GameOveScener.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="common.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\FpsControl.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\Vector2D.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\UserTemplate.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\InputManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\SceneManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\GameObject.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\ObjectType.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\ObjectInfo.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\UtilityList.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\ObjectManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Character\Player\Player.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Character\CharacterBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\ObjectList.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\TileSet.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Character\Player\Gauge.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Stage\Block\Block.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Stage\StageEditor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Gimmick\Wall.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Gimmick\Light.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Gimmick\Invisiblefloor.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Gimmick\PushBlock.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Scene\GamaScene\InGame\TitleScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Stage\StageData.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Character\Enemy\Enemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Character\Enemy\EnemyBase.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Character\Enemy\RealEnemy.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Gimmick\Plate.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\ResourceManager.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Item\Heal.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Item\ShadowHeal.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\tinyxml2.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\UniFormGrid.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Character\Player\Effect\Effect.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\Gimmick\GoalPoint.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Object\TextObject.h">
-    <ClInclude Include="Object\Character\Player\PlayerSoundManager.h">
-		<Filter>ヘッダー ファイル</Filter>
-	</ClInclude>
-    <ClInclude Include="Scene\GamaScene\InGame\GameOverScene.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
+    <ClInclude Include="Scene\GamaScene\InGame\GameOverScene.h" />
+    <ClInclude Include="Object\Character\Player\Effect\Effect.h" />
+    <ClInclude Include="Object\Gimmick\GoalPoint.h" />
+    <ClInclude Include="Object\Item\Heal.h" />
+    <ClInclude Include="Object\Character\Enemy\Enemy.h" />
+    <ClInclude Include="Object\Character\Enemy\EnemyBase.h" />
+    <ClInclude Include="Object\Gimmick\Invisiblefloor.h" />
+    <ClInclude Include="Object\Gimmick\Light.h" />
+    <ClInclude Include="Object\Character\Player\Gauge.h" />
+    <ClInclude Include="Object\ObjectList.h" />
+    <ClInclude Include="Object\Stage\Block\Block.h" />
+    <ClInclude Include="Object\Character\CharacterBase.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="Object\ObjectManager.h" />
+    <ClInclude Include="Object\ObjectInfo.h" />
+    <ClInclude Include="Object\Character\Player\Player.h" />
+    <ClInclude Include="Object\Gimmick\PushBlock.h" />
+    <ClInclude Include="Object\Character\Enemy\RealEnemy.h" />
+    <ClInclude Include="Object\Gimmick\Plate.h" />
+    <ClInclude Include="Object\Item\ShadowHeal.h" />
+    <ClInclude Include="Object\TextObject.h" />
+    <ClInclude Include="Object\UniFormGrid.h" />
+    <ClInclude Include="Utility\SoundManager.h" />
+    <ClInclude Include="Utility\ResourceManager.h" />
+    <ClInclude Include="Scene\GamaScene\InGame\InGameScene.h" />
+    <ClInclude Include="Object\GameObject.h" />
+    <ClInclude Include="Object\ObjectType.h" />
+    <ClInclude Include="Scene\SceneManager.h" />
+    <ClInclude Include="Scene\SceneBase.h" />
+    <ClInclude Include="Object\Stage\StageEditor.h" />
+    <ClInclude Include="Scene\GamaScene\InGame\TitleScene.h" />
+    <ClInclude Include="Object\Stage\StageData.h" />
+    <ClInclude Include="Utility\TileSet.h" />
+    <ClInclude Include="Utility\InputManager.h" />
+    <ClInclude Include="Utility\FpsControl.h" />
+    <ClInclude Include="Utility\tinyxml2.h" />
+    <ClInclude Include="Utility\UserTemplate.h" />
+    <ClInclude Include="Utility\UtilityList.h" />
+    <ClInclude Include="Utility\Vector2D.h" />
+    <ClInclude Include="Object\Gimmick\Wall.h" />
+    <ClInclude Include="Scene\GamaScene\InGame\GameClear.h" />
   </ItemGroup>
 </Project>

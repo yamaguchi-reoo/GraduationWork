@@ -133,6 +133,14 @@ void SoundManager::LoadSounds()
 		false
 	};
 
+	// ゲームクリアBGM
+	sounds[SoundID::GAME_CLEAR_BGM] = {
+		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_1487479_かわいいちょっとミステリアポップなbgm.wav"),
+		SoundCategory::BGM,
+		140,
+		true
+	};
+
 	// タイトルBGM
 	sounds[SoundID::TITLE_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/Title/Title.wav"),
