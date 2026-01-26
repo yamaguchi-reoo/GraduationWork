@@ -10,7 +10,7 @@
 
 
 InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(0, 0),
-tile_set("Resource/Images/Tiles/tiles_spritesheet.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
+tile_set("Resource/Images/Tiles/Tile_Dark.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
 edit_mode(false),stage_id(0)
 {
 	// JSONからタイルセットを読み込み
@@ -418,6 +418,7 @@ void InGameScene::SetStage()
 
 void InGameScene::UpdateCamera()
 {
+
 	if (edit_mode)
 	{
 		// 編集モードでは editor のカメラを使用

@@ -34,6 +34,11 @@ enum class SoundID
 
 	// --- Title ---
 
+	// --- Title ---
+	TITLE_BGM,
+	CURSOR,
+	PUSH,
+
 
 };
 struct SoundData
