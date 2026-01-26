@@ -48,10 +48,10 @@ void PushBlock::Draw(Vector2D offset, double rate)
 	Vector2D screen_pos = location - offset;
 	__super::Draw(screen_pos, rate);
 
-    //DrawGraph((int)screen_pos.x, (int)screen_pos.y, Box_Img, TRUE);
+    DrawGraph((int)screen_pos.x, (int)screen_pos.y, Box_Img, TRUE);
 
 #ifdef _DEBUG
-	DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 255), TRUE);
+	//DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 255), TRUE);
 #endif // _DEBUG
 }
 

@@ -1,5 +1,6 @@
 #include "TitleScene.h"
 #include "../../../Utility/InputManager.h"
+#include "../../../Utility/SoundManager.h"
 #include "../../SceneManager.h"
 
 
@@ -19,6 +20,8 @@ TitleScene::TitleScene()
 
     fadeDelayTimer = 0;
 
+    //BGM
+    SoundManager::GetInstance()->Play(SoundID::TITLE_BGM);
 }
 
 TitleScene::~TitleScene()
@@ -66,6 +69,7 @@ eSceneType TitleScene::Update()
         if (fadeAlpha >= 255.0f)
         {
             fadeAlpha = 255.0f;
+            SoundManager::GetInstance()->Stop(SoundID::TITLE_BGM);
             return nextScene; // Š®‘S‚ÉˆÃ‚­‚È‚Á‚½‚ç‘JˆÚ
         }
     }
@@ -189,12 +193,14 @@ eSceneType TitleScene::Title_Select()
     {
         cursorIndex++;
         if (cursorIndex >= MENU_COUNT) cursorIndex = 0;
+        SoundManager::GetInstance()->Play(SoundID::CURSOR);
     }
 
     if (input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
     {
         cursorIndex--;
         if (cursorIndex < 0) cursorIndex = MENU_COUNT - 1;
+        SoundManager::GetInstance()->Play(SoundID::CURSOR);
     }
 
     if (input->GetButtonDown(XINPUT_BUTTON_A)) {
@@ -202,11 +208,15 @@ eSceneType TitleScene::Title_Select()
         case 0:
             nextScene = eSceneType::GAME_MAIN;
             fadeDelayTimer = FADE_DELAY; // 1•b‘Ò‚Â
+
+            SoundManager::GetInstance()->Play(SoundID::PUSH);
             break;
         case 1:
             // HELP –¢ŽÀ‘•
+            SoundManager::GetInstance()->Play(SoundID::CURSOR);
             break;
         case 2:
+            SoundManager::GetInstance()->Play(SoundID::CURSOR);
             nextScene = eSceneType::EXIT;
             fadeDelayTimer = FADE_DELAY;
             break;

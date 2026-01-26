@@ -27,6 +27,11 @@ enum class SoundID
 	// --- GameMain ---
 	GAME_MAIN_BGM,
 
+	// --- Title ---
+	TITLE_BGM,
+	CURSOR,
+	PUSH,
+
 
 };
 struct SoundData

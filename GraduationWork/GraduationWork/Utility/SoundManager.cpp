@@ -108,6 +108,30 @@ void SoundManager::LoadSounds()
 		true
 	};
 
+	// タイトルBGM
+	sounds[SoundID::TITLE_BGM] = {
+		rm->GetSE("Resource/Sounds/BGM/Title/Title.wav"),
+		SoundCategory::BGM,
+		70,
+		true
+	};
+
+	// カーソル移動SE
+	sounds[SoundID::CURSOR] = {
+		rm->GetSE("Resource/Sounds/SE/Title/AS_150317_カチッ（装着／スイッチ／セット）.wav"),
+		SoundCategory::BGM,
+		70,
+		false
+	};
+
+	// 決定SE
+	sounds[SoundID::PUSH] = {
+		rm->GetSE("Resource/Sounds/SE/Title/AS_889621_ホワン⑤（魔法・テロップ・スタート音）.wav"),
+		SoundCategory::BGM,
+		100,
+		false
+	};
+
 }
 
 void SoundManager::Play(SoundID id)
