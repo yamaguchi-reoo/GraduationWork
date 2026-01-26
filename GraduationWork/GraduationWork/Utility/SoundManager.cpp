@@ -130,7 +130,7 @@ void SoundManager::LoadSounds()
 		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_205350_8bitŒnQ—E‘s‚ÈƒQ[ƒ€ƒI[ƒo[.wav"),
 		SoundCategory::BGM,
 		40,
-		true
+		false
 	};
 
 }

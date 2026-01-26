@@ -17,6 +17,7 @@ GameOverScene::~GameOverScene()
 
 void GameOverScene::Initialize()
 {
+
 	SoundManager::GetInstance()->Play(SoundID::GAME_OVER_BGM);
 }
 
@@ -59,6 +60,7 @@ eSceneType GameOverScene::Update()
 		case 1: return eSceneType::TITLE;     // ƒ^ƒCƒgƒ‹
 		case 2: return eSceneType::EXIT;
 		}
+		SoundManager::GetInstance()->Stop(SoundID::GAME_OVER_BGM);
 	}
 
 	return eSceneType::GAMEOVER;
