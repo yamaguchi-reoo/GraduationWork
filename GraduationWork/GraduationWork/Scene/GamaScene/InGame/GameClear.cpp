@@ -236,17 +236,20 @@ eSceneType GameClear::GameClear_Select()
     if (input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
     {
         cursorIndex = (cursorIndex + 1) % MENU_COUNT;
+        SoundManager::GetInstance()->Play(SoundID::CURSOR);
     }
 
     if (input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
     {
         cursorIndex--;
         if (cursorIndex < 0) cursorIndex = MENU_COUNT - 1;
+        SoundManager::GetInstance()->Play(SoundID::CURSOR);
     }
 
     if (input->GetButtonDown(XINPUT_BUTTON_A))
     {
         SoundManager::GetInstance()->Stop(SoundID::GAME_CLEAR_BGM);
+        SoundManager::GetInstance()->Play(SoundID::PUSH);
         switch ((GameClear_MENU)cursorIndex)
         {
         case GameClear_MENU::START:

@@ -137,7 +137,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::GAME_CLEAR_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_1487479_かわいいちょっとミステリアポップなbgm.wav"),
 		SoundCategory::BGM,
-		140,
+		80,
 		true
 	};
 
