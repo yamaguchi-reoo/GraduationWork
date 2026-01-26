@@ -7,6 +7,7 @@ enum class eSceneType
 	TITLE,
 	GAME_MAIN,
 	GAMEOVER,
+	GAMECLEAR,
 	EXIT
 };
 

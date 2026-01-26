@@ -137,7 +137,7 @@ eSceneType TitleScene::Title_Select()
 
     if (input->GetButtonDown(XINPUT_BUTTON_A)) {
         switch (cursorIndex) {
-        case 0: return eSceneType::GAME_MAIN;
+        case 0: return eSceneType::GAMECLEAR;
         case 1: /* HELP –¢ŽÀ‘• */ break;
         case 2: return eSceneType::EXIT;   
         }
