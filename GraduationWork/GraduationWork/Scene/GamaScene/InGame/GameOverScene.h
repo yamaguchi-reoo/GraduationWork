@@ -19,6 +19,7 @@ public:
 
 	virtual ~GameOverScene();
 
+	void Initialize() override;
 	eSceneType GetNowSceneType() const override;
 	eSceneType Update() override;
 	void Draw() override;

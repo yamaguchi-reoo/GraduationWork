@@ -1,4 +1,4 @@
-<TextureAtlas imagePath="sheet.png">
+<TextureAtlas imagePath="Tile_Dark.png">
 	<SubTexture name="box.png" x="0" y="864" width="70" height="70"/>
 	<SubTexture name="boxAlt.png" x="0" y="792" width="70" height="70"/>
 	<SubTexture name="boxCoin.png" x="0" y="720" width="70" height="70"/>

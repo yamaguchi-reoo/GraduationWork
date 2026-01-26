@@ -81,6 +81,14 @@ void SoundManager::LoadSounds()
 		false
 	};
 
+	//実状態での死亡音
+	sounds[SoundID::REAL_DEATH] = { 
+		rm->GetSE("Resource/Sounds/SE/Player/AS_964708_小動物の鳴き声_01.wav"),
+		SoundCategory::SE,
+		70,
+		false
+	};
+
 	//回復音
 	sounds[SoundID::HEAL] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_968862_嬉しい感情のような上昇音２／ハート／回復.wav"),
@@ -98,14 +106,55 @@ void SoundManager::LoadSounds()
 
 	// --- エネミー関連の音声読み込み ---
 
+	// --- ギミック関連の音声読み込み ---
+	//感圧板ON音
+	sounds[SoundID::PLATE_ON] = {
+		rm->GetSE("Resource/Sounds/SE/Gimmick/AS_308257_スイッチ音_4.wav"),
+		SoundCategory::SE,
+		70,
+		false
+	};
+
 
 	// --- ゲームメイン関連の音声読み込み ---
 	// ゲームメインBGM
 	sounds[SoundID::GAME_MAIN_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_69632_悲しげのある洞窟イメージのチップチューン.wav"),
 		SoundCategory::BGM,
+		50,
+		true
+	};
+
+	// ゲームオーバーBGM
+	sounds[SoundID::GAME_OVER_BGM] = {
+		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_205350_8bit系＿勇壮なゲームオーバー.wav"),
+		SoundCategory::BGM,
+		40,
+		true
+	};
+
+	// タイトルBGM
+	sounds[SoundID::TITLE_BGM] = {
+		rm->GetSE("Resource/Sounds/BGM/Title/Title.wav"),
+		SoundCategory::BGM,
 		70,
 		true
+	};
+
+	// カーソル移動SE
+	sounds[SoundID::CURSOR] = {
+		rm->GetSE("Resource/Sounds/SE/Title/AS_150317_カチッ（装着／スイッチ／セット）.wav"),
+		SoundCategory::BGM,
+		70,
+		false
+	};
+
+	// 決定SE
+	sounds[SoundID::PUSH] = {
+		rm->GetSE("Resource/Sounds/SE/Title/AS_889621_ホワン⑤（魔法・テロップ・スタート音）.wav"),
+		SoundCategory::BGM,
+		100,
+		false
 	};
 
 }

@@ -9,6 +9,7 @@ public:
 	bool TrapOn_flg = false;	
 	Light* linked_light = nullptr;
 
+	bool prev_TrapOn_flg = false;
 public:
 
 	//‰Šú‰»ˆ—

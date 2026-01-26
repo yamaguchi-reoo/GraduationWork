@@ -19,13 +19,25 @@ enum class SoundID
 	WALK,
 	LAND,
 	SHADOW_DEATH,
+	REAL_DEATH,
 	HEAL,
 	STATE_CHANGE,
 
 	// --- Enemy ---
 
+	// --- Gimmick ---
+	PLATE_ON,
+
 	// --- GameMain ---
 	GAME_MAIN_BGM,
+	GAME_OVER_BGM,
+
+	// --- Title ---
+
+	// --- Title ---
+	TITLE_BGM,
+	CURSOR,
+	PUSH,
 
 
 };

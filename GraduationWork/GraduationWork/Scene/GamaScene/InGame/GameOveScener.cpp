@@ -1,5 +1,6 @@
 #include "GameOverScene.h"
 #include "../../../Utility/InputManager.h"
+#include "../../../Utility/SoundManager.h"
 #include "../../SceneManager.h"
 #include <DxLib.h>
 
@@ -12,6 +13,11 @@ GameOverScene::GameOverScene()
 
 GameOverScene::~GameOverScene()
 {
+}
+
+void GameOverScene::Initialize()
+{
+	SoundManager::GetInstance()->Play(SoundID::GAME_OVER_BGM);
 }
 
 eSceneType GameOverScene::GetNowSceneType() const
