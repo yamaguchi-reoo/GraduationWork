@@ -630,7 +630,7 @@ void Player::SetPlayerActionDeath()
 	}
 	else
 	{
-		//SoundManager::GetInstance()->Play(SoundID::REAL_DEATH);
+		SoundManager::GetInstance()->Play(SoundID::REAL_DEATH);
 	}
 }
 

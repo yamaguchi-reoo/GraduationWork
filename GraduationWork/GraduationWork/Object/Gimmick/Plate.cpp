@@ -1,6 +1,7 @@
 #include "Plate.h"
 #include "DxLib.h"
 #include "../../Object/ObjectManager.h"
+#include "../../Utility/SoundManager.h"
 
 
 void Plate::Initialize(Vector2D _location, Vector2D _box_size)
@@ -11,11 +12,17 @@ void Plate::Initialize(Vector2D _location, Vector2D _box_size)
 	__super::Initialize(_location, _box_size);
 
 	TrapOn_flg = false;
+	prev_TrapOn_flg = false;
 
 }
 
 void Plate::Update()
 {
+	if(!prev_TrapOn_flg && TrapOn_flg)
+	{
+		SoundManager::GetInstance()->Play(SoundID::PLATE_ON);
+	}
+
 
 	if (TrapOn_flg && linked_light)
 	{
@@ -28,9 +35,13 @@ void Plate::Update()
 			linked_light->SetLightMoving(false);
 		}
 	}
+
+	prev_TrapOn_flg = TrapOn_flg;
+
 	__super::Update();
 
 	TrapOn_flg = false;
+
 }
 
 void Plate::Draw(Vector2D offset, double rate)
