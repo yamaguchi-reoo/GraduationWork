@@ -9,6 +9,16 @@ GameOverScene::GameOverScene()
 	MENU_COUNT = 3;
 	cursorIndex = 0;
 	wait_timer = 60;   // 1秒待つ（60fps想定）
+
+	isFading = false;
+	fadeAlpha = 0.0f;
+
+	fadeDelayTimer = 0;
+
+	GameOver_img = LoadGraph("Resource/Images/GameOver/GameOver.png");
+	nextScene = eSceneType::GAMEOVER;
+
+
 }
 
 GameOverScene::~GameOverScene()
@@ -34,30 +44,63 @@ eSceneType GameOverScene::Update()
 		return eSceneType::GAMEOVER;
 	}
 
+	// 待機タイマー処理
+	if (fadeDelayTimer > 0)
+	{
+		fadeDelayTimer--;
+		return eSceneType::GAMEOVER;
+	}
+
+	// フェード処理（遷移予約があるときのみ）
+	if (nextScene != eSceneType::GAMEOVER)
+	{
+		isFading = true;
+		fadeAlpha += 1.5f;
+		if (fadeAlpha >= 255.0f)
+		{
+			fadeAlpha = 255.0f;
+			SoundManager::GetInstance()->Stop(SoundID::GAME_OVER_BGM);
+			return nextScene;
+		}
+	}
+
 	InputManager* input = InputManager::GetInstance();
 
-	// ↓
 	if (input->GetButtonDown(XINPUT_BUTTON_DPAD_DOWN))
 	{
 		cursorIndex++;
 		if (cursorIndex >= MENU_COUNT) cursorIndex = 0;
+		SoundManager::GetInstance()->Play(SoundID::CURSOR);
 	}
 
-	// ↑
 	if (input->GetButtonDown(XINPUT_BUTTON_DPAD_UP))
 	{
 		cursorIndex--;
 		if (cursorIndex < 0) cursorIndex = MENU_COUNT - 1;
+		SoundManager::GetInstance()->Play(SoundID::CURSOR);
 	}
 
-	// 決定
 	if (input->GetButtonDown(XINPUT_BUTTON_A))
 	{
 		switch (cursorIndex)
 		{
-		case 0: return eSceneType::GAME_MAIN; // リトライ
-		case 1: return eSceneType::TITLE;     // タイトル
-		case 2: return eSceneType::EXIT;
+		case 0: // RETRY
+			nextScene = eSceneType::GAME_MAIN;
+			fadeDelayTimer = FADE_DELAY;
+			SoundManager::GetInstance()->Play(SoundID::PUSH);
+			break;
+
+		case 1: // TITLE
+			nextScene = eSceneType::TITLE;
+			fadeDelayTimer = FADE_DELAY;
+			SoundManager::GetInstance()->Play(SoundID::PUSH);
+			break;
+
+		case 2: // EXIT
+			nextScene = eSceneType::EXIT;
+			fadeDelayTimer = FADE_DELAY;
+			SoundManager::GetInstance()->Play(SoundID::PUSH);
+			break;
 		}
 	}
 
@@ -66,7 +109,18 @@ eSceneType GameOverScene::Update()
 
 void GameOverScene::Draw()
 {
-	DrawString(600,80 , "GAME OVER", GetColor(255, 0, 0), SceneManager::font);
+	//ゲームオーバー画像
+	DrawGraph(0, 0, GameOver_img, TRUE);
+
+	// 文字幅を取得
+	int textWidth = GetDrawStringWidthToHandle(text, strlen(text), SceneManager::titleFont);
+
+	// 中央より少し上に配置
+	int x = (SCREEN_W - textWidth) / 2;
+	int y = SCREEN_H / 2 - 180;
+
+	DrawStringToHandle(x, y, text, GetColor(255, 0, 0), SceneManager::titleFont);
+
 
 	// 待ち時間中は操作不可表示
 	if (wait_timer > 0)
@@ -102,5 +156,12 @@ void GameOverScene::Draw()
 				menu[i]
 			);
 		}
+	}
+
+	if (isFading)
+	{
+		SetDrawBlendMode(DX_BLENDMODE_ALPHA, (int)fadeAlpha);
+		DrawBox(0, 0, 1280, 720, GetColor(0, 0, 0), TRUE);
+		SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	}
 }

@@ -33,8 +33,6 @@ enum class SoundID
 	GAME_OVER_BGM,
 
 	// --- Title ---
-
-	// --- Title ---
 	TITLE_BGM,
 	CURSOR,
 	PUSH,
