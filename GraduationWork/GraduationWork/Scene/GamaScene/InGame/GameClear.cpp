@@ -45,6 +45,7 @@ GameClear::GameClear()
         particles[i].y = rand() % 720;
         particles[i].vy = 2 + rand() % 4;
     }
+    SoundManager::GetInstance()->Play(SoundID::GAME_CLEAR_SE);
     SoundManager::GetInstance()->Play(SoundID::GAME_CLEAR_BGM);
 }
 
@@ -152,7 +153,7 @@ void GameClear::Draw()
     int alpha = 180 + (int)(std::sin(frame * 0.1) * 75);
     SetDrawBlendMode(DX_BLENDMODE_ALPHA, alpha);
 
-    SetFontSize((int)(64 * clearScale));
+    //SetFontSize((int)(64 * clearScale));
 
     int shadowWidth = GetDrawStringWidthToHandle(
         shadowText, strlen(shadowText), SceneManager::titleFont
@@ -180,7 +181,7 @@ void GameClear::Draw()
         SceneManager::titleFont
     );
 
-    SetFontSize(64);
+    //SetFontSize(64);
     SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 
     // ===== メニュー（フェード） =====
@@ -249,7 +250,7 @@ eSceneType GameClear::GameClear_Select()
     if (input->GetButtonDown(XINPUT_BUTTON_A))
     {
         SoundManager::GetInstance()->Stop(SoundID::GAME_CLEAR_BGM);
-        SoundManager::GetInstance()->Play(SoundID::GAME_CLEAR_SE);
+        SoundManager::GetInstance()->Play(SoundID::GAME_CLEAR_SELECT);
         switch ((GameClear_MENU)cursorIndex)
         {
         case GameClear_MENU::START:

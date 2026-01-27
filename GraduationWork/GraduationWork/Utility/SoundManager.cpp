@@ -141,12 +141,19 @@ void SoundManager::LoadSounds()
 		true
 	};
 
-
-	//ゲームクリア決定SE
+	//ゲームクリアSE
 	sounds[SoundID::GAME_CLEAR_SE] = {
-	rm->GetSE("Resource/Sounds/BGM/GameMain/AS_778955_時計、クロック、カチ、アンティーク、残響.wav"),
+		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_1026732_ファミコン風ゲームクリアの効果音.wav"),
+		SoundCategory::SE,
+		80,
+		false
+	};
+
+	//ゲームクリア選択音
+	sounds[SoundID::GAME_CLEAR_SELECT] = {
+	rm->GetSE("Resource/Sounds/BGM/GameMain/AS_890902_決定／クリック／選択音（ピコンッ）.wav"),
 		SoundCategory::BGM,
-		100,
+		85,
 		false
 	};
 
