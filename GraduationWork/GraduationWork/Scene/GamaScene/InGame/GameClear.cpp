@@ -29,7 +29,7 @@ namespace
 
 GameClear::GameClear()
 {
-    MENU_COUNT = 3;
+    MENU_COUNT = 2;
     cursorIndex = 0;
 
     frame = 0;
@@ -189,7 +189,7 @@ void GameClear::Draw()
     {
         SetDrawBlendMode(DX_BLENDMODE_ALPHA, menuAlpha);
 
-        const char* menu[] = { "START", "TITLE", "EXIT" };
+        const char* menu[] = { "TITLE", "EXIT" };
 
         for (int i = 0; i < MENU_COUNT; i++)
         {
@@ -253,8 +253,6 @@ eSceneType GameClear::GameClear_Select()
         SoundManager::GetInstance()->Play(SoundID::GAME_CLEAR_SELECT);
         switch ((GameClear_MENU)cursorIndex)
         {
-        case GameClear_MENU::START:
-            return eSceneType::GAME_MAIN;
         case GameClear_MENU::TITLE:
             return eSceneType::TITLE;
         case GameClear_MENU::END:
