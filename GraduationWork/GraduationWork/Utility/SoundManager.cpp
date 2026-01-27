@@ -130,7 +130,31 @@ void SoundManager::LoadSounds()
 		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_205350_8bit系＿勇壮なゲームオーバー.wav"),
 		SoundCategory::BGM,
 		40,
+		false
+	};
+
+	// ゲームクリアBGM
+	sounds[SoundID::GAME_CLEAR_BGM] = {
+		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_1487479_かわいいちょっとミステリアポップなbgm.wav"),
+		SoundCategory::BGM,
+		80,
 		true
+	};
+
+	//ゲームクリアSE
+	sounds[SoundID::GAME_CLEAR_SE] = {
+		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_1026732_ファミコン風ゲームクリアの効果音.wav"),
+		SoundCategory::SE,
+		80,
+		false
+	};
+
+	//ゲームクリア選択音
+	sounds[SoundID::GAME_CLEAR_SELECT] = {
+	rm->GetSE("Resource/Sounds/BGM/GameMain/AS_890902_決定／クリック／選択音（ピコンッ）.wav"),
+		SoundCategory::BGM,
+		85,
+		false
 	};
 
 	// タイトルBGM
@@ -156,7 +180,6 @@ void SoundManager::LoadSounds()
 		100,
 		false
 	};
-
 }
 
 void SoundManager::Play(SoundID id)

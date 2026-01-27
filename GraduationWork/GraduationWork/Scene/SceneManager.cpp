@@ -5,6 +5,7 @@
 #include "GamaScene/InGame/InGameScene.h"
 #include "GamaScene/InGame/TitleScene.h"
 #include "GamaScene/InGame/GameOverScene.h"
+#include "GamaScene/InGame/GameClear.h"
 
 #include "../common.h"
 #include "../Utility/UtilityList.h"
@@ -167,6 +168,8 @@ SceneBase* SceneManager::CreateScene(eSceneType category)
 		return new InGameScene(); // ゲームメインシーンの生成
 	case eSceneType::GAMEOVER:
 		return new GameOverScene(); // ゲームメインシーンの生成
+	case eSceneType::GAMECLEAR:
+		return new GameClear(); // ゲームメインシーンの生成
 	default:
 		return nullptr; // 未知のシーンタイプの場合はnullptrを返す
 	}
