@@ -83,6 +83,7 @@ eSceneType GameOverScene::Update()
 
 	if (input->GetButtonDown(XINPUT_BUTTON_A))
 	{
+		SoundManager::GetInstance()->Stop(SoundID::GAME_OVER_BGM);
 		switch (cursorIndex)
 		{
 		case 0: // RETRY
@@ -103,7 +104,6 @@ eSceneType GameOverScene::Update()
 			SoundManager::GetInstance()->Play(SoundID::PUSH);
 			break;
 		}
-		SoundManager::GetInstance()->Stop(SoundID::GAME_OVER_BGM);
 	}
 
 	return eSceneType::GAMEOVER;
