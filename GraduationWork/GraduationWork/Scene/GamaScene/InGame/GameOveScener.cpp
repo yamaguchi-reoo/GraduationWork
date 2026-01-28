@@ -111,9 +111,15 @@ eSceneType GameOverScene::Update()
 
 void GameOverScene::Draw()
 {
-	//ゲームオーバー画像
-	DrawGraph(0, 0, GameOver_img, TRUE);
 
+	//ゲームオーバー画像
+	DrawGraph(-50, 0, GameOver_img, TRUE);
+
+
+	// 画面全体を少し暗くする
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 120); // 0?255（数値が大きいほど暗くなる）
+	DrawBox(0, 0, 1280, 720, GetColor(0, 0, 0), TRUE);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 	// 文字幅を取得
 	int textWidth = GetDrawStringWidthToHandle(text, strlen(text), SceneManager::titleFont);
 
@@ -121,7 +127,7 @@ void GameOverScene::Draw()
 	int x = (SCREEN_W - textWidth) / 2;
 	int y = SCREEN_H / 2 - 180;
 
-	DrawStringToHandle(x, y, text, GetColor(255, 0, 0), SceneManager::titleFont);
+	DrawStringToHandle(x-40, y, text, GetColor(255, 0, 0), SceneManager::titleFont);
 
 
 	// 待ち時間中は操作不可表示
@@ -132,17 +138,22 @@ void GameOverScene::Draw()
 		return;
 	}
 
+	int centerX = SCREEN_W / 2;
+	int centerY = SCREEN_H / 2;
+
 	const char* menu[] = { "RETRY", "TITLE", "EXIT" };
 
 	for (int i = 0; i < MENU_COUNT; i++)
 	{
+		int x = centerX - 120;
+		int menuY = centerY - 10 + i * 50;
+
 		if (i == cursorIndex)
 		{
 			DrawFormatStringToHandle(
-				100,
-				250 + i * 40,
+				x - 40, menuY,
 				GetColor(255, 255, 0),
-				SceneManager::font,
+				SceneManager::menuFont,
 				"> %s",
 				menu[i]
 			);
@@ -150,10 +161,9 @@ void GameOverScene::Draw()
 		else
 		{
 			DrawFormatStringToHandle(
-				120,
-				250 + i * 40,
+				x, menuY,
 				GetColor(255, 255, 255),
-				SceneManager::font,
+				SceneManager::menuFont,
 				"%s",
 				menu[i]
 			);
