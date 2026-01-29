@@ -1,5 +1,6 @@
 #include "CharacterBase.h"
 #include "../Gimmick/PushBlock.h"
+#include "../../Utility/SoundManager.h"
 
 void CharacterBase::Initialize(Vector2D _location, Vector2D _box_size)
 {
@@ -9,6 +10,7 @@ void CharacterBase::Initialize(Vector2D _location, Vector2D _box_size)
 
 void CharacterBase::Update()
 {
+    prev_on_ground = on_ground;
     on_ground = false;
 
     // ’n–Ê‚É‚¢‚È‚¢‚Æ‚«‚¾‚¯—Ž‰ºˆ—
@@ -112,7 +114,7 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
             location.x = other_right;
             velocity.x = 0;
 
-            if (type == PUSHBLOCK)
+            if (type == PUSHBLOCK && this->GetObjectType() == PLAYER)
             {
                 PushBlock* pb = dynamic_cast<PushBlock*>(hit_object);
                 if (pb) pb->StartMove(Vector2D(-1.0f, 0.0f));
@@ -124,7 +126,7 @@ void CharacterBase::OnHitCollision(GameObject* hit_object)
             location.x = other_left - my_size.x;
             velocity.x = 0;
 
-            if (type == PUSHBLOCK)
+            if (type == PUSHBLOCK && this->GetObjectType() == PLAYER)
             {
                 PushBlock* pb = dynamic_cast<PushBlock*>(hit_object);
                 if (pb) pb->StartMove(Vector2D(1.0f, 0.0f));

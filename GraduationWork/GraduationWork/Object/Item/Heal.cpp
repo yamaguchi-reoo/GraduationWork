@@ -7,6 +7,8 @@ void Heal::Initialize(Vector2D _location, Vector2D _box_size)
 	object_type = HEAL;
 
 	__super::Initialize(_location, _box_size);
+
+	image = LoadGraph("Resource/Images/Object/potion_113.png");
 }
 
 void Heal::Update()
@@ -16,16 +18,22 @@ void Heal::Update()
 
 void Heal::Draw(Vector2D offset, double rate)
 {
-
-
 	Vector2D screen_pos = location - offset;
 
+	DrawRotaGraphF(
+		screen_pos.x + (box_size.x / 2),
+		screen_pos.y + (box_size.y / 2),
+		2.0,    // Šg‘å—¦
+		0.0,    // ‰ñ“]Šp
+		image,
+		TRUE,   // “§‰ß
+		flip_flg
+	);
+
 #ifdef _DEBUG
-	DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 125, 125), TRUE);
+	DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 125, 125), FALSE);
 #endif
-	__super::Draw(screen_pos, rate);
-
-
+	//__super::Draw(screen_pos, rate);
 }
 
 

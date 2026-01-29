@@ -18,6 +18,8 @@ private:
 	const float gravity = 0.5f;       // 重力加速度
 	const float terminal_velocity = 8.0f; // 最大落下速度
 	bool on_ground = false;         // 地面に接しているか
+
+	int Box_Img;
 public:
 
 	//初期化処理

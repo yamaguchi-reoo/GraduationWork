@@ -1,33 +1,57 @@
 #include "Plate.h"
 #include "DxLib.h"
-#include "../../Object/ObjectManager.h"
+#include "../../Utility/SoundManager.h"
+#include "../../Utility/UserTemplate.h"
 
+namespace
+{
+	constexpr float PLATE_HEIGHT = 3.0f;
+	constexpr float PRESS_DEPTH = 6.0f;   // 最大で沈む量
+	constexpr float PRESS_SPEED = 0.5f;   // 沈む＆戻る速度
+	constexpr float PLATE_Y_OFFSET = 40.0f;
+}
 
 void Plate::Initialize(Vector2D _location, Vector2D _box_size)
 {
 	object_type = PLATE;
-
-
 	__super::Initialize(_location, _box_size);
 
 	TrapOn_flg = false;
+	prev_TrapOn_flg = false;
 
+	press_offset = 0.0f;
+	press_offset_target = 0.0f;
 }
 
 void Plate::Update()
 {
+	// OFF → ON の瞬間だけSE
+	if (!prev_TrapOn_flg && TrapOn_flg)
+	{
+		SoundManager::GetInstance()->Play(SoundID::PLATE_ON);
+	}
 
-	if (TrapOn_flg && linked_light)
+	// ライト制御
+	if (linked_light)
 	{
-		linked_light->SetLightMoving(true);
+		linked_light->SetLightMoving(TrapOn_flg);
 	}
-	else
+
+	// 目標沈み量を決定
+	press_offset_target = TrapOn_flg ? PRESS_DEPTH : 0.0f;
+
+	// 補間（なめらかに）
+	if (press_offset < press_offset_target)
 	{
-		if (linked_light)
-		{
-			linked_light->SetLightMoving(false);
-		}
+		press_offset = Min(press_offset + PRESS_SPEED, press_offset_target);
 	}
+	else if (press_offset > press_offset_target)
+	{
+		press_offset = Max(press_offset - PRESS_SPEED, press_offset_target);
+	}
+
+	prev_TrapOn_flg = TrapOn_flg;
+
 	__super::Update();
 
 	TrapOn_flg = false;
@@ -35,36 +59,34 @@ void Plate::Update()
 
 void Plate::Draw(Vector2D offset, double rate)
 {
-	Vector2D screen_pos = location - offset;
-	//__super::Draw(screen_pos, rate);
-
-	float plateHeight = 3.0f;  // 板の厚さ
-	float blockHeight = box_size.y; // 1マスの高さ（CSVで使ってるブロックのサイズ）
-
-	// 感圧板をマスの下に合わせる（浮かないようにする）
-	float yOffset = blockHeight - plateHeight;
-
-	//DrawBoxAA(
-	//	screen_pos.x,
-	//	screen_pos.y + yOffset,
-	//	screen_pos.x + box_size.x,
-	//	screen_pos.y + yOffset + plateHeight,
-	//	GetColor(190, 140, 80),
-	//	TRUE
-	//);
 #ifdef _DEBUG
-	//DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(255, 0, 255), TRUE);
+	Vector2D screen_pos = location - offset;
 
-	DrawBoxAA(screen_pos.x, screen_pos.y + 45, screen_pos.x + box_size.x, screen_pos.y + box_size.y + 45, GetColor(125, 125, 125), TRUE);
+	const float y = screen_pos.y + PLATE_Y_OFFSET + press_offset;
 
-	// プレイヤーが上に乗っていたら文字を表示
-	//if (TrapOn_flg==true)
-	//{
-	//	DrawString(100, 50, "Trap flg On", GetColor(255, 0, 0));
-	//	DrawString(100, 50, "Trap flg On", GetColor(255, 0, 0));
-	//	//TrapOn_flg = false;
-	//}
-#endif // _DEBUG
+	const int fillColor = GetColor(125, 125, 125); // 本体
+	const int borderColor = GetColor(175, 175, 175);    // 輪郭（濃いグレー）
+
+	// 輪郭（少し大きめ）
+	DrawBoxAA(
+		screen_pos.x - 1,
+		y - 1,
+		screen_pos.x + box_size.x + 1,
+		y + PLATE_HEIGHT + 6,
+		borderColor,
+		FALSE
+	);
+
+	// 本体
+	DrawBoxAA(
+		screen_pos.x,
+		y,
+		screen_pos.x + box_size.x,
+		y + PLATE_HEIGHT + 5,
+		fillColor,
+		TRUE
+	);
+#endif
 }
 
 void Plate::Finalize()
@@ -74,28 +96,28 @@ void Plate::Finalize()
 
 void Plate::OnHitCollision(GameObject* hit_object)
 {
-	int type = hit_object->GetObjectType();
-	if (type != BLOCK && type != WALL && type != PUSHBLOCK && type != PLAYER) return;
+	const int type = hit_object->GetObjectType();
 
-	if (type == PLAYER || type == PUSHBLOCK) // プレイヤーと判定
+	if (type != PLAYER && type != PUSHBLOCK) return;
+
+	if (IsOnPlate(hit_object))
 	{
-		// 当たり判定を描画と同じ位置に下げる
-		float plateHeight = 3.0f;       // 板の厚さ
-		float blockHeight = box_size.y; // 1マスの高さ
-		float yOffset = blockHeight - plateHeight;
-
-		Vector2D playerPos = hit_object->GetLocation();
-		Vector2D playerSize = hit_object->GetBoxSize();
-
-		// 判定矩形を下にずらしてチェック
-		bool hit = !(playerPos.x + playerSize.x < location.x ||
-			playerPos.x > location.x + box_size.x ||
-			playerPos.y + playerSize.y < location.y + yOffset ||
-			playerPos.y > location.y + yOffset + plateHeight);
-
-		if (hit)
-		{
-			TrapOn_flg = true;
-		}
+		TrapOn_flg = true;
 	}
 }
+
+bool Plate::IsOnPlate(GameObject* obj) const
+{
+	const float yOffset = box_size.y - PLATE_HEIGHT;
+
+	const Vector2D pos = obj->GetLocation();
+	const Vector2D size = obj->GetBoxSize();
+
+	return !(
+		pos.x + size.x < location.x ||
+		pos.x > location.x + box_size.x ||
+		pos.y + size.y < location.y + yOffset ||
+		pos.y > location.y + yOffset + PLATE_HEIGHT
+		);
+}
+

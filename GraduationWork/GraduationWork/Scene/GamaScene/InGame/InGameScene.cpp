@@ -10,7 +10,7 @@
 
 
 InGameScene::InGameScene() :stage_width_num(0), stage_height_num(0), stage_data(0, 0),
-tile_set("Resource/Images/Tiles/tiles_spritesheet.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
+tile_set("Resource/Images/Tiles/Tile_Dark.png", BLOCK_SIZE, BLOCK_SIZE),editor(nullptr),
 edit_mode(false),stage_id(0)
 {
 	// JSONからタイルセットを読み込み
@@ -37,6 +37,8 @@ void InGameScene::Initialize()
 
 	// ステージエディターの初期化
 	editor = new StageEditor(BLOCK_SIZE, &stage_data);
+
+    SoundManager::GetInstance()->Play(SoundID::GAME_MAIN_BGM);
 }
 
 eSceneType InGameScene::Update()
@@ -75,6 +77,16 @@ eSceneType InGameScene::Update()
 	{
 		// 通常モード：オブジェクトを更新
 		object_manager.Update(camera_location);
+
+		Player* player = static_cast<Player*>(object_manager.FindObjectType(eObjectType::PLAYER));
+        if (player && player->IsDead())
+        {
+            if (player->GetDeathTimer() >= 25)
+            {
+				object_manager.RequestDeleteObject(player);
+                return eSceneType::GAMEOVER;
+            }
+        }
 	}
 
 	// カメラは両モードで更新
@@ -84,13 +96,16 @@ eSceneType InGameScene::Update()
     if(goal && goal->reached)
     {
         // ゴールに到達したら次のステージへ
-        stage_id++;
+        //stage_id++;
         // オブジェクトを一旦クリア
         object_manager.Finalize();    // オブジェクト解放処理
         object_manager.Initialize();  // 初期化
         // ステージデータ読み込み
-        LoadStage();
+        //LoadStage();
+
+		return eSceneType::GAMECLEAR;
 	}
+
 
 	return __super::Update();
 }
@@ -148,6 +163,9 @@ void InGameScene::Finalize()
 
     DeleteGraph(background_handle);    
 	tile_set.Unload();
+
+    //音源停止
+    SoundManager::GetInstance() -> Stop(SoundID::GAME_MAIN_BGM);
 }
 
 
@@ -378,10 +396,10 @@ void InGameScene::SetStage()
                 break;
             }
 			case HEAL:
-				object_manager.CreateObject<Heal>(world_pos, Vector2D(48.0f, 48.0f));
+				object_manager.CreateObject<Heal>(world_pos, Vector2D(32.0f, 48.0f));
 				break;
 			case SHADOWHEAL:
-				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(48.0f, 48.0f));
+				object_manager.CreateObject<ShadowHeal>(world_pos, Vector2D(32.0f, 48.0f));
                 break;
                 case TEXT:
                 object_manager.CreateObject<TextObject>(world_pos, Vector2D(48.0f, 96.0f));
@@ -400,9 +418,9 @@ void InGameScene::SetStage()
     }
 }
 
-
 void InGameScene::UpdateCamera()
 {
+
 	if (edit_mode)
 	{
 		// 編集モードでは editor のカメラを使用

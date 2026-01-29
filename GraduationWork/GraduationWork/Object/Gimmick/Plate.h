@@ -9,6 +9,10 @@ public:
 	bool TrapOn_flg = false;	
 	Light* linked_light = nullptr;
 
+	bool prev_TrapOn_flg = false;
+
+	float press_offset;        // Œ»İ‚Ì’¾‚İ—Ê
+	float press_offset_target; // –Ú•W’¾‚İ—Ê
 public:
 
 	//‰Šú‰»ˆ—
@@ -21,5 +25,8 @@ public:
 	virtual void Finalize()override;
 
 	virtual void OnHitCollision(GameObject* hit_object)override;
+
+	bool IsOnPlate(GameObject* obj) const;
+
 };
 

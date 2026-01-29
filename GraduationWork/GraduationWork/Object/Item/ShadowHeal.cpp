@@ -1,4 +1,5 @@
 #include "ShadowHeal.h"
+#include <DxLib.h>
 #include "../Character/Player/Player.h"
 #include "../Character/Player/Gauge.h"
 #include "../ObjectManager.h"
@@ -8,6 +9,8 @@ void ShadowHeal::Initialize(Vector2D _location, Vector2D _box_size)
 	object_type = SHADOWHEAL;
 
 	__super::Initialize(_location, _box_size);
+
+	image = LoadGraph("Resource/Images/Object/potion_471.png");
 }
 
 void ShadowHeal::Update()
@@ -17,16 +20,21 @@ void ShadowHeal::Update()
 
 void ShadowHeal::Draw(Vector2D offset, double rate)
 {
-
-
 	Vector2D screen_pos = location - offset;
+	DrawRotaGraphF(
+		screen_pos.x + (box_size.x / 2),
+		screen_pos.y + (box_size.y / 2),
+		2.0,    // Šg‘å—¦
+		0.0,    // ‰ñ“]Šp
+		image,
+		TRUE,   // “§‰ß
+		flip_flg
+	);
 
 #ifdef _DEBUG
-	DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 125), TRUE);
+	DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 125), FALSE);
 #endif
-	__super::Draw(screen_pos, rate);
-
-
+	//__super::Draw(screen_pos, rate);
 }
 
 

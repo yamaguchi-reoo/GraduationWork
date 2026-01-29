@@ -74,7 +74,7 @@ void Light::Update()
 	__super::Update();
 
 	// 光の自動回転処理
-	if (!light_data.moving)
+	if (light_data.moving)
 	{
 		light_data.angle += light_data.rotate_speed * (1.0f / 60.0f) * light_data.direction; 
 
@@ -206,8 +206,6 @@ void Light::Draw(Vector2D offset, double rate)
 	last_ray_end_points = end_points;
 }
 
-
-
 void Light::Finalize()
 {
 	__super::Finalize();
@@ -215,19 +213,17 @@ void Light::Finalize()
 
 void Light::OnHitCollision(GameObject* hit_object)
 {
-	 // hit_object が Player かチェック
 	Player* player = dynamic_cast<Player*>(hit_object);
-	if (player && player->IsPlayerShadow())
-	{
-		// 影状態のプレイヤーに当たったら Light を削除
-		if (object_manager)
-		{
-			//object_manager->RequestDeleteObject(player);
-			player->SetPlayerActionDeath();
-		}
-	}
+	if (!player) return;
 
+	if (!player->IsPlayerShadow()) return;
+
+	// すでに死亡中なら何もしない
+	if (player->IsDead()) return;
+
+	player->SetPlayerActionDeath();
 }
+
 
 bool Light::PointInTriangle(const Vector2D& p, const Vector2D& a, const Vector2D& b, const Vector2D& c)
 {

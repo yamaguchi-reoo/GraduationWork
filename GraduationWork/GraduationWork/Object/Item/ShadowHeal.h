@@ -1,11 +1,14 @@
 #pragma once
 #include "../GameObject.h"
+#include <vector>
 
 class ObjectManegaer;
 
 class ShadowHeal :
 	public GameObject
 {
+private:
+
 public:
 	//‰Šú‰»ˆ—
 	virtual void Initialize(Vector2D _location, Vector2D _box_size) override;
