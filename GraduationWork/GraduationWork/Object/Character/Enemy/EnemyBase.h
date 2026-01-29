@@ -9,9 +9,18 @@ enum class EnemyState
     Shadow   // 影状態
 };
 
+enum class EnemySituation
+{
+    Patrol, // 通常徘徊
+    Alert,  // プレイヤーを見つけた直後
+    Charge  // 突撃
+};
+
 class EnemyBase : public CharacterBase
 {
 protected:
+
+
     // ===== 基本ステータス =====
     int max_hp;          // 最大HP
     int damage;          // プレイヤーに与えるダメージ
@@ -27,9 +36,20 @@ protected:
     bool is_charging;    // 突撃中かどうか
     EnemyState state;    // 実態 / 影
 
+    EnemySituation situation; //状態
+
     // ===== プレイヤー検知 =====
     Vector2D search_box_size; // 検知範囲（四角形）
     bool player_detected;     // プレイヤーを検知しているか
+
+
+    float patrol_speed;
+
+    float alert_time;
+    float alert_limit;
+
+    int charge_timer;
+    int charge_limit;
 
 protected:
     // プレイヤー検知処理
@@ -37,6 +57,17 @@ protected:
 
     // 突撃開始処理
     void StartCharge(class Player* player);
+
+    //徘徊
+    void UpdatePatrol();
+
+    //
+    void StartAlert();
+    void UpdateAlert();
+
+    //
+    void UpdateCharge();
+    void EndCharge();
 
 public:
     EnemyBase();
