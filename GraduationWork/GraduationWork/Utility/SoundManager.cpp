@@ -161,7 +161,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::TITLE_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/Title/Title.wav"),
 		SoundCategory::BGM,
-		90,
+		140,
 		true
 	};
 
