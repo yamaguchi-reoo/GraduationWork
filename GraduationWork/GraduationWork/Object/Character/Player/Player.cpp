@@ -102,7 +102,7 @@ void Player::Draw(Vector2D offset, double rate)
 		visible = (invincible_timer / 5) % 2 == 0; // “_–ÅŒø‰Ê
 	}
 
-	DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 0), FALSE);
+	//DrawBoxAA(screen_pos.x, screen_pos.y, screen_pos.x + box_size.x, screen_pos.y + box_size.y, GetColor(0, 255, 0), FALSE);
 	if (visible) {
 		const auto& frames = (state == PlayerState::Real) ? animation_real[action] : animation_shadow[action];
 
@@ -148,8 +148,8 @@ void Player::Draw(Vector2D offset, double rate)
 
 #ifdef _DEBUG
 	//DrawFormatStringF(screen_pos.x, screen_pos.y, GetColor(255, 255, 255), "Player");
-	DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
-	DrawFormatString(0, 50, GetColor(255, 255, 255), "Death: %d", death_flg);
+	//DrawFormatString(0, 40, GetColor(255, 255, 255), "State: %s", (state == PlayerState::Real) ? "Real" : "Shadow");
+	//DrawFormatString(0, 50, GetColor(255, 255, 255), "Death: %d", death_flg);
 	//DrawFormatString(0, 60, GetColor(255, 255, 255), "Gauge: %f", shadow_gauge);
 
 	/*for (const auto& hitbox : attack_hitboxes)

@@ -55,7 +55,7 @@ void ShadowHeal::OnHitCollision(GameObject* hit_object)
 
 		if (player) {
 
-			DrawFormatString(10, 200, GetColor(255, 0, 0), "Gauge HEAL SUCCESS! Value: %d", GAUGE_RECOVER_AMOUNT);
+			//DrawFormatString(10, 200, GetColor(255, 0, 0), "Gauge HEAL SUCCESS! Value: %d", GAUGE_RECOVER_AMOUNT);
 
 			// 1. プレイヤーからゲージオブジェクトの参照を取得 (Player::GetGauge()は必要)
 			Gauge& player_gauge = player->GetGauge();
