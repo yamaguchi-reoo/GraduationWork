@@ -214,6 +214,8 @@ eSceneType TitleScene::Title_Select()
         case 1:
             // HELP –¢ŽÀ‘•
             SoundManager::GetInstance()->Play(SoundID::CURSOR);
+			nextScene = eSceneType::HELP;
+			fadeDelayTimer = FADE_DELAY;
             break;
         case 2:
             SoundManager::GetInstance()->Play(SoundID::CURSOR);

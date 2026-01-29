@@ -36,6 +36,7 @@
     <ClCompile Include="Utility\Vector2D.cpp" />
     <ClCompile Include="Object\Gimmick\Wall.cpp" />
     <ClCompile Include="Scene\GamaScene\InGame\GameClear.cpp" />
+    <ClCompile Include="Scene\GamaScene\InGame\HelpScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene\GamaScene\InGame\GameOverScene.h" />
@@ -79,5 +80,6 @@
     <ClInclude Include="Utility\Vector2D.h" />
     <ClInclude Include="Object\Gimmick\Wall.h" />
     <ClInclude Include="Scene\GamaScene\InGame\GameClear.h" />
+    <ClInclude Include="Scene\GamaScene\InGame\HelpScene.h" />
   </ItemGroup>
 </Project>
