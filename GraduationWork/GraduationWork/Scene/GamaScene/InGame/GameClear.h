@@ -5,7 +5,6 @@ class GameClear :public SceneBase
 {
 private:
 	enum class GameClear_MENU {
-		START,
 		TITLE,
 		END
 	};
