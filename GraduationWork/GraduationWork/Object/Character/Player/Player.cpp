@@ -87,6 +87,12 @@ void Player::Update()
 	{
 		SoundManager::GetInstance()->Play(SoundID::LAND);
 	}
+
+	if (this->location.y > 850)
+	{
+		SetPlayerActionDeath();
+	}
+
 	__super::Update();
 }
 
@@ -182,6 +188,8 @@ void Player::Draw(Vector2D offset, double rate)
 	default:
 		break;
 	}
+
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "%f", location.y);
 #endif // DEBUG
 
 }

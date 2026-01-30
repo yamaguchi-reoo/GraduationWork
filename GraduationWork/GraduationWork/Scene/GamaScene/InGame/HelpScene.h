@@ -7,6 +7,7 @@ enum class HelpCategory
 	Control,
 	Gimmick,
 	Item,
+	Back,
 	Max
 };
 
