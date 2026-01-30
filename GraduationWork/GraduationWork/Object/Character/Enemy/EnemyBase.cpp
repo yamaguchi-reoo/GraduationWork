@@ -24,10 +24,12 @@ EnemyBase::EnemyBase()
     search_box_size(200.0f, 100.0f),
     player_detected(false),
     patrol_speed(1.0f),
+    patrol_time(0.0f),
+    patrol_limit(200.0f),
     alert_time (0.0f),
     alert_limit(30.0f),
     charge_timer(0),
-    charge_limit(120)
+    charge_limit(60)
 {
 }
 
@@ -129,6 +131,8 @@ void EnemyBase::Draw(Vector2D offset, double rate)
         is_charging
     );
 
+    DrawFormatString(0, 100, GetColor(255, 255, 255), "%d", moving_right);
+
 #endif
 }
 
@@ -142,17 +146,17 @@ void EnemyBase::OnHitCollision(GameObject* hit_object)
     int type = hit_object->GetObjectType();
 
     // 壁・ブロックに当たったら方向転換
-    if (type == BLOCK || type == WALL)
-    {
-        moving_right = !moving_right;
+    //if (type == BLOCK || type == WALL)
+    //{
+    //    moving_right = !moving_right;
 
-        // 突撃中なら解除
-        if (is_charging)
-        {
-            velocity.x = 0;
-            EndCharge();
-        }
-    }
+    //    // 突撃中なら解除
+    //    if (is_charging)
+    //    {
+    //        velocity.x = 0;
+    //        EndCharge();
+    //    }
+    //}
 }
 
 //====================================================
@@ -250,6 +254,14 @@ void EnemyBase::StartCharge(Player* player)
 void EnemyBase::UpdatePatrol()
 {
     velocity.x = moving_right ? patrol_speed : -patrol_speed;
+    patrol_time++;
+
+    if (patrol_time >= patrol_limit)
+    {
+        patrol_time = 0;
+        moving_right = !moving_right;
+        
+    }
 }
 
 void EnemyBase::StartAlert()

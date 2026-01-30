@@ -42,8 +42,10 @@ protected:
     Vector2D search_box_size; // 検知範囲（四角形）
     bool player_detected;     // プレイヤーを検知しているか
 
-
+    
     float patrol_speed;
+    float patrol_time;
+    float patrol_limit;
 
     float alert_time;
     float alert_limit;
