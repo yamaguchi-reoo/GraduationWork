@@ -414,12 +414,12 @@ void Player::UpdateAttack()
 	// === “G‚Æ‚Ì“–‚½‚è”»’è ===
 	if (!attack_hitboxes.empty() && object_manager)
 	{
-		for (auto enemy_obj : object_manager->GetObjects(ENEMY)) 
+		for (auto enemy_obj : object_manager->GetObjects(REALENEMY))
 		{
 			int type = enemy_obj->GetObjectType();
 			if (type == ENEMY || type == REALENEMY)
 			{
-				Enemy* enemy = dynamic_cast<Enemy*>(enemy_obj);
+				EnemyBase* enemy = dynamic_cast<EnemyBase*>(enemy_obj);
 				//EnemyBase* enemy = dynamic_cast<EnemyBase*>(enemy_obj);
 				if (!enemy) continue; // ‰eó‘Ô‚Ì“G‚Í–³‹
 
