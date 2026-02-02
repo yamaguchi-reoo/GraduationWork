@@ -42,7 +42,7 @@ void GameObject::Draw(Vector2D offset, double rate)
 	}
 
 //#ifdef _DEBUG
-	DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
+	//DrawBoxAA(offset.x, offset.y, offset.x + box_size.x, offset.y + box_size.y, GetColor(255, 0, 0), FALSE);
 //#endif // _DEBUG
 }
 
