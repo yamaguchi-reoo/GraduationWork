@@ -20,7 +20,7 @@ void Invisiblefloor::Draw(Vector2D offset, double rate)
 	//_super::Draw(screen_pos, rate);
 
 	Player* player = dynamic_cast<Player*>(object_manager->FindObjectType(eObjectType::PLAYER));
-#ifdef _DEBUG
+
 	if (player)
 	{
 		if (player->IsPlayerShadow())
@@ -29,7 +29,7 @@ void Invisiblefloor::Draw(Vector2D offset, double rate)
 
 		}
 	}
-#endif // _DEBUG
+
 }
 
 void Invisiblefloor::Finalize()
