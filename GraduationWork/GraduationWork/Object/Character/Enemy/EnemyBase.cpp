@@ -46,7 +46,7 @@ void EnemyBase::Initialize(Vector2D _location, Vector2D _box_size)
     __super::Initialize(_location, _box_size);
 
     hp = max_hp;
-    object_type = ENEMY;
+    
 
     is_dead = false;
     is_alive = true;

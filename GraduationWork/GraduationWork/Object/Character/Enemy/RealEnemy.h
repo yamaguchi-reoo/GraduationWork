@@ -8,6 +8,7 @@ class RealEnemy :
 public:
     RealEnemy()
     {
+        object_type = REALENEMY;
         // À‘Ìƒ‚[ƒh‚ÉŒÅ’è
         state = EnemyState::Real;
         max_hp = 5;        // HP‚¿‚å‚Á‚Æ‚‚ß
@@ -44,6 +45,10 @@ public:
 
         // À‘Ôê—p‚Ì’Ç‰Á•`‰æ
         DrawFormatString(screen_pos.x, screen_pos.y - 20, GetColor(255, 255, 255), "RealEnemy");
+
+#ifdef _DEBUG
+        DrawFormatStringF(location.x + offset.x, location.y + offset.y - 16, GetColor(255, 255, 255), "Enemy HP: %d", hp);
+#endif
     }
 
 
