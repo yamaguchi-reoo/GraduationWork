@@ -8,6 +8,7 @@ enum class eSceneType
 	GAME_MAIN,
 	GAMEOVER,
 	GAMECLEAR,
+	HELP,
 	EXIT
 };
 

@@ -142,8 +142,8 @@ void Gauge::Draw(int center_x, int center_y, float scale) const
     {
     case GaugeType::CircularFill:
         DrawCircularFill(center_x, center_y, scale);
-        DrawFormatString(1100, 100, GetColor(255, 255, 255), "最大ゲージ量: %d", max_value);
-        DrawFormatString(1100, 120, GetColor(255, 255, 255), "現在のゲージ量: %d", current_value);
+        //DrawFormatString(1100, 100, GetColor(255, 255, 255), "最大ゲージ量: %d", max_value);
+        //DrawFormatString(1100, 120, GetColor(255, 255, 255), "現在のゲージ量: %d", current_value);
         break;
     case GaugeType::CircularSection:
         DrawCircularSection(center_x, center_y, scale);
@@ -203,8 +203,8 @@ void Gauge::DrawCircularFill(int cx, int cy, float scale) const
     }
 
     // デバッグ表示（数値）も点滅対象にしたいのでここで描画
-    DrawFormatString(1100, 100, GetColor(255, 255, 255), "最大ゲージ量: %d", max_value);
-    DrawFormatString(1100, 120, GetColor(255, 255, 255), "現在のゲージ量: %d", current_value);
+    //DrawFormatString(1100, 100, GetColor(255, 255, 255), "最大ゲージ量: %d", max_value);
+    //DrawFormatString(1100, 120, GetColor(255, 255, 255), "現在のゲージ量: %d", current_value);
 }
 
 void Gauge::DrawCircularSection(int cx, int cy, float scale) const

@@ -32,7 +32,11 @@ void ObjectManager::Update(Vector2D offset)
 	//‰æ–Ê“à‚É‚ ‚éObject‚Ì‚Ý‚ð‘ÎÛ‚ÉUpdate
     for (auto obj : objects)
     {
-        if (IsOnScreen(obj, offset))
+        if (IsOnScreen(obj, offset) && obj->GetObjectType() != PLAYER)
+        {
+            obj->Update();
+        }
+        else
         {
             obj->Update();
         }

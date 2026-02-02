@@ -49,7 +49,7 @@ void FpsControl::Update()
 
 void FpsControl::Draw(int x, int y) const
 {
-    DrawFormatString(x, y, GetColor(255, 255, 255), "FPS: %.1f", current_fps);
+   //DrawFormatString(x, y, GetColor(255, 255, 255), "FPS: %.1f", current_fps);
 }
 
 float FpsControl::GetFps() const

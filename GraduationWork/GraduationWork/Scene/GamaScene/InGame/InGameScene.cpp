@@ -138,11 +138,11 @@ void InGameScene::Draw()
     }
     else
     {
-        DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
+        //DrawString(600, 10, "GAME MODE", GetColor(255, 255, 255));
 
         // --- 追加表示 ---
-        std::string stage_label = "Stage " + std::to_string(stage_id);
-        DrawString(600, 40, stage_label.c_str(), GetColor(255, 255, 255));
+        //std::string stage_label = "Stage " + std::to_string(stage_id);
+        //DrawString(600, 40, stage_label.c_str(), GetColor(255, 255, 255));
     }
 }
 

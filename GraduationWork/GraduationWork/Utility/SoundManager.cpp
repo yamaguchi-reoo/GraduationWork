@@ -32,14 +32,14 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::SHADOW_ATTACK] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_1620462__刀を振る音_弱.wav"),
 		SoundCategory::SE,
-		70,
+		140,
 		false
 	};
 	//実状態での攻撃音
 	sounds[SoundID::REAL_ATTACK] = {
 		rm->GetSE("Resource/Sounds/SE/Player/AS_372332__風切り音.wav"),
 		SoundCategory::SE,
-		90,
+		180,
 		false
 	};
 
@@ -47,21 +47,21 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::JUMP] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_952655_ジャンプ音A０７.wav"),
 		SoundCategory::SE,
-		40,
+		80,
 		false
 	};
 	//ダメージ音
 	sounds[SoundID::DAMAGE] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_109147_ぽよん_選択_ジャンプ_踏む_アクション.wav"),
 		SoundCategory::SE,
-		60,
+		120,
 		false
 	};
 	//歩行音
 	sounds[SoundID::WALK] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_115562_かわいい足音_動作.wav"),
 		SoundCategory::SE,
-		20,
+		40,
 		false
 	};
 	 
@@ -69,7 +69,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::LAND] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_172804_ピョイ（ジャンプ・アクション・攻撃回避）.wav"),
 		SoundCategory::SE,
-		30,
+		70,
 		false
 	};
 
@@ -77,7 +77,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::SHADOW_DEATH] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_1090444_倒した敵・魔物が消える音.wav"),
 		SoundCategory::SE,
-		35,
+		70,
 		false
 	};
 
@@ -85,7 +85,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::REAL_DEATH] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_964708_小動物の鳴き声_01.wav"),
 		SoundCategory::SE,
-		70,
+		140,
 		false
 	};
 
@@ -93,14 +93,14 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::HEAL] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_968862_嬉しい感情のような上昇音２／ハート／回復.wav"),
 		SoundCategory::SE,
-		80,
+		160,
 		false
 	};
 	//状態変化音
 	sounds[SoundID::STATE_CHANGE] = { 
 		rm->GetSE("Resource/Sounds/SE/Player/AS_1383683.wav"),
 		SoundCategory::SE,
-		70,
+		140,
 		false
 	};
 
@@ -111,7 +111,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::PLATE_ON] = {
 		rm->GetSE("Resource/Sounds/SE/Gimmick/AS_308257_スイッチ音_4.wav"),
 		SoundCategory::SE,
-		70,
+		200,
 		false
 	};
 
@@ -121,7 +121,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::GAME_MAIN_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_69632_悲しげのある洞窟イメージのチップチューン.wav"),
 		SoundCategory::BGM,
-		50,
+		150,
 		true
 	};
 
@@ -129,7 +129,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::GAME_OVER_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_205350_8bit系＿勇壮なゲームオーバー.wav"),
 		SoundCategory::BGM,
-		40,
+		100,
 		false
 	};
 
@@ -137,7 +137,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::GAME_CLEAR_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_1487479_かわいいちょっとミステリアポップなbgm.wav"),
 		SoundCategory::BGM,
-		80,
+		140,
 		true
 	};
 
@@ -145,7 +145,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::GAME_CLEAR_SE] = {
 		rm->GetSE("Resource/Sounds/BGM/GameMain/AS_1026732_ファミコン風ゲームクリアの効果音.wav"),
 		SoundCategory::SE,
-		80,
+		70,
 		false
 	};
 
@@ -161,7 +161,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::TITLE_BGM] = {
 		rm->GetSE("Resource/Sounds/BGM/Title/Title.wav"),
 		SoundCategory::BGM,
-		70,
+		140,
 		true
 	};
 
@@ -169,7 +169,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::CURSOR] = {
 		rm->GetSE("Resource/Sounds/SE/Title/AS_150317_カチッ（装着／スイッチ／セット）.wav"),
 		SoundCategory::BGM,
-		70,
+		110,
 		false
 	};
 
@@ -177,7 +177,7 @@ void SoundManager::LoadSounds()
 	sounds[SoundID::PUSH] = {
 		rm->GetSE("Resource/Sounds/SE/Title/AS_889621_ホワン⑤（魔法・テロップ・スタート音）.wav"),
 		SoundCategory::BGM,
-		100,
+		120,
 		false
 	};
 }
