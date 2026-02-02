@@ -59,7 +59,7 @@ void Plate::Update()
 
 void Plate::Draw(Vector2D offset, double rate)
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	Vector2D screen_pos = location - offset;
 
 	const float y = screen_pos.y + PLATE_Y_OFFSET + press_offset;
@@ -86,7 +86,7 @@ void Plate::Draw(Vector2D offset, double rate)
 		fillColor,
 		TRUE
 	);
-#endif
+//#endif
 }
 
 void Plate::Finalize()

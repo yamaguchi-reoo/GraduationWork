@@ -319,7 +319,7 @@ void Player::HandleInput()
 
 	if (input->GetButtonDown(XINPUT_BUTTON_B))
 	{
-		if (!is_attacking && attack_cooldown <= 0)
+		if (!is_attacking && attack_cooldown <= 0 && action != PlayerAction::Jump)
 		{
 			if(state == PlayerState::Shadow)
 			{
