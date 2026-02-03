@@ -91,25 +91,25 @@ void EnemyBase::Draw(Vector2D offset, double rate)
 {
     Vector2D screen_pos = location - offset;
 
-    // 本体描画（色で状態を分ける）
-    int color = (state == EnemyState::Real)
-        ? GetColor(0, 255, 0)
-        : GetColor(180, 80, 255);
+    //// 本体描画（色で状態を分ける）
+    //int color = (state == EnemyState::Real)
+    //    ? GetColor(0, 255, 0)
+    //    : GetColor(180, 80, 255);
 
-    DrawBoxAA(
-        screen_pos.x,
-        screen_pos.y,
-        screen_pos.x + box_size.x,
-        screen_pos.y + box_size.y,
-        color,
-        FALSE
-    );
+    //DrawBoxAA(
+    //    screen_pos.x,
+    //    screen_pos.y,
+    //    screen_pos.x + box_size.x,
+    //    screen_pos.y + box_size.y,
+    //    color,
+    //    FALSE
+    //);
 
 #ifdef _DEBUG
     // ===== 検知範囲の可視化（デバッグ用） =====
     Vector2D search_pos;
 
-    if (moving_right)
+    /*if (moving_right)
         search_pos = Vector2D(screen_pos.x + box_size.x, screen_pos.y);
     else
         search_pos = Vector2D(screen_pos.x - search_box_size.x, screen_pos.y);
@@ -129,7 +129,7 @@ void EnemyBase::Draw(Vector2D offset, double rate)
         GetColor(255, 255, 255),
         "Charge:%d",
         is_charging
-    );
+    );*/
 
 #endif
 }

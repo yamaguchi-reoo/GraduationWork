@@ -61,7 +61,7 @@ void RealEnemy::Draw(Vector2D offset, double rate)
     );
 
     // é¿ë‘êÍópÇÃí«â¡ï`âÊ
-    DrawFormatString(screen_pos.x, screen_pos.y - 20, GetColor(255, 255, 255), "RealEnemy");
+    //DrawFormatString(screen_pos.x, screen_pos.y - 20, GetColor(255, 255, 255), "RealEnemy");
     
     #ifdef _DEBUG
     #endif
