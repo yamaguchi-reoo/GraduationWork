@@ -12,7 +12,11 @@ protected:
     int anim_speed;         // 何フレームで1コマ進めるか
     int anim_total;         // コマ数
 
+    // アニメ範囲
+    int anim_start;
+    int anim_end;
 
+    EnemySituation prev_state;
 
 public:
     RealEnemy()
@@ -24,46 +28,30 @@ public:
         damage = 2;        // 与えるダメージ強め
         move_speed = 1.5f; // ゆっくり動く
 
+        for (int i = 0; i < 25; ++i)
+            anim_graph[i] = -1;
+
         anim_frame = 0;
         anim_count = 0;
-        anim_speed = 5;      // 5フレームごとにコマ送り
-        anim_total = 12;     // コマ数（画像に合わせる）
+        anim_speed = 20;      // 5フレームごとにコマ送り
+        anim_total = 25;     // コマ数（画像に合わせる
+
+        anim_start = 0;
+        anim_end = 0;
+
+        prev_state = EnemySituation::Patrol;
+
     }
 
     virtual ~RealEnemy() {}
 
-    void Initialize(Vector2D _location, Vector2D _box_size) override
-    {
-        EnemyBase::Initialize(_location, _box_size);
-        // 実体専用の初期化があればここに追加
-    }
+    void Initialize(Vector2D _location, Vector2D _box_size) override;
+    
 
-    void Update() override
-    {
-        // 特殊な動きがあれば追加
-        // 例：一定間隔で方向転換
-        //if (Utility::FrameCounter(120)) // 2秒ごとに反転
-        //{
-        //    moving_right = !moving_right;
-        //}
-
-        EnemyBase::Update();
-    }
+    void Update() override;
+    
 
     void Draw(Vector2D offset, double rate) override;
-//    {
-//        Vector2D screen_pos = location - offset;
-//
-//        // 基本描画
-//        EnemyBase::Draw(offset, rate);
-//
-//        // 実態専用の追加描画
-//        DrawFormatString(screen_pos.x, screen_pos.y - 20, GetColor(255, 255, 255), "RealEnemy");
-//
-//#ifdef _DEBUG
-//        DrawFormatStringF(location.x + offset.x, location.y + offset.y - 16, GetColor(255, 255, 255), "Enemy HP: %d", hp);
-//#endif
-//    }
 
 
     void OnHitCollision(GameObject* hit_object) override
@@ -74,5 +62,8 @@ public:
 
     void LoadPlayerImage();
 
+    void UpdateAnimation();
+
+    void SetAnimation(int start, int end, int speed);
 };
 

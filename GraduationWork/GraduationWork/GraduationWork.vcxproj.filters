@@ -82,4 +82,7 @@
     <ClInclude Include="Scene\GamaScene\InGame\GameClear.h" />
     <ClInclude Include="Scene\GamaScene\InGame\HelpScene.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

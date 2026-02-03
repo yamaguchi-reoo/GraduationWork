@@ -102,7 +102,7 @@ void EnemyBase::Draw(Vector2D offset, double rate)
         screen_pos.x + box_size.x,
         screen_pos.y + box_size.y,
         color,
-        TRUE
+        FALSE
     );
 
 #ifdef _DEBUG
