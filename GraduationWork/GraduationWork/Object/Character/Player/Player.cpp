@@ -88,9 +88,11 @@ void Player::Update()
 		SoundManager::GetInstance()->Play(SoundID::LAND);
 	}
 
-	if (this->location.y > 850)
+	// ‰æ–Ê‰º‚É—Ž‚¿‚½‚çŽ€–S
+	if (this->location.y > 850 && action != PlayerAction::Death)
 	{
-		SetPlayerActionDeath();
+		hp = 0;                 
+		SetPlayerActionDeath(); 
 	}
 
 	__super::Update();
@@ -319,7 +321,7 @@ void Player::HandleInput()
 
 	if (input->GetButtonDown(XINPUT_BUTTON_B))
 	{
-		if (!is_attacking && attack_cooldown <= 0)
+		if (!is_attacking && attack_cooldown <= 0 && action != PlayerAction::Jump)
 		{
 			if(state == PlayerState::Shadow)
 			{

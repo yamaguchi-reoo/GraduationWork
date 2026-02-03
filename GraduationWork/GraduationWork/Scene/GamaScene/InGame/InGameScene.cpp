@@ -391,7 +391,7 @@ void InGameScene::SetStage()
                 break;
             case PLATE:
             {
-                Plate* plate = object_manager.CreateObject<Plate>(world_pos, Vector2D(100.0f, 10.0f));
+                Plate* plate = object_manager.CreateObject<Plate>(world_pos, Vector2D(96.0f, 10.0f));
                 plates.push_back(plate);
                 break;
             }
