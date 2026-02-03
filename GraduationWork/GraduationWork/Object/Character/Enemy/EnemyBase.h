@@ -53,6 +53,8 @@ protected:
     int charge_timer;
     int charge_limit;
 
+	int walk_se_timer;
+
 protected:
     // プレイヤー検知処理
     void PlayerSearch();

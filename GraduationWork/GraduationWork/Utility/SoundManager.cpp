@@ -105,6 +105,29 @@ void SoundManager::LoadSounds()
 	};
 
 	// --- エネミー関連の音声読み込み ---
+	//エネミー歩行音
+	sounds[SoundID::ENEMY_WALK] = {
+		rm->GetSE("Resource/Sounds/SE/Enemy/AS_411966_ヘルハウンド_ステップ01.wav"),
+		SoundCategory::SE,
+		80,
+		false
+	};
+
+	//エネミー攻撃音
+	sounds[SoundID::ENEMY_ATTACK] = {
+		rm->GetSE("Resource/Sounds/SE/Enemy/AS_104552_犬が吠える（ワン）.wav"),
+		SoundCategory::SE,
+		120,
+		false
+	};
+
+	//エネミー死亡音
+	sounds[SoundID::ENEMY_DEATH] = {
+		rm->GetSE("Resource/Sounds/SE/Enemy/AS_770085_犬の泣き声b.wav"),
+		SoundCategory::SE,
+		90,
+		false
+	};
 
 	// --- ギミック関連の音声読み込み ---
 	//感圧板ON音

@@ -24,6 +24,9 @@ enum class SoundID
 	STATE_CHANGE,
 
 	// --- Enemy ---
+	ENEMY_WALK,
+	ENEMY_ATTACK,
+	ENEMY_DEATH,
 
 	// --- Gimmick ---
 	PLATE_ON,

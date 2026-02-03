@@ -1,6 +1,8 @@
 #include <DxLib.h>
 #include "EnemyBase.h"
 #include "../../../Utility/UtilityList.h"
+#include "../../../Utility/SoundManager.h"    
+
 #include "../../../common.h"
 
 #include "../../../Object/ObjectManager.h"
@@ -29,7 +31,8 @@ EnemyBase::EnemyBase()
     alert_time (0.0f),
     alert_limit(30.0f),
     charge_timer(0),
-    charge_limit(60)
+    charge_limit(60),
+	walk_se_timer(0)
 {
 }
 
@@ -240,6 +243,8 @@ void EnemyBase::StartCharge(Player* player)
     is_charging = true;
     charge_timer = 0;
 
+	
+
     if (player->GetLocation().x > location.x)
         moving_right = true;
     else
@@ -253,6 +258,14 @@ void EnemyBase::UpdatePatrol()
 {
     velocity.x = moving_right ? patrol_speed : -patrol_speed;
     patrol_time++;
+
+    //•àsSE
+	walk_se_timer++;
+    if (walk_se_timer >= 30)
+    {
+		SoundManager::GetInstance()->Play(SoundID::ENEMY_WALK);
+		walk_se_timer = 0;
+    }
 
     if (patrol_time >= patrol_limit)
     {
@@ -275,6 +288,7 @@ void EnemyBase::UpdateAlert()
 
     if (alert_time >= alert_limit)
     {
+        SoundManager::GetInstance()->Play(SoundID::ENEMY_ATTACK);
         situation = EnemySituation::Charge;
         alert_time == 0;
     }
