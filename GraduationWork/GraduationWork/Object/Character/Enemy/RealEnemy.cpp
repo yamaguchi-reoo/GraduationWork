@@ -8,7 +8,7 @@ void RealEnemy::Initialize(Vector2D _location, Vector2D _box_size)
     // À‘Ìê—p‚Ì‰Šú‰»‚ª‚ ‚ê‚Î‚±‚±‚É’Ç‰Á
     LoadPlayerImage();
 
-    SetAnimation(5, 7, 40);
+    SetAnimation(5, 7, 12);
 }
 
 void RealEnemy::Update()
@@ -17,17 +17,17 @@ void RealEnemy::Update()
         switch (situation)
         {
         case EnemySituation::Patrol:
-            SetAnimation(5, 7, 40);   // •à‚«
+            SetAnimation(5, 7, 12);   // •à‚«
 
             break;
 
         case EnemySituation::Alert:
-            SetAnimation(15, 19, 20);   // ‘Ò‹@
+            SetAnimation(15, 19, 12);   // ‘Ò‹@
 
             break;
 
         case EnemySituation::Charge:
-            SetAnimation(5, 7, 20);  // “ËŒ‚
+            SetAnimation(5, 7, 12);  // “ËŒ‚
 
             break;
         }
