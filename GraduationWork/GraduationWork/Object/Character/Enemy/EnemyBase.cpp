@@ -131,8 +131,6 @@ void EnemyBase::Draw(Vector2D offset, double rate)
         is_charging
     );
 
-    DrawFormatString(0, 100, GetColor(255, 255, 255), "%d", moving_right);
-
 #endif
 }
 
