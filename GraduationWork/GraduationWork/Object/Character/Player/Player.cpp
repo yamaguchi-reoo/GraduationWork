@@ -88,9 +88,11 @@ void Player::Update()
 		SoundManager::GetInstance()->Play(SoundID::LAND);
 	}
 
-	if (this->location.y > 850)
+	// ‰æ–Ê‰º‚É—Ž‚¿‚½‚çŽ€–S
+	if (this->location.y > 850 && action != PlayerAction::Death)
 	{
-		SetPlayerActionDeath();
+		hp = 0;                 
+		SetPlayerActionDeath(); 
 	}
 
 	__super::Update();
